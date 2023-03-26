@@ -1,0 +1,91 @@
+.master-wrapper{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100% !important;
+    justify-content: center;
+    align-items: center;
+    /* background-image: url('images/bg.jpg'); */
+    height: 550px;
+    color: white;
+    background-color: black;
+    font-size: 40px;
+    text-shadow: black 5px 5px;
+}
+
+body{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    height: 100%;
+    background-color: black;
+}
+
+.game-container{
+    position: relative;
+    display: flex;
+    width: 100%;
+    height:100%;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas{
+    position: absolute;
+}
+
+.menu-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+
+}
+
+.menu-item{
+    margin: 20px;
+}
+
+.menu-item:hover{
+    cursor: pointer;
+    text-shadow: black 8px 8px;
+    font-weight: bold;
+}
+
+canvas{
+    image-rendering: pixelated; 
+    image-rendering: crisp-edges;
+}
+
+.score{
+    font-size: 25px;
+    color: white;
+    background: transparent;
+}
+
+#high-scores-display{
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+.high-scores-list{
+    width: 330px;
+    background: transparent;
+}
+
+.credits-p{
+    font-size: 30px;
+    width: 400px;
+}
+
+#back-button{
+    position: absolute;
+    margin-top: 600px;
+}
