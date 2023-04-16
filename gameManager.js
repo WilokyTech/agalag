@@ -1,3 +1,4 @@
+import { EntityManager } from "./entityManager.js";
 import { UIManager } from "./UIManager.js";
 import { ParticleSystem } from "./particleSystem.js";
 
@@ -10,9 +11,10 @@ export class Ship{
 }
 
 export class GameManager{
+    static PLAYER_MOVEMENT_SPEED = 0.001;
+    static entities = new EntityManager();
 
-    static{
-        this.PLAYER_MOVEMENT_SPEED = 0.001;
+    static {
         this.setDefaultState();
     }
 

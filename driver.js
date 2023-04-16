@@ -10,6 +10,7 @@ let timeRan = 0;
 
 requestAnimationFrame(gameLoop);
 
+/** @type {FrameRequestCallback} */
 function gameLoop(timeStamp){
     elapsedTime = timeStamp - prevTime;
     prevTime = timeStamp;
