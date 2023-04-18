@@ -4,11 +4,16 @@ import { UIManager } from "./UIManager.js";
 export class InputManager {
     static {
         this.controls = {
-            left: ["a", "j", "ArrowLeft"], 
-            right: ["d", "l", "ArrowRight"], 
-            pause: ["Escape"]
+            left: "ArrowLeft", 
+            right: "ArrowRight", 
+            fire: " ",
+            pause: "Escape"
         };
         this.pressedKeys = [];
+    }
+
+    static updateControls(control, e){
+        this.controls[control] = e.key;
     }
 
     /**
