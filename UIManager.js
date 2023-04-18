@@ -17,6 +17,7 @@ export class UIManager{
         this.remapMoveRightButtonEl = document.getElementById("remap-move-right-button");
         this.remapFireButtonEl = document.getElementById("remap-fire-button");
         this.remapPauseButtonEl = document.getElementById("remap-pause-button");
+        this.resetDefaultButtonEl = document.getElementById("reset-default-button");
         this.highScoresDisplayEl = document.getElementById("high-scores-display");
         this.creditsDisplayEl = document.getElementById("credits-display");
         this.backBttn = document.getElementById("back-button");
@@ -65,6 +66,10 @@ export class UIManager{
         this.remapPauseButtonEl.onclick = () => {
             this.remapPause();
         };
+
+        this.resetDefaultButtonEl.onclick = () => {
+            this.resetDefaultControls();
+        }
 
         this.highScoresEl.onclick = () => {
             this.showHighScores();
@@ -198,6 +203,19 @@ export class UIManager{
         this.remapFireButtonEl.onclick = () => {
             this.remapFire();
         };
+    }
+
+    static resetDefaultControls(){
+        this.remapMoveLeftButtonEl.innerHTML = "Move Left: \"ArrowLeft\""
+        this.remapMoveRightButtonEl.innerHTML = "Move Right: \"ArrowRight\""
+        this.remapFireButtonEl.innerHTML = "Fire: \"Space\""
+        this.remapPauseButtonEl.innerHTML = "Pause/Back: \"Escape\""
+        InputManager.controls = {
+            left: 'ArrowLeft',
+            right: 'ArrowRight',
+            fire: ' ',
+            pause: 'Escape'
+        }
     }
 
     static showHighScores(){
