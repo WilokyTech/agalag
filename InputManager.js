@@ -11,7 +11,11 @@ export class InputManager {
         };
         this.pressedKeys = [];
     }
-
+    /**
+     * 
+     * @param {string} control
+     * @param {KeyboardEvent} e 
+     */
     static updateControls(control, e){
         this.controls[control] = e.key;
     }
