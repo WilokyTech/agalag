@@ -43,12 +43,12 @@ export class InputManager {
             for(let key of this.pressedKeys){
                 let movementAmount = GameManager.PLAYER_MOVEMENT_SPEED * elapsedTime;
     
-                if(this.controls.right.includes(key)){
+                if(this.controls.right === key){
                     if(GameManager.ship.location.x < 1.0  - GameManager.ship.width){
                         GameManager.ship.location.x += movementAmount;
                     }
                 }
-                else if(this.controls.left.includes(key)){
+                else if(this.controls.left === key){
                     if(GameManager.ship.location.x > 0){
                         GameManager.ship.location.x -= movementAmount;
                     }
@@ -59,7 +59,7 @@ export class InputManager {
 }
 
 window.addEventListener("keydown", e => {
-    if(InputManager.controls.pause.includes(e.key)){
+    if(InputManager.controls.pause === e.key){
         if(!UIManager.inAMenu){
             UIManager.showGenericMenu(UIManager.pauseMenuEl);
         }
