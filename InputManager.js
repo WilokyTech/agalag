@@ -4,12 +4,22 @@ import { UIManager } from "./UIManager.js";
 export class InputManager {
     static {
         this.controls = {
-            left: ["a", "j", "ArrowLeft"], 
-            right: ["d", "l", "ArrowRight"], 
-            pause: ["Escape"]
+            left: "ArrowLeft", 
+            right: "ArrowRight", 
+            fire: " ",
+            pause: "Escape"
         };
         this.pressedKeys = [];
         this.gameFieldWidth = document.getElementById("canvas").width;
+    }
+
+    /**
+     * 
+     * @param {string} control
+     * @param {KeyboardEvent} e 
+     */
+    static updateControls(control, e){
+        this.controls[control] = e.key;
     }
 
     /**
@@ -35,14 +45,14 @@ export class InputManager {
             for(let key of this.pressedKeys){
                 let movementAmount = GameManager.PLAYER_MOVEMENT_SPEED * elapsedTime;
     
-                if(this.controls.right.includes(key)){
-                    if(GameManager.ship.transform.position.x < this.gameFieldWidth - GameManager.ship.width){
-                        GameManager.ship.transform.position.x += movementAmount;
+                if(this.controls.right === key){
+                    if(GameManager.ship.location.x < 1.0  - GameManager.ship.width){
+                        GameManager.ship.location.x += movementAmount;
                     }
                 }
-                else if(this.controls.left.includes(key)){
-                    if(GameManager.ship.transform.position.x > 0){
-                        GameManager.ship.transform.position.x -= movementAmount;
+                else if(this.controls.left === key){
+                    if(GameManager.ship.location.x > 0){
+                        GameManager.ship.location.x -= movementAmount;
                     }
                 }
             }
@@ -51,7 +61,7 @@ export class InputManager {
 }
 
 window.addEventListener("keydown", e => {
-    if(InputManager.controls.pause.includes(e.key)){
+    if(InputManager.controls.pause === e.key){
         if(!UIManager.inAMenu){
             UIManager.showGenericMenu(UIManager.pauseMenuEl);
         }
