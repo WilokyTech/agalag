@@ -1,4 +1,5 @@
 //Written by Ryan Andersen A02288683 for CS5410
+import { Assets } from "./assets.js";
 import { GameManager, Ship} from "./gameManager.js";
 import { ParticleSystem } from "./particleSystem.js";
 import { UIManager } from "./UIManager.js";
@@ -12,15 +13,13 @@ export class Renderer {
 
         this.SONG_BPM = 142;
         this.SONG_BPS = 60 / this.SONG_BPM;
-        
-        this.setImages();
     }
     
     static drawGame(timeElapsed){
-        if(this.bgImg && !UIManager.inAMenu){
+        if(Assets.bgImg && !UIManager.inAMenu){
             this.clear();
     
-            this.ctx.drawImage(this.bgImg, 0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.drawImage(Assets.bgImg, 0, 0, this.canvas.width, this.canvas.height);
     
             this.updateTimeRenderChanges(timeElapsed);
             this.drawLives();
@@ -40,7 +39,7 @@ export class Renderer {
         let height = GameManager.ALL_BALLS_DIAMETER * this.canvas.height;
         let startX = GameManager.BRICK_MARGIN * 3 * this.canvas.width;
         for(let i = 0; i < GameManager.livesLeft; i++){
-            this.ctx.drawImage(this.nyanCatImg, startX + GameManager.BRICK_MARGIN * this.canvas.width + (width * i), 0.9 * this.canvas.height, width, height);
+            this.ctx.drawImage(Assets.nyanCatImg, startX + GameManager.BRICK_MARGIN * this.canvas.width + (width * i), 0.9 * this.canvas.height, width, height);
         }
     }
 
@@ -93,22 +92,5 @@ export class Renderer {
 
     static drawParticles(){
 
-    }
-
-    static async getImage(url){
-        let img = new Image();
-        img.src = url;
-        return new Promise((resolve, reject) => {
-            img.onload = () => {
-                resolve(img);
-            };
-        });
-    }
-
-    static async setImages(){
-        this.nyanCatImg = await this.getImage('./images/nyanCat.png');
-        this.nyanCatLeftImg = await this.getImage('./images/nyanCatLeft.png');
-        //TODO: replace bg image with animated system
-        this.bgImg = await this.getImage('./images/bg.jpg');
     }
 }
