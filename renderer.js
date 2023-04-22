@@ -45,13 +45,9 @@ export class Renderer {
     }
 
     static drawShip(ship, timeElapsed){
-        let width = ship.width * this.canvas.width;
-        let height = ship.height * this.canvas.height;
-        let locX = ship.location.x * this.canvas.width;
-        let locY = ship.location.y * this.canvas.height;
         try{
             this.ctx.fillStyle = "black";
-            this.ctx.fillRect(locX, locY, width, height);
+            this.ctx.fillRect(ship.location.x, ship.location.y, ship.width, ship.height);
         }
         catch(err){
             console.log(`ship image note loaded: ${err}`);

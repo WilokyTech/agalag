@@ -11,15 +11,18 @@ export class Ship{
 }
 
 export class GameManager{
-    static PLAYER_MOVEMENT_SPEED = 0.001;
     static entities = new EntityManager();
+    static canvas = document.getElementById("canvas");
+    static PLAYER_MOVEMENT_SPEED = this.canvas.width * 0.001;
 
     static {
         this.setDefaultState();
     }
 
     static setDefaultState(){
-        this.ship = new Ship(0.15, 0.03, {x: 0.5 - (0.15/2), y: 1 - 0.03});
+        const shipWidth = 0.15 * this.canvas.width;
+        const shipHeight = 0.03 * this.canvas.height;
+        this.ship = new Ship(shipWidth, shipHeight, {x: (this.canvas.width/2) - (shipWidth/2), y: this.canvas.height - (0.03*this.canvas.height)});
 
         this.livesLeft = 3;
         this.score = 0;

@@ -9,6 +9,7 @@ export class InputManager {
             pause: ["Escape"]
         };
         this.pressedKeys = [];
+        this.gameFieldWidth = document.getElementById("canvas").width;
     }
 
     /**
@@ -35,7 +36,7 @@ export class InputManager {
                 let movementAmount = GameManager.PLAYER_MOVEMENT_SPEED * elapsedTime;
     
                 if(this.controls.right.includes(key)){
-                    if(GameManager.ship.location.x < 1.0  - GameManager.ship.width){
+                    if(GameManager.ship.location.x < this.gameFieldWidth - GameManager.ship.width){
                         GameManager.ship.location.x += movementAmount;
                     }
                 }
