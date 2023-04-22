@@ -1,3 +1,5 @@
+import { Transform } from "./components/transform.js";
+
 export class Entity {
   static #nextId = 0;
   
@@ -6,12 +8,20 @@ export class Entity {
     
     // All possible game component will be exposed as properties on the entity since there's only a small number of them
     // If the component is not present on the entity, it will be null.
-    this.transform = null; // Position and rotation - Borrowing from Unity terminology
+    this.transform = new Transform(); // Position and orientation - Borrowing from Unity terminology
     this.collision = null;
     this.health = null;
     this.path = null;
     this.formation = null;
     this.velocity = null;
+    
+    /**
+     * Specifies the texture to use for this entity. The texture value is a string that is used to
+     * look up the texture in the Assets object.
+     * 
+     * @type {string}
+     */
+    this.texture = null;
   }
   
   /**
@@ -27,9 +37,12 @@ export class Entity {
   /**
    * Renders the entity
    * 
+   * @param {CanvasRenderingContext2D} ctx
    * @param {number} elapsedTime 
    */
-  render(elapsedTime) {
-    // Render the entity. Default implementation is an intentional no-op.
+  render(ctx, elapsedTime) {
+    if (this.texture) {
+      // Draw the entity's texture 
+    }
   }
 }

@@ -1,6 +1,7 @@
 //Written by Ryan Andersen A02288683 for CS5410
 import { Assets } from "./assets.js";
-import { GameManager, Ship} from "./gameManager.js";
+import { GameManager } from "./gameManager.js";
+import { Ship } from "./entities/ship.js";
 import { ParticleSystem } from "./particleSystem.js";
 import { UIManager } from "./UIManager.js";
 
@@ -24,7 +25,7 @@ export class Renderer {
             this.updateTimeRenderChanges(timeElapsed);
             this.drawLives();
             this.drawParticles();
-            this.drawShip(GameManager.ship, timeElapsed);
+            this.drawShip(timeElapsed);
             this.drawScore();
             this.drawTimer();
         }
@@ -43,10 +44,9 @@ export class Renderer {
         }
     }
 
-    static drawShip(ship, timeElapsed){
+    static drawShip(timeElapsed){
         try{
-            this.ctx.fillStyle = "black";
-            this.ctx.fillRect(ship.location.x, ship.location.y, ship.width, ship.height);
+            GameManager.ship.render(this.ctx, timeElapsed);
         }
         catch(err){
             console.log(`ship image note loaded: ${err}`);

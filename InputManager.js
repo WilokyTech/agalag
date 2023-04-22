@@ -36,13 +36,13 @@ export class InputManager {
                 let movementAmount = GameManager.PLAYER_MOVEMENT_SPEED * elapsedTime;
     
                 if(this.controls.right.includes(key)){
-                    if(GameManager.ship.location.x < this.gameFieldWidth - GameManager.ship.width){
-                        GameManager.ship.location.x += movementAmount;
+                    if(GameManager.ship.transform.position.x < this.gameFieldWidth - GameManager.ship.width){
+                        GameManager.ship.transform.position.x += movementAmount;
                     }
                 }
                 else if(this.controls.left.includes(key)){
-                    if(GameManager.ship.location.x > 0){
-                        GameManager.ship.location.x -= movementAmount;
+                    if(GameManager.ship.transform.position.x > 0){
+                        GameManager.ship.transform.position.x -= movementAmount;
                     }
                 }
             }

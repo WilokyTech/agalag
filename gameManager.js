@@ -1,14 +1,9 @@
+import { Entity } from "./entity.js";
 import { EntityManager } from "./entityManager.js";
+import { Ship } from "./entities/ship.js";
 import { UIManager } from "./UIManager.js";
 import { ParticleSystem } from "./particleSystem.js";
-
-export class Ship{
-    constructor(width, height, location){
-        this.width = width;
-        this.height = height;
-        this.location = location;
-    }
-}
+import { Vector2 } from "./vector.js";
 
 export class GameManager{
     static entities = new EntityManager();
@@ -20,9 +15,9 @@ export class GameManager{
     }
 
     static setDefaultState(){
-        const shipWidth = 0.15 * this.canvas.width;
-        const shipHeight = 0.03 * this.canvas.height;
-        this.ship = new Ship(shipWidth, shipHeight, {x: (this.canvas.width/2) - (shipWidth/2), y: this.canvas.height - (0.03*this.canvas.height)});
+        const shipWidth = 64
+        const shipHeight = 64
+        this.ship = new Ship(shipWidth, shipHeight, new Vector2((this.canvas.width/2) - (shipWidth/2), this.canvas.height - 64));
 
         this.livesLeft = 3;
         this.score = 0;
