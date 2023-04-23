@@ -15,6 +15,10 @@ export class Vector2 {
   multiply(scalar) {
     return new Vector2(this.x * scalar, this.y * scalar);
   }
+  
+  elementMultiply(other) {
+    return new Vector2(this.x * other.x, this.y * other.y);
+  }
 
   divide(scalar) {
     return new Vector2(this.x / scalar, this.y / scalar);

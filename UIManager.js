@@ -41,10 +41,10 @@ export class UIManager{
         this.backableMenus = [this.controlsMenuEl, this.creditsDisplayEl, this.highScoresDisplayEl, this.gameOverEl];
 
         this.newGameEl.onclick = () => {
+            GameManager.getInstance().setDefaultState();
             this.showGame();
             //commenting out for now as it gets old during development
             // this.BG_MUSIC.play();
-            GameManager.getInstance().setDefaultState();
         }
 
         this.resumeEl.onclick = () => {

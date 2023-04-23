@@ -1,4 +1,5 @@
 import { Transform } from "./components/transform.js";
+import { Velocity } from "./components/velocity.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { GameManager } from "./gameManager.js";
 
@@ -11,11 +12,12 @@ export class Entity extends EventEmitter {
     
     // All possible game component will be exposed as properties on the entity since there's only a small number of them
     // If the component is not present on the entity, it will be null.
-    this.transform = new Transform(); // Position and orientation - Borrowing from Unity terminology
+    this.transform = new Transform(this); // Position and orientation - Borrowing from Unity terminology
     this.collision = null;
     this.health = null;
     this.path = null;
     this.formation = null;
+    /** @type {Velocity} */
     this.velocity = null;
     
     /**
@@ -29,6 +31,8 @@ export class Entity extends EventEmitter {
   
   /**
    * Called when the entity is added to the game world. If overriding, be sure to call super.initialize() at the end.
+   * If you need access to game singletons like the game manager or input manager and are encountering reference errors when doing
+   * so in the constructor, you can access them here.
    */
   initialize() {
     this.emit('created');
@@ -50,7 +54,7 @@ export class Entity extends EventEmitter {
    * @param {number} elapsedTime 
    */
   update(elapsedTime) {
-    // Update the entity's components, namely velocity and transform if they exist
+    this.transform.update(elapsedTime);
   }
   
   /**
@@ -66,8 +70,10 @@ export class Entity extends EventEmitter {
   render(ctx, elapsedTime) {
     if (this.texture) {
       // Draw the entity's texture 
-    } else if (false) {
+    } else {
       // Draw a debug representation of the entity 
+      ctx.fillStyle = 'magenta';
+      ctx.fillRect(this.transform.position.x, this.transform.position.y, 32, 32);
     }
   }
   
