@@ -19,7 +19,8 @@ export class Ship extends Entity {
     
     /** @type {Entity['initialize']} */
     initialize() {
-        this.inputManager.on('fireDown', this.fireProjectile.bind(this));
+        this.fireProjectile = this.fireProjectile.bind(this);
+        this.inputManager.on('fireDown', this.fireProjectile);
     }
     
     /** @type {Entity['processInput']} */

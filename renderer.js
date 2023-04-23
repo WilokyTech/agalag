@@ -1,7 +1,6 @@
 //Written by Ryan Andersen A02288683 for CS5410
 import { Assets } from "./assets.js";
 import { GameManager } from "./gameManager.js";
-import { Ship } from "./entities/ship.js";
 import { ParticleSystem } from "./particleSystem.js";
 import { UIManager } from "./UIManager.js";
 

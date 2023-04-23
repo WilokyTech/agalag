@@ -1,4 +1,3 @@
-import { Entity } from "../entity.js";
 import { Vector2 } from "../vector.js";
 
 export class Velocity {

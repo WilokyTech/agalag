@@ -1,7 +1,6 @@
 import { Transform } from "./components/transform.js";
 import { Velocity } from "./components/velocity.js";
 import { EventEmitter } from "./eventEmitter.js";
-import { GameManager } from "./gameManager.js";
 
 export class Entity extends EventEmitter {
   static #nextId = 0;
