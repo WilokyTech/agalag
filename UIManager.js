@@ -56,7 +56,7 @@ export class UIManager{
         }
 
         this.remapControlsEl.onclick = () => {
-            this.showGenericMenu(this.controlsMenuEl);
+            this.showControlsMenu();
         }
 
         this.remapMoveLeftButtonEl.onclick = () => {
@@ -128,6 +128,18 @@ export class UIManager{
         this.inAMenu = true;
     }
 
+    showControlsMenu(){
+        let previousControls = localStorage.getItem("agalag.controls");
+        if (previousControls != null){
+            previousControls = JSON.parse(previousControls);
+            this.remapMoveLeftButtonEl.innerHTML = `Move Left: "${previousControls.left}"`;
+            this.remapMoveRightButtonEl.innerHTML = `Move Right: "${previousControls.right}"`;
+            this.remapFireButtonEl.innerHTML = `Fire: "${previousControls.fire}"`;
+            this.remapPauseButtonEl.innerHTML = `Pause/Back: "${previousControls.pause}"`;
+        }
+        this.showGenericMenu(this.controlsMenuEl);
+    }
+
     remapMoveLeft(){
         this.remapMoveRightButtonEl.onclick = null;
         this.remapFireButtonEl.onclick = null;
@@ -136,8 +148,8 @@ export class UIManager{
         this.remapMoveLeftButtonEl.innerHTML = "Press a key to set control for Move Left...";
 
         window.addEventListener('keyup', function(event) {
-            const key = event.code;
-            document.getElementById("remap-move-left-button").innerHTML = 'Move Left: "' + key + '"';
+            const key = event.key;
+            document.getElementById("remap-move-left-button").innerHTML = `Move Left: "${key}"`;
             InputManager.updateControls('left', event);
         }, { once : true });
 
@@ -160,8 +172,8 @@ export class UIManager{
         this.remapMoveRightButtonEl.innerHTML = "Press a key to set control for Move Right...";
 
         window.addEventListener('keyup', function(event) {
-            const key = event.code;
-            document.getElementById('remap-move-right-button').innerHTML = 'Move Right: "' + key + '"';
+            const key = event.key;
+            document.getElementById('remap-move-right-button').innerHTML = `Move Right: "${key}"`;
             InputManager.updateControls('right', event);
         }, { once : true });
 
@@ -184,8 +196,8 @@ export class UIManager{
         this.remapFireButtonEl.innerHTML = "Press a key to set control for Fire...";
 
         window.addEventListener('keyup', function(event) {
-            const key = event.code;
-            document.getElementById('remap-fire-button').innerHTML = 'Fire: "' + key + '"';
+            const key = event.key;
+            document.getElementById('remap-fire-button').innerHTML = `Fire: "${key}"`;
             InputManager.updateControls('fire', event);
         }, { once : true });
         
@@ -208,8 +220,8 @@ export class UIManager{
         this.remapPauseButtonEl.innerHTML = "Press a key to set control for Pause/Back...";
 
         window.addEventListener('keyup', function(event) {
-            const key = event.code;
-            document.getElementById('remap-pause-button').innerHTML = 'Pause/Back: "' + key + '"';
+            const key = event.key;
+            document.getElementById('remap-pause-button').innerHTML = `Pause/Back: "${key}"`;
             InputManager.updateControls('pause', event);
         }, { once : true });
         
@@ -227,14 +239,15 @@ export class UIManager{
     resetDefaultControls(){
         this.remapMoveLeftButtonEl.innerHTML = "Move Left: \"ArrowLeft\""
         this.remapMoveRightButtonEl.innerHTML = "Move Right: \"ArrowRight\""
-        this.remapFireButtonEl.innerHTML = "Fire: \"Space\""
+        this.remapFireButtonEl.innerHTML = "Fire: \" \""
         this.remapPauseButtonEl.innerHTML = "Pause/Back: \"Escape\""
-        InputManager.controls = {
+        InputManager.getInstance().controls = {
             left: 'ArrowLeft',
             right: 'ArrowRight',
             fire: ' ',
             pause: 'Escape'
         }
+        InputManager.saveControls();
     }
 
     showHighScores(){
