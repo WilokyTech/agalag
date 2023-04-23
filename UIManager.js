@@ -2,7 +2,8 @@ import { GameManager } from "./gameManager.js";
 import { InputManager } from "./InputManager.js";
 
 export class UIManager{
-    static {
+    constructor(gameManager) {
+        this.gameManager = gameManager;
         this.canvasEl = document.getElementById("canvas");
         this.mainMenuEl = document.getElementById("main-menu");
         this.newGameEl = document.getElementById("new-game");
@@ -36,7 +37,7 @@ export class UIManager{
             this.showGame();
             //commenting out for now as it gets old during development
             // this.BG_MUSIC.play();
-            GameManager.setDefaultState();
+            this.gameManager.setDefaultState();
         }
 
         this.resumeEl.onclick = () => {
@@ -87,11 +88,20 @@ export class UIManager{
             SaveDataManager.clearScores();
             this.showHighScores();
         }
+        
+        this.gameManager.on('gameOver', this.showGameOver.bind(this));
 
         this.setDefaultState();
     }
+    
+    set inAMenu(value) {
+        this.gameManager.paused = value;
+        this._inAMenu = value;
+    }
+    
+    get inAMenu() { return this._inAMenu; }
  
-    static setDefaultState(){
+    setDefaultState(){
         this.showGenericMenu(this.mainMenuEl);
         this.BG_MUSIC.pause();
     }
@@ -100,7 +110,7 @@ export class UIManager{
      * 
      * @param {HTMLElement} menuEl 
      */
-    static showGenericMenu(menuEl){
+    showGenericMenu(menuEl){
         this.hideEverything();
         menuEl.style = "display: flex";
         if(this.backableMenus.includes(menuEl)){
@@ -109,7 +119,7 @@ export class UIManager{
         this.inAMenu = true;
     }
 
-    static remapMoveLeft(){
+    remapMoveLeft(){
         this.remapMoveRightButtonEl.onclick = null;
         this.remapFireButtonEl.onclick = null;
         this.remapPauseButtonEl.onclick = null;
@@ -133,7 +143,7 @@ export class UIManager{
         };
     }
 
-    static remapMoveRight(){
+    remapMoveRight(){
         this.remapMoveLeftButtonEl.onclick = null;
         this.remapFireButtonEl.onclick = null;
         this.remapPauseButtonEl.onclick = null;
@@ -157,7 +167,7 @@ export class UIManager{
         };
     }
 
-    static remapFire(){
+    remapFire(){
         this.remapMoveLeftButtonEl.onclick = null;
         this.remapMoveRightButtonEl.onclick = null;
         this.remapPauseButtonEl.onclick = null;
@@ -181,7 +191,7 @@ export class UIManager{
         };
     }
 
-    static remapPause(){
+    remapPause(){
         this.remapMoveLeftButtonEl.onclick = null;
         this.remapMoveRightButtonEl.onclick = null;
         this.remapFireButtonEl.onclick = null;
@@ -205,7 +215,7 @@ export class UIManager{
         };
     }
 
-    static resetDefaultControls(){
+    resetDefaultControls(){
         this.remapMoveLeftButtonEl.innerHTML = "Move Left: \"ArrowLeft\""
         this.remapMoveRightButtonEl.innerHTML = "Move Right: \"ArrowRight\""
         this.remapFireButtonEl.innerHTML = "Fire: \"Space\""
@@ -218,7 +228,7 @@ export class UIManager{
         }
     }
 
-    static showHighScores(){
+    showHighScores(){
         this.showGenericMenu(this.highScoresDisplayEl);
         //custom high scores func here
         this.highScoresListEl.innerHTML = ``;
@@ -227,19 +237,19 @@ export class UIManager{
         }
     }
 
-    static showGameOver(){
+    showGameOver(){
         this.showGenericMenu(this.gameOverEl);
         this.BG_MUSIC.pause();
-        this.scoreSpanEl.innerHTML = `Your Score: ${GameManager.score}`;
+        this.scoreSpanEl.innerHTML = `Your Score: ${gameManager.score}`;
     }
 
-    static showGame(){
+    showGame(){
         this.hideEverything();
         this.canvasEl.style = "display: block;";
         this.inAMenu = false;
     }
 
-    static hideEverything(){
+    hideEverything(){
         this.pauseMenuEl.style = "display: none";
         this.canvasEl.style = "display: none;";
         this.mainMenuEl.style = "display: none;";

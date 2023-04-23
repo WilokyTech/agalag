@@ -1,10 +1,21 @@
 import { Transform } from "./components/transform.js";
+import { EventEmitter } from "./eventEmitter.js";
+import { GameManager } from "./gameManager.js";
 
-export class Entity {
+export class Entity extends EventEmitter {
   static #nextId = 0;
   
-  constructor() {
+  /**
+   * Base class for game entities/objects. An entity is a collection of components that define its behavior and appearance.
+   * Entities can also emit events that can be listened to by other entities or the game manager.
+   * 
+   * @param {GameManager} gameManager 
+   */
+  constructor(gameManager) {
+    super();
+
     this.id = Entity.#nextId++;
+    this.gameManager = gameManager;
     
     // All possible game component will be exposed as properties on the entity since there's only a small number of them
     // If the component is not present on the entity, it will be null.
@@ -25,17 +36,37 @@ export class Entity {
   }
   
   /**
+   * Called when the entity is added to the game world. If overriding, be sure to call super.initialize() at the end.
+   */
+  initialize() {
+    this.emit('created');
+  }
+  
+  /**
+   * Processes input for the entity. This is called before update. If overriding, be sure to call super.processInput(elapsedTime).
+   * 
+   * @param {number} elapsedTime
+   */
+  processInput(elapsedTime) {
+    // Default no-op
+  }
+  
+  /**
    * Updates the entity and their component.
    * When overriding, be sure to call super.update(elapsedTime) to ensure the entity's components are updated.
    * 
    * @param {number} elapsedTime 
    */
   update(elapsedTime) {
-    // Update the entity's components
+    // Update the entity's components, namely velocity and transform if they exist
   }
   
   /**
-   * Renders the entity
+   * Renders the entity.
+   * 
+   * Default implementation renders the texture defined by the entity's texture property. If the texture is null, it will
+   * render a debug representation of the entity. Override this method to provide custom rendering. It is not necessary to
+   * call super.render(ctx, elapsedTime) when overriding this method unless you want to render the entity's texture.
    * 
    * @param {CanvasRenderingContext2D} ctx
    * @param {number} elapsedTime 
@@ -43,6 +74,16 @@ export class Entity {
   render(ctx, elapsedTime) {
     if (this.texture) {
       // Draw the entity's texture 
+    } else if (false) {
+      // Draw a debug representation of the entity 
     }
+  }
+  
+  /**
+   * Disposes of the entity and their components. This is called when the entity is removed from the game world.
+   * When overriding, be sure to call super.dispose() at the end.
+   */
+  dispose() {
+    this.emit('destroyed');
   }
 }
