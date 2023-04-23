@@ -35,7 +35,7 @@ export class Entity extends EventEmitter {
   }
   
   /**
-   * Processes input for the entity. This is called before update. If overriding, be sure to call super.processInput(elapsedTime).
+   * Processes input for the entity. This is called before update.
    * 
    * @param {number} elapsedTime
    */
