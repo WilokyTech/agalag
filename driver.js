@@ -3,17 +3,15 @@ import { GameManager } from "./gameManager.js";
 import { InputManager } from "./InputManager.js";
 import { ParticleSystem } from "./particleSystem.js";
 import { Renderer } from "./renderer.js";
-import { UIManager } from "./UIManager.js";
 
 function main() {
     let prevTime = performance.now();
     let elapsedTime;
     let timeRan = 0;
 
-    let gameManager = new GameManager();
-    let uiManager = new UIManager(gameManager);
-    let inputManager = new InputManager(gameManager, uiManager);
-    let renderer = new Renderer(gameManager);
+    let gameManager = GameManager.getInstance();
+    let inputManager = InputManager.getInstance();
+    let renderer = Renderer.getInstance();
     
     /** @type {FrameRequestCallback} */
     function gameLoop(timeStamp){

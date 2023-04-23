@@ -1,9 +1,16 @@
-import { GameManager } from "./gameManager.js";
 import { InputManager } from "./InputManager.js";
+import { GameManager } from "./gameManager.js";
 
 export class UIManager{
-    constructor(gameManager) {
-        this.gameManager = gameManager;
+    static #isInternalConstructing = false;
+    static #instance = null;
+
+    constructor(){
+        if (!UIManager.#isInternalConstructing) {
+            throw new TypeError("UIManager is a singleton. Use UIManager.getInstance() instead.");
+        }
+        UIManager.#isInternalConstructing = false;
+
         this.canvasEl = document.getElementById("canvas");
         this.mainMenuEl = document.getElementById("main-menu");
         this.newGameEl = document.getElementById("new-game");
@@ -37,7 +44,7 @@ export class UIManager{
             this.showGame();
             //commenting out for now as it gets old during development
             // this.BG_MUSIC.play();
-            this.gameManager.setDefaultState();
+            GameManager.getInstance().setDefaultState();
         }
 
         this.resumeEl.onclick = () => {
@@ -89,18 +96,20 @@ export class UIManager{
             this.showHighScores();
         }
         
-        this.gameManager.on('gameOver', this.showGameOver.bind(this));
+        GameManager.getInstance().on('gameOver', this.showGameOver.bind(this));
 
         this.setDefaultState();
     }
-    
-    set inAMenu(value) {
-        this.gameManager.paused = value;
-        this._inAMenu = value;
+
+    /** @returns {UIManager} */
+    static getInstance() {
+        if (UIManager.#instance == null) {
+            UIManager.#isInternalConstructing = true;
+            UIManager.#instance = new UIManager();
+        }
+        return UIManager.#instance;
     }
     
-    get inAMenu() { return this._inAMenu; }
- 
     setDefaultState(){
         this.showGenericMenu(this.mainMenuEl);
         this.BG_MUSIC.pause();
@@ -240,7 +249,7 @@ export class UIManager{
     showGameOver(){
         this.showGenericMenu(this.gameOverEl);
         this.BG_MUSIC.pause();
-        this.scoreSpanEl.innerHTML = `Your Score: ${gameManager.score}`;
+        this.scoreSpanEl.innerHTML = `Your Score: ${GameManager.getInstance().score}`;
     }
 
     showGame(){

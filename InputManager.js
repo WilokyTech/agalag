@@ -1,5 +1,5 @@
+import { EntityManager } from "./entityManager.js";
 import { EventEmitter } from "./eventEmitter.js";
-import { GameManager } from "./gameManager.js";
 import { UIManager } from "./UIManager.js";
 
 /**
@@ -15,6 +15,9 @@ import { UIManager } from "./UIManager.js";
  * @extends EventEmitter
  */
 export class InputManager extends EventEmitter {
+    static #isInternalConstructing = false;
+    static #instance = null;
+
     static controls = {
         left: "ArrowLeft", 
         right: "ArrowRight", 
@@ -29,19 +32,26 @@ export class InputManager extends EventEmitter {
      */
     static updateControls(control, e){
         this.controls[control] = e.key;
+        this.inputPaused = false;
     }
     
-    constructor(gameManager, uiManager) {
-        super();
-        this.gameManager = gameManager;
-        this.gameManager.inputManager = this;
-        this.uiManager = uiManager;
+    constructor() {
+        if (!InputManager.#isInternalConstructing) {
+            throw new TypeError("InputManager is a singleton. Use InputManager.getInstance() instead.");
+        }
+        InputManager.#isInternalConstructing = false;
 
+        super();
+        
         this.pressedKeys = new Set();
         this.activeControls = new Set();
         
+        /** @type {EntityManager} */
+        this.entitiesToSendInput = null;
+        
         window.addEventListener("keydown", e => {
             if (InputManager.controls.pause === e.key) {
+                const uiManager = UIManager.getInstance();
                 if (!uiManager.inAMenu) {
                     uiManager.showGenericMenu(uiManager.pauseMenuEl);
                 }
@@ -57,6 +67,17 @@ export class InputManager extends EventEmitter {
         window.addEventListener("keyup", e => {
             this.removeKeyInput(e);
         });
+    }
+
+    /**
+     * @returns {InputManager}
+     */
+    static getInstance() {
+        if (InputManager.#instance === null) {
+            InputManager.#isInternalConstructing = true;
+            InputManager.#instance = new InputManager();
+        }
+        return InputManager.#instance;
     }
     
     isControlDown(controlName) {
@@ -80,7 +101,7 @@ export class InputManager extends EventEmitter {
     }
 
     processInputs(elapsedTime){
-        if (this.gameManager.countDownTimer < 3000 || this.uiManager.inAMenu) {
+        if (this.inputPaused || UIManager.getInstance().inAMenu) {
             return
         }
 
@@ -106,7 +127,9 @@ export class InputManager extends EventEmitter {
 
         this.activeControls = currentControls;
         
-        this.gameManager.entities.processInputs(elapsedTime);
+        if (this.entitiesToSendInput !== null) {
+            this.entitiesToSendInput.processInputs(elapsedTime);
+        }
     }
 }
 

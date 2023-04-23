@@ -5,17 +5,9 @@ import { GameManager } from "./gameManager.js";
 export class Entity extends EventEmitter {
   static #nextId = 0;
   
-  /**
-   * Base class for game entities/objects. An entity is a collection of components that define its behavior and appearance.
-   * Entities can also emit events that can be listened to by other entities or the game manager.
-   * 
-   * @param {GameManager} gameManager 
-   */
-  constructor(gameManager) {
+  constructor() {
     super();
-
     this.id = Entity.#nextId++;
-    this.gameManager = gameManager;
     
     // All possible game component will be exposed as properties on the entity since there's only a small number of them
     // If the component is not present on the entity, it will be null.

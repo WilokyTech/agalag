@@ -6,22 +6,38 @@ import { ParticleSystem } from "./particleSystem.js";
 import { UIManager } from "./UIManager.js";
 
 export class Renderer {
+    static #isInternalConstructing = false;
+    static #instance = null;
+
     static {
         this.SONG_BPM = 142;
         this.SONG_BPS = 60 / this.SONG_BPM;
     }
 
-    constructor(gameManager) {
+    constructor(){
+        if (!Renderer.#isInternalConstructing) {
+            throw new TypeError("Renderer is a singleton. Use Renderer.getInstance() instead.");
+        }
+        Renderer.#isInternalConstructing = false;
+
         /** @type {HTMLCanvasElement} */
-        this.canvas = gameManager.canvas;
+        this.canvas = GameManager.canvas;
         /** @type {CanvasRenderingContext2D} */
         this.ctx = this.canvas.getContext("2d");
-        /** @type {GameManager} */
-        this.gameManager = gameManager;
+        this.gameManager = GameManager.getInstance();
+    }
+    
+    /** @returns {Renderer} */
+    static getInstance() {
+        if (Renderer.#instance === null) {
+            Renderer.#isInternalConstructing = true;
+            Renderer.#instance = new Renderer();
+        }
+        return Renderer.#instance;
     }
     
     drawGame(timeElapsed){
-        if(Assets.bgImg && !UIManager.inAMenu){
+        if(Assets.bgImg && !UIManager.getInstance().inAMenu){
             this.clear();
     
             this.ctx.drawImage(Assets.bgImg, 0, 0, this.canvas.width, this.canvas.height);

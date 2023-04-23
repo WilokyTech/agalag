@@ -1,7 +1,5 @@
-import { Entity } from "./entity.js";
 import { EntityManager } from "./entityManager.js";
 import { Ship } from "./entities/ship.js";
-import { UIManager } from "./UIManager.js";
 import { ParticleSystem } from "./particleSystem.js";
 import { Vector2 } from "./vector.js";
 import { EventEmitter } from "./eventEmitter.js";
@@ -13,17 +11,34 @@ import { InputManager } from "./InputManager.js";
  * this object.
  */
 export class GameManager extends EventEmitter {
-    entities = new EntityManager();
-
-    /** This is injected by the input manager
-     * @type {InputManager} */
-    inputManager = null;
-    canvas = document.getElementById("canvas");
-    paused = false;
+    static #isInternalConstructing = false;
+    static #instance = null;
+    
+    static canvas = document.getElementById("canvas");
 
     constructor() {
+        if (!GameManager.#isInternalConstructing) {
+            throw new TypeError("GameManager is a singleton. Use GameManager.getInstance() instead.");
+        }
+        GameManager.#isInternalConstructing = false;
+
         super();
+
+        this.entities = new EntityManager();
+        InputManager.getInstance().entitiesToSendInput = this.entities;
+        this.paused = false;
         this.setDefaultState();
+    }
+    
+    /**
+     * @returns {GameManager}
+     */
+    static getInstance() {
+        if (GameManager.#instance === null) {
+            GameManager.#isInternalConstructing = true;
+            GameManager.#instance = new GameManager();
+        }
+        return GameManager.#instance;
     }
 
     setDefaultState(){
@@ -33,12 +48,14 @@ export class GameManager extends EventEmitter {
         this.livesLeft = 3;
         this.score = 0;
         this.countDownTimer = 0;
+
+        InputManager.getInstance().inputPaused = true;
     }
 
     createShip(){
         const shipWidth = 64
         const shipHeight = 64
-        const ship = new Ship(this, shipWidth, shipHeight, new Vector2((this.canvas.width/2) - (shipWidth/2), this.canvas.height - 64));
+        const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
         ship.on('destroyed', this.lostLife.bind(this));
         return ship;
     }
@@ -49,6 +66,7 @@ export class GameManager extends EventEmitter {
                 this.countDownTimer += elapsedTime;
             }
             else{
+                InputManager.getInstance().inputPaused = false;
                 // Execute the game
                 let collisions = this.detectCollisions();
                 this.entities.update(elapsedTime);
