@@ -241,7 +241,7 @@ export class UIManager{
         this.remapMoveRightButtonEl.innerHTML = "Move Right: \"ArrowRight\""
         this.remapFireButtonEl.innerHTML = "Fire: \" \""
         this.remapPauseButtonEl.innerHTML = "Pause/Back: \"Escape\""
-        InputManager.getInstance().controls = {
+        InputManager.controls = {
             left: 'ArrowLeft',
             right: 'ArrowRight',
             fire: ' ',
