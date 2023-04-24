@@ -2,6 +2,7 @@ import { Entity } from "../entity.js";
 import { GameManager } from "../gameManager.js";
 import { InputManager } from "../InputManager.js";
 import { Projectile } from "./projectile.js";
+import { CollisionBox } from "../components/collision.js";
 
 /** Movement speed given as a percentage of the total width per millisecond */
 const PLAYER_MOVEMENT_SPEED = 0.001;
@@ -12,6 +13,7 @@ export class Ship extends Entity {
         this.width = width;
         this.height = height;
         this.transform.position = position;
+        this.collisionBox = new CollisionBox(this, width, height, width, height, true);
         
         this.gameManager = GameManager.getInstance();
         this.inputManager = InputManager.getInstance();
@@ -32,7 +34,7 @@ export class Ship extends Entity {
                 this.transform.position.x += movementAmount;
             }
         }
-        else if (this.inputManager.isControlDown("left")) {
+        if (this.inputManager.isControlDown("left")) {
             if (this.transform.position.x > 0){
                 this.transform.position.x -= movementAmount;
             }
@@ -40,8 +42,9 @@ export class Ship extends Entity {
     }
     
     fireProjectile() {
-        const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true)
-        this.gameManager.entities.addInitial(projectile); 
+        const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true);
+        projectile.collisionBox = new CollisionBox(projectile, this.width/2, this.height/2, 10, 10, true);
+        this.gameManager.entities.add(projectile); 
     }
     
     /** @type {Entity['render']} */

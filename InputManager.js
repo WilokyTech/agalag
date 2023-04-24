@@ -64,7 +64,9 @@ export class InputManager extends EventEmitter {
         this.entitiesToSendInput = null;
         
         window.addEventListener("keydown", e => {
-            e.preventDefault();
+            if (!(/F\d+/.test(e.key))) {
+                e.preventDefault();
+            }
             if (InputManager.controls.pause === e.key) {
                 const uiManager = UIManager.getInstance();
                 if (!uiManager.inAMenu) {
@@ -80,7 +82,9 @@ export class InputManager extends EventEmitter {
         });
 
         window.addEventListener("keyup", e => {
-            e.preventDefault();
+            if (!(/F\d+/.test(e.key))) {
+                e.preventDefault();
+            }
             this.removeKeyInput(e);
         });
     }
