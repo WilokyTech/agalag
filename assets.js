@@ -1,10 +1,6 @@
 export class Assets {
     static {
         /** @type {Image} */
-        this.nyanCatImg = null;
-        /** @type {Image} */
-        this.nyanCatLeftImg = null;
-        /** @type {Image} */
         this.bgImg = null;
         this.loadAssets();
     }
@@ -21,8 +17,8 @@ export class Assets {
     }
 
     static async loadAssets(){
-        await this.#fetchAsset('nyanCatImg', './images/nyanCat.png');
-        await this.#fetchAsset('nyanCatLeftImg','./images/nyanCatLeft.png');
+        // await this.#fetchAsset('nyanCatImg', './images/nyanCat.png');
+        // await this.#fetchAsset('nyanCatLeftImg','./images/nyanCatLeft.png');
         //TODO: replace bg image with animated system
         await this.#fetchAsset('bgImg', './images/bg.jpg');
     }
