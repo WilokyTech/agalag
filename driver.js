@@ -4,30 +4,36 @@ import { InputManager } from "./InputManager.js";
 import { ParticleSystem } from "./particleSystem.js";
 import { Renderer } from "./renderer.js";
 
-let prevTime = performance.now();
-let elapsedTime;
-let timeRan = 0;
+function main() {
+    let prevTime = performance.now();
+    let elapsedTime;
+    let timeRan = 0;
 
-requestAnimationFrame(gameLoop);
-
-function gameLoop(timeStamp){
-    elapsedTime = timeStamp - prevTime;
-    prevTime = timeStamp;
-    update(elapsedTime);
-    render();
-    requestAnimationFrame(gameLoop);
+    let gameManager = GameManager.getInstance();
+    let inputManager = InputManager.getInstance();
+    let renderer = Renderer.getInstance();
     
-}
+    /** @type {FrameRequestCallback} */
+    function gameLoop(timeStamp){
+        elapsedTime = timeStamp - prevTime;
+        prevTime = timeStamp;
+        update(elapsedTime);
+        render();
+        requestAnimationFrame(gameLoop);
+    }
 
-function render(){
-    Renderer.drawGame(elapsedTime);
-}
+    function render(){
+        renderer.drawGame(elapsedTime);
+    }
 
-function update(elapsedTime){
-    InputManager.processInputs(elapsedTime);
-    GameManager.tick(elapsedTime);
-    ParticleSystem.tick(elapsedTime);
-    timeRan += elapsedTime;
+    function update(elapsedTime){
+        inputManager.processInputs(elapsedTime);
+        gameManager.tick(elapsedTime);
+        ParticleSystem.tick(elapsedTime);
+        timeRan += elapsedTime;
+    }
+    
+    requestAnimationFrame(gameLoop);
 }
 
 // Adjust canvas display size to be a whole integer multiple when upscaling.
@@ -52,3 +58,4 @@ function scaleCanvas() {
 }
 document.addEventListener("DOMContentLoaded", scaleCanvas);
 window.addEventListener("resize", scaleCanvas);
+document.addEventListener("DOMContentLoaded", main);
