@@ -30,11 +30,17 @@ export class Ship extends Entity {
         if(this.inputManager.isControlDown("right")){
             if (this.transform.position.x < GameManager.canvas.width - this.width){
                 this.transform.position.x += movementAmount;
+                if (this.transform.position.x > GameManager.canvas.width - this.width){
+                    this.transform.position.x = GameManager.canvas.width - this.width;
+                }
             }
         }
         else if (this.inputManager.isControlDown("left")) {
             if (this.transform.position.x > 0){
                 this.transform.position.x -= movementAmount;
+                if (this.transform.position.x < 0){
+                    this.transform.position.x = 0;
+                }
             }
         }
     }
