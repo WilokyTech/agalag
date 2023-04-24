@@ -4,12 +4,12 @@ import { lerp } from './mathFuncs.js';
 import { Vector2 } from './vector.js';
 
 const enemyLayout = [
-  'oooxxxxooo',
-  'oxxxxxxxxo',
-  'oxxxxxxxxo',
+  '...xxxx...',
+  '.xxxxxxxx.',
+  '.xxxxxxxx.',
   'xxxxxxxxxx',
   'xxxxxxxxxx'
-]; // Describes the enemy formation layout where 'x' represents an enemy and 'o' represents an empty space
+]; // Describes the enemy formation layout where 'x' represents an enemy and '.' represents an empty space
 
 const enemyType = [
   // TODO: Fill this in later
@@ -66,6 +66,10 @@ export class EnemyManager {
       enemy.once('destroyed', deregisterEnemy);
       gameManager.entities.add(enemy);
     }
+  }
+  
+  transitionToCenter() {
+
   }
 
   /** @type {number} */
