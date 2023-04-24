@@ -4,6 +4,10 @@ import { Velocity } from "../components/velocity.js";
 import { Path } from "../components/path.js";
 import { Vector2 } from "../vector.js";
 
+/**
+ * Enemy speed is defined as the percentage of the total vertical height of the game area.
+ * It's defined as a percentage of the game height since I found that easier to time.
+ */
 const ENEMY_SPEED = 0.00033;
 
 export class Enemy extends Entity {
@@ -20,6 +24,7 @@ export class Enemy extends Entity {
      */
     this.formationPosition = formationPosition;
     this.path = path;
+    this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
   }
   
   /** @param {number} elapsedTime */
