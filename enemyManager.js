@@ -35,22 +35,40 @@ export class EnemyManager {
     this.enemies.length = 0;
     this.baseFormationPositions.clear();
     this.destFormationPositions.clear();
+    this.spreadFormationPositions.clear();
     this.elapsedMovementTime = 0;
     this.formationMovementTime = FORMATION_MOVEMENT_TIME; // How long it takes for the formation to move between two positions
     this.cyclesUntilFormationSwitch = Infinity;
 
     this.spawnEnemies();
-    setTimeout(() => this.startTransitionToCenterFormation(), 1000);
+    setTimeout(() => this.startTransitionToCenterFormation(), 8000);
   }
   
   spawnEnemies() {
     const positions = [];
+    const spreadPositions = [];
+    
+    const gameWidthInSprites = Math.floor(GameManager.canvas.width / ENEMY_SPRITE_SIZE);
+    const gapCount = enemyLayout[0].length - 1;
+    const openSpace = (gameWidthInSprites - enemyLayout[0].length) * ENEMY_SPRITE_SIZE;
+    const gapSize = Math.floor(openSpace / gapCount);
+    const spreadPositionsStartX = (openSpace - gapSize * gapCount) / 2;
+    
+    const startYPosition = ENEMY_SPRITE_SIZE;
+
     for (let y = 0; y < enemyLayout.length; y++) {
       for (let x = 0; x < enemyLayout[y].length; x++) {
         if (enemyLayout[y][x] === 'x') {
           const spriteX = x * ENEMY_SPRITE_SIZE;
-          const spriteY = y * ENEMY_SPRITE_SIZE + ENEMY_SPRITE_SIZE;
-          positions.push(new Vector2(spriteX, spriteY));
+          const spriteY = y * ENEMY_SPRITE_SIZE;
+          const spreadX = x * (ENEMY_SPRITE_SIZE + gapSize)
+          const spreadY = y * (ENEMY_SPRITE_SIZE + gapSize);
+
+          positions.push(new Vector2(spriteX, spriteY + startYPosition));
+          spreadPositions.push(new Vector2(
+            spreadPositionsStartX + spreadX,
+            startYPosition + spreadY
+          ));
         }
       }
     }
@@ -71,6 +89,7 @@ export class EnemyManager {
       this.enemies.push(enemy.id);
       this.baseFormationPositions.set(enemy.id, positions[i]);
       this.destFormationPositions.set(enemy.id, positions[i].add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)));
+      this.spreadFormationPositions.set(enemy.id, spreadPositions[i]);
       enemy.once('destroyed', deregisterEnemy);
       gameManager.entities.add(enemy);
     }
@@ -91,6 +110,8 @@ export class EnemyManager {
     }
     
     this.destFormationPositions = this.spreadFormationPositions;
+    this.elapsedMovementTime = 0;
+    this.formationMovementTime = FORMATION_MOVEMENT_TIME;
   }
   
   startTransitionToCenterFormation() {
