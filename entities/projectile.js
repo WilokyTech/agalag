@@ -8,17 +8,15 @@ import { Vector2 } from "../vector.js";
 /** Movement speed given as a percentage of the total height per millisecond */
 const PLAYER_PROJECTILE_SPEED = 0.0015;
 
-const PLACEHOLDER_SIZE = 10; // Use this until we get the actual size
-
 export class Projectile extends Entity {
   constructor(posx, posy, velx, vely, isFriendly) {
     super();
-    this.transform.position.x = posx - PLACEHOLDER_SIZE / 2;
-    this.transform.position.y = posy - PLACEHOLDER_SIZE / 2;
+    this.transform.position.x = posx - 8;
+    this.transform.position.y = posy - 8;
     // TODO: If projectile speed of enemies is different, extract this to a parameter
     this.velocity = new Velocity(PLAYER_PROJECTILE_SPEED * GameManager.canvas.height, new Vector2(velx, vely));
     /** @type {CollisionBox} */
-    this.collisionBox = new CollisionBox(this, 10, 10, 10, 10, true);
+    this.collisionBox = new CollisionBox(this, 16, 16, 16, 16, true);
 
     this.isFriendly = isFriendly;
     
