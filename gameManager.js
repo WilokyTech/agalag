@@ -53,7 +53,7 @@ export class GameManager extends EventEmitter {
         //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
         this.livesLeft = 3;
         this.score = 0;
-        this.countDownTimer = 0;
+        this.countDownTimer = 5000;
 
         InputManager.getInstance().inputPaused = true;
     }

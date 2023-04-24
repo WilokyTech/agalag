@@ -4,6 +4,9 @@ import { Vector2 } from "../vector.js";
 import { Transform } from "./transform.js";
 
 export class Path extends EventEmitter {
+  #currentPoint = 0;
+  #points
+  
   /**
    * @param {Entity} entity
    * @param {Array<Vector2>} [points]
@@ -12,28 +15,27 @@ export class Path extends EventEmitter {
     super();
 
     /** @type {Vector2} */
-    this.points = points;
-    this.currentPoint = 0;
+    this.#points = points;
     /** @type {Transform} */
     this.entityLocation = entity.transform;
   }
   
   advance() {
-    this.currentPoint++;
-    if (this.currentPoint === this.points.length) {
+    this.#currentPoint++;
+    if (this.#currentPoint === this.#points.length) {
       this.emit('pathEnd');
     }
   }
   
   getNextPoint() {
-    if (this.currentPoint >= this.points.length) {
+    if (this.#currentPoint >= this.#points.length) {
       return null;
     }
-    return this.points[this.currentPoint];
+    return this.#points[this.#currentPoint];
   }
   
   /** @param {Vector2} point */
   addPoint(point) {
-    this.points.push(point);
+    this.#points.push(point);
   }
 }
