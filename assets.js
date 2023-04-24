@@ -50,7 +50,7 @@ export class Assets {
             heartPink: new ImageAsset(null, "./images/particles/heartPink.png"),
             heartRed: new ImageAsset(null, "./images/particles/heartRed.png"),
             sparkleLightYellow: new ImageAsset(null, "./images/particles/sparkleLightYellow.png"),
-            sparkleYellow: new ImageAsset(null, "./images/particles/sparkeYellow.png"),
+            sparkleYellow: new ImageAsset(null, "./images/particles/sparkleYellow.png"),
             bgImg: new ImageAsset(null, "./images/bg.jpg")
         }
         this.loadAssets();

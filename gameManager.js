@@ -53,6 +53,7 @@ export class GameManager extends EventEmitter {
         this.countDownTimer = 0;
 
         InputManager.getInstance().inputPaused = true;
+        ParticleSystem.playerDeath();
     }
 
     createShip(){
