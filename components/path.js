@@ -4,12 +4,15 @@ import { Vector2 } from "../vector.js";
 import { Transform } from "./transform.js";
 
 export class Path extends EventEmitter {
-  /** @param {Entity} entity */
-  constructor(entity) {
+  /**
+   * @param {Entity} entity
+   * @param {Array<Vector2>} [points]
+   */
+  constructor(entity, points = []) {
     super();
 
     /** @type {Vector2} */
-    this.points = [];
+    this.points = points;
     this.currentPoint = 0;
     /** @type {Transform} */
     this.entityLocation = entity.transform;
