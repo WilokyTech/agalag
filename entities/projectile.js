@@ -12,7 +12,7 @@ export class Projectile extends Entity {
     this.transform.position.x = posx;
     this.transform.position.y = posy;
     // TODO: If projectile speed of enemies is different, extract this to a parameter
-    this.velocity = new Velocity(new Vector2(velx, vely), PLAYER_PROJECTILE_SPEED * GameManager.canvas.height);
+    this.velocity = new Velocity(PLAYER_PROJECTILE_SPEED * GameManager.canvas.height, new Vector2(velx, vely));
 
     this.isFriendly = isFriendly;
     

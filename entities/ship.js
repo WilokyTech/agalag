@@ -32,17 +32,24 @@ export class Ship extends Entity {
         if(this.inputManager.isControlDown("right")){
             if (this.transform.position.x < GameManager.canvas.width - this.width){
                 this.transform.position.x += movementAmount;
+                if (this.transform.position.x > GameManager.canvas.width - this.width){
+                    this.transform.position.x = GameManager.canvas.width - this.width;
+                }
             }
         }
         if (this.inputManager.isControlDown("left")) {
             if (this.transform.position.x > 0){
                 this.transform.position.x -= movementAmount;
+                if (this.transform.position.x < 0){
+                    this.transform.position.x = 0;
+                }
             }
         }
     }
     
     fireProjectile() {
-        const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true);
+
+        const projectile = new Projectile(this.transform.position.x, this.transform.position.y - this.height, 0, -1, true);
         projectile.collisionBox = new CollisionBox(projectile, this.width/2, this.height/2, 10, 10, true);
         this.gameManager.entities.add(projectile); 
     }

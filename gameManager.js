@@ -5,6 +5,7 @@ import { Vector2 } from "./vector.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
 import { CollisionBox, Collision } from "./components/collision.js";
+import { EnemyManager } from "./enemyManager.js";
 //import { Projectile } from "./entities/projectile.js";
 
 /**
@@ -30,7 +31,8 @@ export class GameManager extends EventEmitter {
         this.entities = new EntityManager();
         InputManager.getInstance().entitiesToSendInput = this.entities;
         this.paused = false;
-        //this.setDefaultState();
+        /** @type {EnemyManager} */
+        this.enemyManager = new EnemyManager();
     }
     
     /**
@@ -48,10 +50,11 @@ export class GameManager extends EventEmitter {
         this.entities.clear();
 
         this.entities.addInitial(this.createShip());
+        this.enemyManager.initialize();
         //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
         this.livesLeft = 3;
         this.score = 0;
-        this.countDownTimer = 0;
+        this.countDownTimer = 5000;
 
         InputManager.getInstance().inputPaused = true;
     }
@@ -74,6 +77,7 @@ export class GameManager extends EventEmitter {
                 InputManager.getInstance().inputPaused = false;
                 // Execute the game
                 let collisions = this.detectCollisions();
+                this.enemyManager.update(elapsedTime);
                 this.entities.update(elapsedTime);
             }
         }
