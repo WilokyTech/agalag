@@ -40,7 +40,7 @@ export class Ship extends Entity {
     }
     
     fireProjectile() {
-        const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true)
+        const projectile = new Projectile(this.transform.position.x, this.transform.position.y - this.height, 0, -1, true)
         this.gameManager.entities.addInitial(projectile); 
     }
     

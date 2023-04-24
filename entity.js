@@ -1,6 +1,7 @@
+import { EventEmitter } from "./eventEmitter.js";
+import { Path } from "./components/path.js";
 import { Transform } from "./components/transform.js";
 import { Velocity } from "./components/velocity.js";
-import { EventEmitter } from "./eventEmitter.js";
 
 export class Entity extends EventEmitter {
   static #nextId = 0;
@@ -14,6 +15,7 @@ export class Entity extends EventEmitter {
     this.transform = new Transform(this); // Position and orientation - Borrowing from Unity terminology
     this.collision = null;
     this.health = null;
+    /** @type {Path} */
     this.path = null;
     this.formation = null;
     /** @type {Velocity} */
@@ -72,7 +74,7 @@ export class Entity extends EventEmitter {
     } else {
       // Draw a debug representation of the entity 
       ctx.fillStyle = 'magenta';
-      ctx.fillRect(this.transform.position.x, this.transform.position.y, 32, 32);
+      ctx.fillRect(this.transform.position.x, this.transform.position.y, 64, 64);
     }
   }
   

@@ -14,8 +14,27 @@ export class Transform {
   
   /** @param {number} elapsedTime */
   update(elapsedTime) {
-    if (this.entity.velocity) {
-      this.position = this.position.add(this.entity.velocity.direction.multiply(this.entity.velocity.speed * elapsedTime));
+    let distanceMoved = this.entity.velocity.speed * elapsedTime;
+
+    if (this.entity.path) {
+      const nextPoint = this.entity.path.getNextPoint();
+      if (nextPoint) {
+        const distanceToNextPoint = nextPoint.subtract(this.position).magnitude();
+        
+        if (distanceMoved > distanceToNextPoint) {
+          distanceMoved -= distanceToNextPoint;
+          this.position = nextPoint;
+          this.entity.path.advance();
+        }
+        
+        const direction = nextPoint.subtract(this.position).normalize();
+        const displacement = direction.multiply(distanceMoved);
+        this.position.add(displacement);
+        
+        // TODO: Handle orientation once we have sprites rendering
+      }
+    } else if (this.entity.velocity) {
+      this.position = this.position.add(this.entity.velocity.direction.multiply(distanceMoved));
     }
   }
 }
