@@ -4,6 +4,7 @@ import { ParticleSystem } from "./particleSystem.js";
 import { Vector2 } from "./vector.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
+import { CollisionBox, Collision } from "./components/collision.js";
 //import { Projectile } from "./entities/projectile.js";
 
 /**
@@ -83,10 +84,12 @@ export class GameManager extends EventEmitter {
         //I made collisions an object in the last project, containing things like type of collision, objects collided, etc to be examined in other funcs
         let entityEntries = Array.from(this.entities.entries());
         for (let i=0; i<entityEntries.length; i++) {
-            let entity1 = entityEntries[i][1];
+            let colBox1 = entityEntries[i][1].collisionBox;
             for (let j=i+1; j<entityEntries.length; j++) {
-                let entity2 = entityEntries[j][1];
-                
+                let colBox2 = entityEntries[j][1].collisionBox;
+                if (colBox1.detectCollision(colBox2)) {
+                    collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
+                }
             }
         }
         return collisions;
