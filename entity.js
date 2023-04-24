@@ -1,3 +1,4 @@
+import { CollisionBox } from "./components/collision.js";
 import { Transform } from "./components/transform.js";
 import { Velocity } from "./components/velocity.js";
 import { EventEmitter } from "./eventEmitter.js";
@@ -12,6 +13,7 @@ export class Entity extends EventEmitter {
     // All possible game component will be exposed as properties on the entity since there's only a small number of them
     // If the component is not present on the entity, it will be null.
     this.transform = new Transform(this); // Position and orientation - Borrowing from Unity terminology
+    /** @type {CollisionBox} */
     this.collisionBox = null;
     this.health = null;
     this.path = null;
@@ -72,7 +74,11 @@ export class Entity extends EventEmitter {
     } else {
       // Draw a debug representation of the entity 
       ctx.fillStyle = 'magenta';
-      ctx.fillRect(this.transform.position.x, this.transform.position.y, 32, 32);
+      if (!this.collisionBox) {
+        ctx.fillRect(this.transform.position.x, this.transform.position.y, 64, 64); // 64 is the typical sprite size
+      } else {
+        ctx.fillRect(this.collisionBox.left, this.collisionBox.top, this.collisionBox.width, this.collisionBox.height);
+      }
     }
   }
   
