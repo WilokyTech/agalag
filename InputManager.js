@@ -34,6 +34,18 @@ export class InputManager extends EventEmitter {
     static updateControls(control, e){
         this.controls[control] = e.key;
         this.inputPaused = false;
+        this.saveControls();
+    }
+
+    static fetchControls(){
+        let previousControls = localStorage.getItem("agalag.controls");
+        if (previousControls != null) {
+            InputManager.controls = JSON.parse(previousControls);
+        }
+    }
+
+    static saveControls(){
+        localStorage["agalag.controls"] = JSON.stringify(this.controls);
     }
     
     constructor() {
@@ -46,11 +58,16 @@ export class InputManager extends EventEmitter {
         
         this.pressedKeys = new Set();
         this.activeControls = new Set();
+
+        InputManager.fetchControls();
         
         /** @type {EntityManager} */
         this.entitiesToSendInput = null;
         
         window.addEventListener("keydown", e => {
+            if (!(/F\d+/.test(e.key))) {
+                e.preventDefault();
+            }
             if (InputManager.controls.pause === e.key) {
                 const uiManager = UIManager.getInstance();
                 if (!uiManager.inAMenu) {
@@ -67,6 +84,9 @@ export class InputManager extends EventEmitter {
         });
 
         window.addEventListener("keyup", e => {
+            if (!(/F\d+/.test(e.key))) {
+                e.preventDefault();
+            }
             this.removeKeyInput(e);
         });
     }

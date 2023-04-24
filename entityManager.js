@@ -56,6 +56,10 @@ export class EntityManager extends EventEmitter {
   get(id) {
     return this.#entities.get(id);
   }
+
+  entries() {
+    return this.#entities.entries();
+  }
   
   /**
    * @param {number} elapsedTime 

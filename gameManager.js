@@ -5,7 +5,7 @@ import { Vector2 } from "./vector.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
 import { EnemyManager } from "./enemyManager.js";
-//import { Projectile } from "./entities/projectile.js";
+import { Collision } from "./components/collision.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -60,7 +60,7 @@ export class GameManager extends EventEmitter {
         const shipWidth = 64
         const shipHeight = 64
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
-        // ParticleSystem.playerDeath(ship);
+        ParticleSystem.playerDeath(ship);
         ship.on('destroyed', this.lostLife.bind(this));
         return ship;
     }
@@ -82,6 +82,16 @@ export class GameManager extends EventEmitter {
     detectCollisions(){
         let collisions = [];
         //I made collisions an object in the last project, containing things like type of collision, objects collided, etc to be examined in other funcs
+        let entityEntries = Array.from(this.entities.entries());
+        for (let i=0; i<entityEntries.length; i++) {
+            let colBox1 = entityEntries[i][1].collisionBox;
+            for (let j=i+1; j<entityEntries.length; j++) {
+                let colBox2 = entityEntries[j][1].collisionBox;
+                if (colBox1.detectCollision(colBox2)) {
+                    collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
+                }
+            }
+        }
         return collisions;
     }
 
