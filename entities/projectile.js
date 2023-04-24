@@ -33,4 +33,11 @@ export class Projectile extends Entity {
       this.gameManager.entities.remove(this);
     }
   }
+
+  /** @type {Entity['onCollision']} */
+  onCollision(collisionType) {
+    if (collisionType !== null) {
+        this.gameManager.entities.remove(this);
+    }
+}
 }

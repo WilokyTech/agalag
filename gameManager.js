@@ -4,7 +4,7 @@ import { ParticleSystem } from "./particleSystem.js";
 import { Vector2 } from "./vector.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
-import { CollisionBox, Collision } from "./components/collision.js";
+import { Collision } from "./components/collision.js";
 import { EnemyManager } from "./enemyManager.js";
 //import { Projectile } from "./entities/projectile.js";
 
@@ -77,6 +77,10 @@ export class GameManager extends EventEmitter {
                 InputManager.getInstance().inputPaused = false;
                 // Execute the game
                 let collisions = this.detectCollisions();
+                for (let collision of collisions) {
+                    collision.entity1.onCollision(collision.collisionType);
+                    collision.entity2.onCollision(collision.collisionType);
+                }
                 this.enemyManager.update(elapsedTime);
                 this.entities.update(elapsedTime);
             }
@@ -91,6 +95,9 @@ export class GameManager extends EventEmitter {
             let colBox1 = entityEntries[i][1].collisionBox;
             for (let j=i+1; j<entityEntries.length; j++) {
                 let colBox2 = entityEntries[j][1].collisionBox;
+                if (colBox2 == null || colBox1 == null) {
+                    continue;
+                }
                 if (colBox1.detectCollision(colBox2)) {
                     collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
                 }

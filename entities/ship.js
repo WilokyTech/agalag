@@ -29,7 +29,7 @@ export class Ship extends Entity {
     processInput(elapsedTime) {
         const movementAmount = PLAYER_MOVEMENT_SPEED * GameManager.canvas.width * elapsedTime;
 
-        if(this.inputManager.isControlDown("right")){
+        if(this.inputManager.isControlDown("right")) {
             if (this.transform.position.x < GameManager.canvas.width - this.width){
                 this.transform.position.x += movementAmount;
                 if (this.transform.position.x > GameManager.canvas.width - this.width){
@@ -38,12 +38,19 @@ export class Ship extends Entity {
             }
         }
         if (this.inputManager.isControlDown("left")) {
-            if (this.transform.position.x > 0){
+            if (this.transform.position.x > 0) {
                 this.transform.position.x -= movementAmount;
                 if (this.transform.position.x < 0){
                     this.transform.position.x = 0;
                 }
             }
+        }
+    }
+
+    /** @type {Entity['onCollision']} */
+    onCollision(collisionType) {
+        if (collisionType === "playerDeath") {
+            this.gameManager.entities.remove(this);
         }
     }
     

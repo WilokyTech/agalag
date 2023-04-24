@@ -2,9 +2,10 @@ import { Enemy } from './entities/enemy.js';
 import { GameManager } from './gameManager.js';
 import { lerp } from './mathFuncs.js';
 import { Vector2 } from './vector.js';
+import { CollisionBox } from './components.collision.js';
 
 const enemyLayout = [
-  '...xxxx...',
+  '...xxxx...', 
   '.xxxxxxxx.',
   '.xxxxxxxx.',
   'xxxxxxxxxx',
@@ -65,6 +66,7 @@ export class EnemyManager {
       this.destFormationPositions.set(enemy.id, positions[i].add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)));
       enemy.once('destroyed', deregisterEnemy);
       gameManager.entities.add(enemy);
+      enemy.collisionBox = new CollisionBox(enemy, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
     }
   }
   

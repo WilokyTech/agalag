@@ -1,3 +1,5 @@
+import { Projectile } from "../entities/projectile.js";
+import { Ship } from "../entities/ship.js";
 import { Vector2 } from "../vector.js";
 
 export class CollisionBox {
@@ -46,5 +48,30 @@ export class Collision {
     constructor(entity1, entity2) {
         this.entity1 = entity1;
         this.entity2 = entity2;
+        if (this.entity1 instanceof Ship) {
+            if (this.entity2 instanceof Enemy || this.entity2 instanceof Projectile) {
+                this.collisionType = "playerDeath";
+            } else {
+                this.collisionType = null;
+            }
+        } else if (this.entity1 instanceof Enemy) {
+            if (this.entity2 instanceof Ship) {
+                this.collisionType = "playerDeath";
+            } else if (this.entity2 instanceof Projectile) {
+                this.collisionType = "enemyDeath";
+            } else {
+                this.collisionType = null;
+            }
+        } else if (this.entity1 instanceof Projectile) {
+            if (this.entity2 instanceof Ship) {
+                this.collisionType = "playerDeath";
+            } else if (this.entity2 instanceof Enemy) {
+                this.collisionType = "enemyDeath";
+            } else {
+                this.collisionType = null;
+            }
+        } else {
+            this.collisionType = null;
+        }
     }
 }

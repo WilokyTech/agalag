@@ -31,4 +31,11 @@ export class Enemy extends Entity {
       this.transform.position = this.formationPosition;
     }
   }
+
+  /** @type {Entity['onCollision']} */
+  onCollision(collisionType) {
+    if (collisionType === "enemyDeath") {
+        this.gameManager.entities.remove(this);
+    }
+}
 }
