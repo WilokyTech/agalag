@@ -111,7 +111,7 @@ export class ParticleSystem{
     }
 
     static setScaleMultiplier(){
-        this.scaleMultiplier = GameManager.canvas.width;
+        this.scaleMultiplier = 64;
     }
 
     /**
