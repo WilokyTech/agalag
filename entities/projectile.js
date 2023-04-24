@@ -1,13 +1,9 @@
-<<<<<<< HEAD
 import { Assets } from "../assets.js";
 import { Velocity } from "../components/velocity.js";
-=======
 import { CollisionBox } from "../components/collision.js";
->>>>>>> 67a2daa8f8d71abf62d8f29401ee29fbe2c1254a
 import { Entity } from "../entity.js";
 import { GameManager } from "../gameManager.js";
 import { Vector2 } from "../vector.js";
-import { Velocity } from "../components/velocity.js";
 
 /** Movement speed given as a percentage of the total height per millisecond */
 const PLAYER_PROJECTILE_SPEED = 0.0015;
