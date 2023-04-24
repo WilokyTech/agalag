@@ -59,7 +59,7 @@ export class GameManager extends EventEmitter {
         const shipWidth = 64
         const shipHeight = 64
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
-        // ParticleSystem.playerDeath(ship);
+        ParticleSystem.playerDeath(ship);
         ship.on('destroyed', this.lostLife.bind(this));
         return ship;
     }

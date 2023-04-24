@@ -43,8 +43,8 @@ export class Renderer {
     
             this.updateTimeRenderChanges(timeElapsed);
             this.drawLives();
-            this.drawParticles();
             this.gameManager.entities.render(this.ctx, timeElapsed);
+            this.drawParticles();
             this.drawScore();
             this.drawTimer();
         }
@@ -97,11 +97,13 @@ export class Renderer {
 
     drawParticles(){
         for(let i = 0; i < ParticleSystem.texturedParticles.length; i++){
+            console.log(`${i} Position x:${ParticleSystem.texturedParticles[i].position.x} Position y:${ParticleSystem.texturedParticles[i].position.y}`);
             this.ctx.drawImage(
                 ParticleSystem.texturedParticles[i].texture,
                 ParticleSystem.texturedParticles[i].position.x,
                 ParticleSystem.texturedParticles[i].position.y,
-                50, 50);
+                ParticleSystem.texturedParticles[i].size, 
+                ParticleSystem.texturedParticles[i].size);
         }
     }
 }
