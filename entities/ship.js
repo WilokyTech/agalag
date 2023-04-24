@@ -32,7 +32,7 @@ export class Ship extends Entity {
                 this.transform.position.x += movementAmount;
             }
         }
-        else if (this.inputManager.isControlDown("left")) {
+        if (this.inputManager.isControlDown("left")) {
             if (this.transform.position.x > 0){
                 this.transform.position.x -= movementAmount;
             }
