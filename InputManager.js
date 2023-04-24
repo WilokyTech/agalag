@@ -58,7 +58,7 @@ export class InputManager extends EventEmitter {
         this.pressedKeys = new Set();
         this.activeControls = new Set();
 
-        this.fetchControls();
+        InputManager.fetchControls();
         
         /** @type {EntityManager} */
         this.entitiesToSendInput = null;
