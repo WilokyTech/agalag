@@ -54,8 +54,6 @@ export class GameManager extends EventEmitter {
         this.livesLeft = 3;
         this.score = 0;
         this.countDownTimer = 5000;
-
-        InputManager.getInstance().inputPaused = true;
     }
 
     createShip(){
@@ -73,7 +71,6 @@ export class GameManager extends EventEmitter {
                 this.countDownTimer += elapsedTime;
             }
             else{
-                InputManager.getInstance().inputPaused = false;
                 // Execute the game
                 let collisions = this.detectCollisions();
                 this.enemyManager.update(elapsedTime);
