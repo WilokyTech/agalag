@@ -33,14 +33,6 @@ export class EnemyManager {
   }
   
   initialize() {
-    GameManager.getInstance().entities.on('remove', (entityId) => {
-      const index = this.enemies.indexOf(entityId);
-      if (index !== -1) {
-        this.enemies.splice(index, 1);
-        this.baseFormationPositions.delete(entityId);
-        this.destFormationPositions.delete(entityId);
-      }
-    });
     this.spawnEnemies();
   }
   
@@ -56,12 +48,22 @@ export class EnemyManager {
       }
     }
     
+    const deregisterEnemy = (entityId) => {
+      const index = this.enemies.indexOf(entityId);
+      if (index !== -1) {
+        this.enemies.splice(index, 1);
+        this.baseFormationPositions.delete(entityId);
+        this.destFormationPositions.delete(entityId);
+      }
+    };
+    
     const gameManager = GameManager.getInstance();
     for (let i = 0; i < positions.length; i++) {
       const enemy = new Enemy(positions[i]);
       this.enemies.push(enemy.id);
       this.baseFormationPositions.set(enemy.id, positions[i]);
       this.destFormationPositions.set(enemy.id, positions[i].add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)));
+      enemy.once('destroyed', deregisterEnemy);
       gameManager.entities.add(enemy);
     }
   }

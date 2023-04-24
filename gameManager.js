@@ -49,7 +49,7 @@ export class GameManager extends EventEmitter {
         this.entities.clear();
 
         this.entities.addInitial(this.createShip());
-        this.enemyManager.spawnEnemies();
+        this.enemyManager.initialize();
         //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
         this.livesLeft = 3;
         this.score = 0;
