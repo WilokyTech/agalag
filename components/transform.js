@@ -14,6 +14,10 @@ export class Transform {
   
   /** @param {number} elapsedTime */
   update(elapsedTime) {
+    if (!this.entity.velocity) {
+      return;
+    }
+
     let distanceMoved = this.entity.velocity.speed * elapsedTime;
 
     if (this.entity.path) {
@@ -36,7 +40,7 @@ export class Transform {
           // TODO: Handle orientation once we have sprites rendering
         }
       }
-    } else if (this.entity.velocity) {
+    } else if (this.entity.velocity.direction) {
       this.position = this.position.add(this.entity.velocity.direction.multiply(distanceMoved));
     }
   }
