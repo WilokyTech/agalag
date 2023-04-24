@@ -43,8 +43,8 @@ export class Renderer {
     
             this.updateTimeRenderChanges(timeElapsed);
             this.drawLives();
-            this.drawParticles();
             this.gameManager.entities.render(this.ctx, timeElapsed);
+            this.drawParticles();
             this.drawScore();
             this.drawTimer();
         }
@@ -101,7 +101,9 @@ export class Renderer {
                 ParticleSystem.texturedParticles[i].texture,
                 ParticleSystem.texturedParticles[i].position.x,
                 ParticleSystem.texturedParticles[i].position.y,
-                50, 50);
+                ParticleSystem.texturedParticles[i].size, 
+                ParticleSystem.texturedParticles[i].size);
         }
     }
+
 }
