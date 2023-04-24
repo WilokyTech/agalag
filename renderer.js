@@ -43,8 +43,8 @@ export class Renderer {
     
             this.updateTimeRenderChanges(timeElapsed);
             this.drawLives();
-            this.drawParticles();
             this.gameManager.entities.render(this.ctx, timeElapsed);
+            this.drawParticles();
             this.drawScore();
             this.drawTimer();
         }
@@ -55,12 +55,7 @@ export class Renderer {
     }
 
     drawLives(){
-        let width = this.gameManager.ALL_BALLS_DIAMETER * this.canvas.width;
-        let height = this.gameManager.ALL_BALLS_DIAMETER * this.canvas.height;
-        let startX = this.gameManager.BRICK_MARGIN * 3 * this.canvas.width;
-        for(let i = 0; i < this.gameManager.livesLeft; i++){
-            this.ctx.drawImage(Assets.nyanCatImg, startX + this.gameManager.BRICK_MARGIN * this.canvas.width + (width * i), 0.9 * this.canvas.height, width, height);
-        }
+
     }
 
     updateTimeRenderChanges(timeElapsed){
@@ -81,26 +76,34 @@ export class Renderer {
     }
 
     drawText(t){
-        this.ctx.fillStyle = "rgb(20, 20, 20)";
-        this.ctx.font = ("100px sans-serif")
-        this.ctx.fillText(t, (this.canvas.width / 2) - 18, (this.canvas.height / 2));
+        // this.ctx.fillStyle = "rgb(20, 20, 20)";
+        // this.ctx.font = ("100px sans-serif")
+        // this.ctx.fillText(t, (this.canvas.width / 2) - 18, (this.canvas.height / 2));
 
-        this.ctx.fillStyle = "rgb(255, 255, 255)";
-        this.ctx.font = ("90px sans-serif")
-        this.ctx.fillText(t, (this.canvas.width / 2) - 22.5, (this.canvas.height / 2) - 10);
+        // this.ctx.fillStyle = "rgb(255, 255, 255)";
+        // this.ctx.font = ("90px sans-serif")
+        // this.ctx.fillText(t, (this.canvas.width / 2) - 22.5, (this.canvas.height / 2) - 10);
     }
 
     drawScore(){
-        this.ctx.fillStyle = "rgb(0, 0, 0)";
-        this.ctx.font = ("20px sans-serif");
-        this.ctx.fillText(`Score: ${this.gameManager.score}`, this.canvas.width * 0.835, this.canvas.height * 0.945);
+        // this.ctx.fillStyle = "rgb(0, 0, 0)";
+        // this.ctx.font = ("20px sans-serif");
+        // this.ctx.fillText(`Score: ${this.gameManager.score}`, this.canvas.width * 0.835, this.canvas.height * 0.945);
 
-        this.ctx.fillStyle = "rgb(255, 255, 255)";
-        this.ctx.font = ("20px sans-serif");
-        this.ctx.fillText(`Score: ${this.gameManager.score}`, this.canvas.width * 0.83, this.canvas.height * 0.94);
+        // this.ctx.fillStyle = "rgb(255, 255, 255)";
+        // this.ctx.font = ("20px sans-serif");
+        // this.ctx.fillText(`Score: ${this.gameManager.score}`, this.canvas.width * 0.83, this.canvas.height * 0.94);
     }
 
     drawParticles(){
-
+        for(let i = 0; i < ParticleSystem.texturedParticles.length; i++){
+            this.ctx.drawImage(
+                ParticleSystem.texturedParticles[i].texture,
+                ParticleSystem.texturedParticles[i].position.x,
+                ParticleSystem.texturedParticles[i].position.y,
+                ParticleSystem.texturedParticles[i].size, 
+                ParticleSystem.texturedParticles[i].size);
+        }
     }
+
 }

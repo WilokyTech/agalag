@@ -44,12 +44,13 @@ export class ImageAsset{
 export class Assets {
     static {
         /** @type {Image} */
+        this.assetsFinishedLoading = false;
         this.bgImg = null;
         this.images = {
             heartPink: new ImageAsset(null, "./images/particles/heartPink.png"),
             heartRed: new ImageAsset(null, "./images/particles/heartRed.png"),
             sparkleLightYellow: new ImageAsset(null, "./images/particles/sparkleLightYellow.png"),
-            sparkeYellow: new ImageAsset(null, "./images/particles/sparkeYellow.png"),
+            sparkleYellow: new ImageAsset(null, "./images/particles/sparkleYellow.png"),
             bgImg: new ImageAsset(null, "./images/bg.jpg")
         }
         this.loadAssets();
@@ -62,5 +63,6 @@ export class Assets {
         
         //TODO: replace with animated background. 
         this.bgImg = this.images.bgImg.getImage();
+        this.assetsFinishedLoading = true;
     }
 }
