@@ -36,6 +36,9 @@ export class Vector2 {
 
   normalize() {
     const mag = this.magnitude();
+    if (mag === 0) {
+      return Vector2.zero;
+    }
     return new Vector2(this.x / mag, this.y / mag);
   }
 
