@@ -16,7 +16,7 @@ export class Projectile extends Entity {
     this.transform.position.x = posx - PLACEHOLDER_SIZE / 2;
     this.transform.position.y = posy - PLACEHOLDER_SIZE / 2;
     // TODO: If projectile speed of enemies is different, extract this to a parameter
-    this.velocity = new Velocity(new Vector2(velx, vely), PLAYER_PROJECTILE_SPEED * GameManager.canvas.height);
+    this.velocity = new Velocity(PLAYER_PROJECTILE_SPEED * GameManager.canvas.height, new Vector2(velx, vely));
     /** @type {CollisionBox} */
     this.collisionBox = new CollisionBox(this, 10, 10, 10, 10, true);
 

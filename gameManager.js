@@ -84,9 +84,11 @@ export class GameManager extends EventEmitter {
         //I made collisions an object in the last project, containing things like type of collision, objects collided, etc to be examined in other funcs
         let entityEntries = Array.from(this.entities.entries());
         for (let i=0; i<entityEntries.length; i++) {
-            let colBox1 = entityEntries[i][1].collisionBox;
+            let colBox1 = entityEntries[i][1]?.collisionBox;
+            if (!colBox1) continue;
             for (let j=i+1; j<entityEntries.length; j++) {
-                let colBox2 = entityEntries[j][1].collisionBox;
+                let colBox2 = entityEntries[j][1]?.collisionBox;
+                if (!colBox2) continue;
                 if (colBox1.detectCollision(colBox2)) {
                     collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
                 }
