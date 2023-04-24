@@ -29,9 +29,6 @@ export class GameManager extends EventEmitter {
 
         this.entities = new EntityManager();
         InputManager.getInstance().entitiesToSendInput = this.entities;
-        this.paused = false;
-        /** @type {EnemyManager} */
-        this.enemyManager = new EnemyManager();
     }
     
     /**
@@ -46,10 +43,13 @@ export class GameManager extends EventEmitter {
     }
 
     setDefaultState(){
+        this.paused = false;
         this.entities.clear();
 
+        this.enemyManager = new EnemyManager();
         this.entities.addInitial(this.createShip());
-        this.enemyManager.initialize();
+        this.enemyManager.spawnEnemies();
+        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 8000);
         //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
         this.livesLeft = 3;
         this.score = 0;
@@ -73,7 +73,7 @@ export class GameManager extends EventEmitter {
             else{
                 // Execute the game
                 let collisions = this.detectCollisions();
-                this.enemyManager.update(elapsedTime);
+                this.enemyManager?.update(elapsedTime);
                 this.entities.update(elapsedTime);
             }
         }

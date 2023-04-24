@@ -29,19 +29,10 @@ export class EnemyManager {
     this.destFormationPositions = new Map();
     /**_@type {Map<number, Vector2>} */
     this.spreadFormationPositions = new Map();
-  }
-  
-  initialize() {
-    this.enemies.length = 0;
-    this.baseFormationPositions.clear();
-    this.destFormationPositions.clear();
-    this.spreadFormationPositions.clear();
+    
     this.elapsedMovementTime = 0;
     this.formationMovementTime = FORMATION_MOVEMENT_TIME; // How long it takes for the formation to move between two positions
     this.cyclesUntilFormationSwitch = Infinity;
-
-    this.spawnEnemies();
-    setTimeout(() => this.startTransitionToCenterFormation(), 8000);
   }
   
   spawnEnemies() {
@@ -91,7 +82,8 @@ export class EnemyManager {
       this.destFormationPositions.set(enemy.id, positions[i].add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)));
       this.spreadFormationPositions.set(enemy.id, spreadPositions[i]);
       enemy.once('destroyed', deregisterEnemy);
-      gameManager.entities.add(enemy);
+      // TODO: When this is not called on init, change this to a regular add
+      gameManager.entities.addInitial(enemy);
     }
   }
   
@@ -100,7 +92,7 @@ export class EnemyManager {
    * formation and the current formation at the time of the call will be set to the base formation
    * position.
    */
-  switchToSpreadFormation() {
+  #switchToSpreadFormation() {
     const gameManager = GameManager.getInstance();
     for (let i = 0; i < this.enemies.length; i++) {
       /** @type {Enemy} */
@@ -114,7 +106,10 @@ export class EnemyManager {
     this.formationMovementTime = FORMATION_MOVEMENT_TIME;
   }
   
-  startTransitionToCenterFormation() {
+  /**
+   * Initiates the transition to the center formation.
+   */
+  transitionToCenterFormation() {
     const movementCyclePercentage = this.elapsedMovementTime / this.formationMovementTime;
     this.formationMovementTime /= 2;
     const gameManager = GameManager.getInstance();
@@ -144,7 +139,7 @@ export class EnemyManager {
       // Activate next formation layout since we don't need
       // to wait for the enemies to move into the proper position.
       // They are alraedy there due to snapping done above.
-      this.switchToSpreadFormation();  
+      this.#switchToSpreadFormation();  
     }
   }
 
@@ -156,7 +151,7 @@ export class EnemyManager {
     this.elapsedMovementTime += elapsedTime;
     if (this.elapsedMovementTime >= this.formationMovementTime) {
       if (this.cyclesUntilFormationSwitch === 0) {
-        this.switchToSpreadFormation();
+        this.#switchToSpreadFormation();
         this.cyclesUntilFormationSwitch = Infinity;
       } else {
         this.elapsedMovementTime -= this.formationMovementTime;
