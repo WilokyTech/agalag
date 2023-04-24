@@ -27,13 +27,20 @@ export class EnemyManager {
     this.baseFormationPositions = new Map();
     /** @type {Map<number, Vector2>} */
     this.destFormationPositions = new Map();
-
-    this.elapsedMovementTime = 0;
-    this.formationMovementTime = FORMATION_MOVEMENT_TIME; // How long it takes for the formation to move between two positions
+    /**_@type {Map<number, Vector2>} */
+    this.spreadFormationPositions = new Map();
   }
   
   initialize() {
+    this.enemies.length = 0;
+    this.baseFormationPositions.clear();
+    this.destFormationPositions.clear();
+    this.elapsedMovementTime = 0;
+    this.formationMovementTime = FORMATION_MOVEMENT_TIME; // How long it takes for the formation to move between two positions
+    this.cyclesUntilFormationSwitch = Infinity;
+
     this.spawnEnemies();
+    setTimeout(() => this.startTransitionToCenterFormation(), 1000);
   }
   
   spawnEnemies() {
@@ -54,6 +61,7 @@ export class EnemyManager {
         this.enemies.splice(index, 1);
         this.baseFormationPositions.delete(entityId);
         this.destFormationPositions.delete(entityId);
+        this.spreadFormationPositions.delete(entityId);
       }
     };
     
@@ -68,8 +76,55 @@ export class EnemyManager {
     }
   }
   
-  transitionToCenter() {
+  /** 
+   * When called, this will set the new destination formation positions to be the spread
+   * formation and the current formation at the time of the call will be set to the base formation
+   * position.
+   */
+  switchToSpreadFormation() {
+    const gameManager = GameManager.getInstance();
+    for (let i = 0; i < this.enemies.length; i++) {
+      /** @type {Enemy} */
+      const enemy = gameManager.entities.get(this.enemies[i]);
+      const newBasePosition = enemy.formationPosition;
+      this.baseFormationPositions.set(enemy.id, newBasePosition);
+    }
+    
+    this.destFormationPositions = this.spreadFormationPositions;
+  }
+  
+  startTransitionToCenterFormation() {
+    const movementCyclePercentage = this.elapsedMovementTime / this.formationMovementTime;
+    this.formationMovementTime /= 2;
+    const gameManager = GameManager.getInstance();
+    
+    /** @type {Map<number, Vector2>} */
+    const centerPositions = new Map();
+    for (let i = 0; i < this.enemies.length; i++) {
+      /** @type {Enemy} */
+      const enemy = gameManager.entities.get(this.enemies[i]);
+      const centerPosition = lerp(this.baseFormationPositions.get(enemy.id), this.destFormationPositions.get(enemy.id), 0.5);
+      if (movementCyclePercentage === 0.5) {
+        // Snap to center position since we are there (give or take a little floating point error)
+        enemy.formationPosition = centerPosition;
+      } else {
+        centerPositions.set(enemy.id, centerPosition);
+      }
+    }
 
+    if (movementCyclePercentage > 0.5) {
+      this.elapsedMovementTime -= this.formationMovementTime;
+      this.baseFormationPositions = centerPositions;
+      this.cyclesUntilFormationSwitch = 1;
+    } else if (movementCyclePercentage < 0.5) {
+      this.destFormationPositions = centerPositions;
+      this.cyclesUntilFormationSwitch = 0;
+    } else {
+      // Activate next formation layout since we don't need
+      // to wait for the enemies to move into the proper position.
+      // They are alraedy there due to snapping done above.
+      this.switchToSpreadFormation();  
+    }
   }
 
   /** @type {number} */
@@ -79,10 +134,16 @@ export class EnemyManager {
     // Reverse the direction of the formation every FORMATION_MOVEMENT_TIME
     this.elapsedMovementTime += elapsedTime;
     if (this.elapsedMovementTime >= this.formationMovementTime) {
-      this.elapsedMovementTime -= this.formationMovementTime;
-      const temp = this.baseFormationPositions;
-      this.baseFormationPositions = this.destFormationPositions;
-      this.destFormationPositions = temp;
+      if (this.cyclesUntilFormationSwitch === 0) {
+        this.switchToSpreadFormation();
+        this.cyclesUntilFormationSwitch = Infinity;
+      } else {
+        this.elapsedMovementTime -= this.formationMovementTime;
+        const temp = this.baseFormationPositions;
+        this.baseFormationPositions = this.destFormationPositions;
+        this.destFormationPositions = temp;
+        this.cyclesUntilFormationSwitch--;
+      }
     }
 
     for (let i = 0; i < this.enemies.length; i++) {
