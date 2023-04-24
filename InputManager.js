@@ -36,7 +36,7 @@ export class InputManager extends EventEmitter {
         this.saveControls();
     }
 
-    fetchControls(){
+    static fetchControls(){
         let previousControls = localStorage.getItem("agalag.controls");
         if (previousControls != null) {
             InputManager.controls = JSON.parse(previousControls);
