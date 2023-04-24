@@ -1,3 +1,4 @@
+import { Assets } from "../assets.js";
 import { Entity } from "../entity.js";
 import { GameManager } from "../gameManager.js";
 import { InputManager } from "../InputManager.js";
@@ -46,8 +47,14 @@ export class Ship extends Entity {
     
     /** @type {Entity['render']} */
     render(ctx, elapsedTime) {
-        ctx.fillStyle = "black";
-        ctx.fillRect(this.transform.position.x, this.transform.position.y, this.width, this.height);
+        if(Assets.assetsFinishedLoading){
+            let image = InputManager.getInstance().isControlDown("fire") ? Assets.images.playerShip2.getImage() : Assets.images.playerShip1.getImage();
+            ctx.drawImage(image, this.transform.position.x, this.transform.position.y, this.width, this.height);
+        }
+        else{
+            ctx.fillStyle = "black";
+            ctx.fillRect(this.transform.position.x, this.transform.position.y, this.width, this.height);
+        }
     }
     
     /** @type {Entity['dispose']} */    

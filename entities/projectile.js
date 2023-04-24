@@ -1,3 +1,4 @@
+import { Assets } from "../assets.js";
 import { Velocity } from "../components/velocity.js";
 import { Entity } from "../entity.js";
 import { GameManager } from "../gameManager.js";
@@ -17,6 +18,9 @@ export class Projectile extends Entity {
     this.isFriendly = isFriendly;
     
     this.gameManager = GameManager.getInstance();
+
+    this.textureNum = Math.floor(Math.random() * 3);
+    this.currentRotation = 0;
   }
   
   /** @type {Entity['update']} */
@@ -31,6 +35,28 @@ export class Projectile extends Entity {
       this.transform.position.y > GameManager.canvas.height
     ) {
       this.gameManager.entities.remove(this);
+    }
+  }
+
+  /** @type {Entity['render']} */
+  render(ctx, elapsedTime) {
+    if(Assets.assetsFinishedLoading){ 
+        if(!this.image){
+          if(this.textureNum == 0){
+            this.image = Assets.images.milk.getImage();
+          }
+          else if(this.textureNum == 1){
+            this.image = Assets.images.fish.getImage();
+          }
+          else{
+            this.image = Assets.images.yarn.getImage();
+          }
+        }
+        ctx.drawImage(this.image, this.transform.position.x, this.transform.position.y, 16, 16);
+    }
+    else{
+        ctx.fillStyle = "magenta";
+        ctx.fillRect(this.transform.position.x, this.transform.position.y, 16, 16);
     }
   }
 }

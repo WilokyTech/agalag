@@ -51,7 +51,14 @@ export class Assets {
             heartRed: new ImageAsset(null, "./images/particles/heartRed.png"),
             sparkleLightYellow: new ImageAsset(null, "./images/particles/sparkleLightYellow.png"),
             sparkleYellow: new ImageAsset(null, "./images/particles/sparkleYellow.png"),
-            bgImg: new ImageAsset(null, "./images/bg.jpg")
+            playerShip1: new ImageAsset(null, "./images/cats/ship/1.png"),
+            playerShip2: new ImageAsset(null, "./images/cats/ship/2.png"),
+            emptyShip: new ImageAsset(null, "./images/cats/ship/emptyShip.png"),
+            milk: new ImageAsset(null, "./images/projectiles/milk.png"),
+            fish: new ImageAsset(null, "./images/projectiles/fish.png"),
+            yarn: new ImageAsset(null, "./images/projectiles/yarn.png"),
+            bgImg1: new ImageAsset(null, "./images/bg1.png"),
+            bgImg2: new ImageAsset(null, "./images/bg2.png")
         }
         this.loadAssets();
     }
@@ -61,8 +68,6 @@ export class Assets {
             await value.loadImage();
         }
         
-        //TODO: replace with animated background. 
-        this.bgImg = this.images.bgImg.getImage();
         this.assetsFinishedLoading = true;
     }
 }

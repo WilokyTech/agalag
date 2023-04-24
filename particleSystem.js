@@ -3,6 +3,7 @@ import { Renderer } from "./renderer.js";
 import { Assets } from "./assets.js";
 import { Entity } from "./entity.js";
 import { Vector2 } from "./vector.js";
+import { Ship } from "./entities/ship.js";
 
 export class SquareParticle{
     constructor(position, lifetime, velocity, direction, acceleration, size, rotation, spin, color){
@@ -115,7 +116,14 @@ export class ParticleSystem{
      * @param {Entity} playerEntity
      */
     static playerDeath(playerEntity){
-        this.#defaultExplosion(playerEntity);
+        this.#setScaleMultiplier();
+        
+        for(let i = 0; i < 60; i++){
+            let startX = playerEntity.transform.position.x + playerEntity.width / 2;
+            let startY = playerEntity.transform.position.y + playerEntity.height / 2;
+            let startPos = new Vector2(startX, startY);
+            this.#addTexturedParticle(this.#generateTexturedParticle(startPos, this.#getRandomExplosionTexture()));
+        }    
     }
 
     /**
