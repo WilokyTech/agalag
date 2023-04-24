@@ -15,6 +15,7 @@ export class GameManager extends EventEmitter {
     static #isInternalConstructing = false;
     static #instance = null;
     
+    /** @type {HTMLCanvasElement} */
     static canvas = document.getElementById("canvas");
 
     constructor() {
