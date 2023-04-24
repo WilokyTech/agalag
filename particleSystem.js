@@ -121,12 +121,9 @@ export class ParticleSystem{
     static playerDeath(playerShip){
         this.setScaleMultiplier();
 
-        // let startX = playerShip.transform.position.x;
-        // let startY = playerShip.transform.position.y;
-        // let startPos = new Vector2(startX, startY);
-
-        let startPos = new Vector2(400, 500);
-
+        let startX = playerShip.transform.position.x;
+        let startY = playerShip.transform.position.y;
+        let startPos = new Vector2(startX, startY);
 
         for(let i = 0; i < 30; i++){
             this.addTexturedParticle(this.generateTexturedParticle(startPos, this.getRandomExplosionTexture()));

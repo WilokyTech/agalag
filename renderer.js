@@ -96,6 +96,12 @@ export class Renderer {
     }
 
     drawParticles(){
-
+        for(let i = 0; i < ParticleSystem.texturedParticles.length; i++){
+            this.ctx.drawImage(
+                ParticleSystem.texturedParticles[i].texture,
+                ParticleSystem.texturedParticles[i].position.x,
+                ParticleSystem.texturedParticles[i].position.y,
+                50, 50);
+        }
     }
 }
