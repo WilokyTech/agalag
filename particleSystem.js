@@ -63,7 +63,7 @@ export class ParticleSystem{
      * 
      * @param {SquareParticle} particle 
      */
-    static addSquareParticle(particle){
+    static #addSquareParticle(particle){
         this.squareParticles.push(particle);
     }
 
@@ -71,21 +71,21 @@ export class ParticleSystem{
      * 
      * @param {TexturedParticle} particle 
      */
-    static addTexturedParticle(particle){
+    static #addTexturedParticle(particle){
         this.texturedParticles.push(particle);
     }
 
     //TODO: Parameterize this more for future applications. For now, hardcode vals to work for specific effect in this project
-    static generateSquareParticle(position){
+    static #generateSquareParticle(position){
         return new SquareParticle(
             position,
             500, 
             0.0008, 
-            this.getRandomDirection(), 
-            this.getRandomSize(), 
-            this.getRandomRotation(),
-            this.getRandomSpin(),
-            this.getRandomColor());
+            this.#getRandomDirection(), 
+            this.#getRandomSize(), 
+            this.#getRandomRotation(),
+            this.#getRandomSpin(),
+            this.#getRandomColor());
     }
 
     /**
@@ -93,39 +93,55 @@ export class ParticleSystem{
      * @param {Vector2} position 
      * @param {Image} texture
      */
-    static generateTexturedParticle(position, texture){
+    static #generateTexturedParticle(position, texture){
         return new TexturedParticle(
             position,
             texture,
-            this.getRandomLifetime(), 
-            this.getRandomVelocity(), 
-            this.getRandomDirection(), 
-            this.getRandomSize(), 
-            this.getRandomRotation(),
-            this.getRandomSpin(),
+            this.#getRandomLifetime(), 
+            this.#getRandomVelocity(), 
+            this.#getRandomDirection(), 
+            this.#getRandomSize(), 
+            this.#getRandomRotation(),
+            this.#getRandomSpin(),
         )
     }
 
-    static setScaleMultiplier(){
+    static #setScaleMultiplier(){
         this.scaleMultiplier = GameManager.canvas.width;
     }
 
     /**
      * 
-     * @param {Entity} playerShip
+     * @param {Entity} playerEntity
      */
-    static playerDeath(playerShip){
-        this.setScaleMultiplier();
+    static playerDeath(playerEntity){
+        this.#defaultExplosion(playerEntity);
+    }
+
+    /**
+     * 
+     * @param {Entity} enemyEntity
+     */
+    static enemyDeath(enemyEntity){
+        this.#defaultExplosion(enemyEntity);
+    }  
+
+    /**
+     * 
+     * @param {Entity} entity 
+     */
+    static #defaultExplosion(entity){
+        this.#setScaleMultiplier();
         
         for(let i = 0; i < 60; i++){
-            let startX = playerShip.transform.position.x;
-            let startY = playerShip.transform.position.y;
+            let startX = entity.transform.position.x;
+            let startY = entity.transform.position.y;
             let startPos = new Vector2(startX, startY);
-            this.addTexturedParticle(this.generateTexturedParticle(startPos, this.getRandomExplosionTexture()));
+            this.#addTexturedParticle(this.#generateTexturedParticle(startPos, this.#getRandomExplosionTexture()));
         }
     }
 
-    static getRandomExplosionTexture(){
+    static #getRandomExplosionTexture(){
         if(Assets.assetsFinishedLoading){
             let ranNum = Math.floor(Math.random() * 4);
             if(ranNum == 0){
@@ -146,34 +162,33 @@ export class ParticleSystem{
         }
     }
 
-    static getRandomLifetime(){
+    static #getRandomLifetime(){
         return this.getScaledValue(Math.random(), 0, 1, 500, 800);
     }
 
-    static getRandomVelocity(){
+    static #getRandomVelocity(){
         return this.getScaledValue(Math.random(), 0, 1, 0.0001, 0.0004)
     }
 
-    static getRandomDirection(){
+    static #getRandomDirection(){
         let num = Math.random() * 360;
         num = (num * Math.PI) / 180;
-        // return {x: Math.cos(num), y: Math.sin(num)};
         return new Vector2(Math.cos(num), Math.sin(num));
     }
 
-    static getRandomSize(){
+    static #getRandomSize(){
         return Math.random() * .050 * this.scaleMultiplier;
     }
 
-    static getRandomRotation(){
+    static #getRandomRotation(){
         return Math.random() * 360;
     }
 
-    static getRandomSpin(){
+    static #getRandomSpin(){
         return Math.random > 0.5 ? 1 : -1;
     }
 
-    static getRandomColor(){
+    static #getRandomColor(){
         // return Renderer.PADDLE_COLOR_LIST[Math.floor(Math.random() * 6)];
         return "magenta";
     }

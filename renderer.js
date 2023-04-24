@@ -97,7 +97,6 @@ export class Renderer {
 
     drawParticles(){
         for(let i = 0; i < ParticleSystem.texturedParticles.length; i++){
-            console.log(`${i} Position x:${ParticleSystem.texturedParticles[i].position.x} Position y:${ParticleSystem.texturedParticles[i].position.y}`);
             this.ctx.drawImage(
                 ParticleSystem.texturedParticles[i].texture,
                 ParticleSystem.texturedParticles[i].position.x,
@@ -106,4 +105,5 @@ export class Renderer {
                 ParticleSystem.texturedParticles[i].size);
         }
     }
+
 }
