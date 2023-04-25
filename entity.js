@@ -32,9 +32,9 @@ export class Entity extends EventEmitter {
   }
   
   /**
-   * Called when the entity is added to the game world. If overriding, be sure to call super.initialize() at the end.
-   * If you need access to game singletons like the game manager or input manager and are encountering reference errors when doing
-   * so in the constructor, you can access them here.
+   * Called when the entity is added to the game world. If overriding, be sure to call super.initialize() at the end of the
+   * overridden method. If you need access to game singletons like the game manager or input manager and are encountering
+   * reference errors when doing so in the constructor, you can access them here.
    */
   initialize() {
     this.emit('created');
@@ -89,7 +89,7 @@ export class Entity extends EventEmitter {
   
   /**
    * Disposes of the entity and their components. This is called when the entity is removed from the game world.
-   * When overriding, be sure to call super.dispose() at the end.
+   * When overriding, be sure to call super.dispose() at the end of the overridden method.
    */
   dispose() {
     this.emit('destroyed', this.id);

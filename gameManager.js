@@ -44,15 +44,19 @@ export class GameManager extends EventEmitter {
 
     setDefaultState(){
         this.paused = false;
-        this.entities.clear();
 
+        this.livesLeft = 3;
+        this.score = 0;
+        this.countDownTimer = 5000;
+        this.resetPlayerAndEnemies();
+    }
+    
+    resetPlayerAndEnemies(){
+        this.entities.clear();
         this.enemyManager = new EnemyManager();
         this.entities.addInitial(this.createShip());
         this.enemyManager.spawnEnemies();
         setTimeout(() => this.enemyManager.transitionToCenterFormation(), 2500);
-        this.livesLeft = 3;
-        this.score = 0;
-        this.countDownTimer = 5000;
     }
 
     createShip(){
@@ -109,8 +113,9 @@ export class GameManager extends EventEmitter {
             this.gameOver();
         }
         else{
-            this.entities.add(this.createShip());
+            this.livesLeft--;
             this.countDownTimer = 0;
+            this.resetPlayerAndEnemies();
         }
     }
 
