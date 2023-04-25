@@ -15,8 +15,6 @@ export class Projectile extends Entity {
     this.transform.position.x = posx - 8;
     this.transform.position.y = posy - 8;
     this.velocity = new Velocity((isFriendly ? PLAYER_PROJECTILE_SPEED : ENEMY_PROJECTILE_SPEED) * GameManager.canvas.height, new Vector2(velx, vely));
-    /** @type {CollisionBox} */
-    this.collisionBox = new CollisionBox(this, 16, 16, 16, 16, true);
 
     this.isFriendly = isFriendly;
     

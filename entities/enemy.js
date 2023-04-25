@@ -41,6 +41,10 @@ export class Enemy extends Entity {
     this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
   }
   
+  get inFormation() {
+    return !this.path;
+  }
+  
   launchAttackRun() {
     const gameManager = GameManager.getInstance();
     const player = gameManager.entities.get(gameManager.shipId);
@@ -61,8 +65,10 @@ export class Enemy extends Entity {
     
     const projectileSpawnPoint = new Vector2(this.collisionBox.center.x, this.collisionBox.bottom + 16);
     const projectileDirection = player.collisionBox.center.subtract(projectileSpawnPoint).normalize();
-    gameManager.entities.add(new Projectile(projectileSpawnPoint.x, projectileSpawnPoint.y, projectileDirection.x, projectileDirection.y, false));
     SoundFXManager.playLaserSFX();
+    const projectile = new Projectile(projectileSpawnPoint.x, projectileSpawnPoint.y, projectileDirection.x, projectileDirection.y, false);
+    projectile.addCollisionBox(16, 16, 16, 16, false);
+    gameManager.entities.add(projectile);
   }
   
   determineNextAttackPoint() {
