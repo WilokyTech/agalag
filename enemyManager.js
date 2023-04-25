@@ -4,7 +4,7 @@ import { lerp } from './mathFuncs.js';
 import { Vector2 } from './vector.js';
 
 const enemyLayout = [
-  '...xxxx...',
+  '...xxxx...', 
   '.xxxxxxxx.',
   '.xxxxxxxx.',
   'xxxxxxxxxx',
@@ -21,8 +21,8 @@ const FORMATION_HORIZONTAL_MOVEMENT = ENEMY_SPRITE_SIZE * 4;
 
 export class EnemyManager {
   constructor() {
-    /** @type {Array<number>} */
-    this.enemies = [];
+    /** @type {Set<number>} */
+    this.enemies = new Set();
     /** @type {Map<number, Vector2>} */
     this.baseFormationPositions = new Map();
     /** @type {Map<number, Vector2>} */
@@ -65,25 +65,23 @@ export class EnemyManager {
     }
     
     const deregisterEnemy = (entityId) => {
-      const index = this.enemies.indexOf(entityId);
-      if (index !== -1) {
-        this.enemies.splice(index, 1);
-        this.baseFormationPositions.delete(entityId);
-        this.destFormationPositions.delete(entityId);
-        this.spreadFormationPositions.delete(entityId);
-      }
+      this.enemies.delete(entityId);
+      this.baseFormationPositions.delete(entityId);
+      this.destFormationPositions.delete(entityId);
+      this.spreadFormationPositions.delete(entityId);
     };
     
     const gameManager = GameManager.getInstance();
     for (let i = 0; i < positions.length; i++) {
       const enemy = new Enemy(positions[i]);
-      this.enemies.push(enemy.id);
+      this.enemies.add(enemy.id);
       this.baseFormationPositions.set(enemy.id, positions[i]);
       this.destFormationPositions.set(enemy.id, positions[i].add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)));
       this.spreadFormationPositions.set(enemy.id, spreadPositions[i]);
       enemy.once('destroyed', deregisterEnemy);
-      // TODO: When this is not called on init, change this to a regular add
       gameManager.entities.addInitial(enemy);
+      enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
+      // TODO: When this is not called on init, change this to a regular add
     }
   }
   
@@ -94,11 +92,14 @@ export class EnemyManager {
    */
   #switchToSpreadFormation() {
     const gameManager = GameManager.getInstance();
-    for (let i = 0; i < this.enemies.length; i++) {
+    for (let entityId of this.enemies) {
       /** @type {Enemy} */
-      const enemy = gameManager.entities.get(this.enemies[i]);
+      const enemy = gameManager.entities.get(entityId);
+      if (!enemy) {
+        continue;
+      }
       const newBasePosition = enemy.formationPosition;
-      this.baseFormationPositions.set(enemy.id, newBasePosition);
+      this.baseFormationPositions.set(entityId, newBasePosition);
     }
     
     this.destFormationPositions = this.spreadFormationPositions;
@@ -116,15 +117,18 @@ export class EnemyManager {
     
     /** @type {Map<number, Vector2>} */
     const centerPositions = new Map();
-    for (let i = 0; i < this.enemies.length; i++) {
+    for (let entityId of this.enemies) {
       /** @type {Enemy} */
-      const enemy = gameManager.entities.get(this.enemies[i]);
-      const centerPosition = lerp(this.baseFormationPositions.get(enemy.id), this.destFormationPositions.get(enemy.id), 0.5);
+      const enemy = gameManager.entities.get(entityId);
+      if (!enemy) {
+        continue;
+      }
+      const centerPosition = lerp(this.baseFormationPositions.get(entityId), this.destFormationPositions.get(entityId), 0.5);
       if (movementCyclePercentage === 0.5) {
         // Snap to center position since we are there (give or take a little floating point error)
         enemy.formationPosition = centerPosition;
       } else {
-        centerPositions.set(enemy.id, centerPosition);
+        centerPositions.set(entityId, centerPosition);
       }
     }
 
@@ -162,9 +166,9 @@ export class EnemyManager {
       }
     }
 
-    for (let i = 0; i < this.enemies.length; i++) {
+    for (let entityId of this.enemies) {
       /** @type {Enemy} */
-      const enemy = gameManager.entities.get(this.enemies[i]);
+      const enemy = gameManager.entities.get(entityId);
       if (!enemy) {
         continue;
       }

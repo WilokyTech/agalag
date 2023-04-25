@@ -4,8 +4,8 @@ import { ParticleSystem } from "./particleSystem.js";
 import { Vector2 } from "./vector.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
-import { EnemyManager } from "./enemyManager.js";
 import { Collision } from "./components/collision.js";
+import { EnemyManager } from "./enemyManager.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -60,6 +60,7 @@ export class GameManager extends EventEmitter {
         const shipWidth = 64
         const shipHeight = 64
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
+        ship.addCollisionBox(shipWidth, shipHeight, shipWidth, shipHeight, true);
         ship.on('destroyed', this.lostLife.bind(this));
         ship.once('destroyed', () => {
             ParticleSystem.playerDeath(ship);
@@ -75,8 +76,12 @@ export class GameManager extends EventEmitter {
             else{
                 // Execute the game
                 let collisions = this.detectCollisions();
-                this.enemyManager?.update(elapsedTime);
+                for (let collision of collisions) {
+                    collision.entity1.onCollision(collision.collisionType);
+                    collision.entity2.onCollision(collision.collisionType);
+                }
                 this.entities.update(elapsedTime);
+                this.enemyManager?.update(elapsedTime);
             }
         }
     }
@@ -89,8 +94,10 @@ export class GameManager extends EventEmitter {
             let colBox1 = entityEntries[i][1]?.collisionBox;
             if (!colBox1) continue;
             for (let j=i+1; j<entityEntries.length; j++) {
-                let colBox2 = entityEntries[j][1]?.collisionBox;
-                if (!colBox2) continue;
+                let colBox2 = entityEntries[j][1].collisionBox;
+                if (colBox2 == null || colBox1 == null) {
+                    continue;
+                }
                 if (colBox1.detectCollision(colBox2)) {
                     collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
                 }
