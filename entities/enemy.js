@@ -30,6 +30,8 @@ export class Enemy extends Entity {
      * @type {Vector2}
      */
     this.formationPosition = formationPosition;
+    /** @type {string} */
+    this.type = undefined;
     this.path = path;
     this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
   }
