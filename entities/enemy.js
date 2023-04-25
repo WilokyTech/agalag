@@ -18,6 +18,8 @@ export const EnemyType = {
 };
 
 export class Enemy extends Entity {
+  #returningToFormation = false;
+
   /**
    * @param {Vector2} formationPosition 
    * @param {Path} path 
@@ -41,11 +43,11 @@ export class Enemy extends Entity {
     const player = gameManager.entities.get(gameManager.shipId);
     if (!player) return; // Nothing to attack
 
-    // TODO: Implement attack run - This is just test code
+    // TODO: Implement actual attack run - This is just test code
     this.path = new Path(this, [
       this.transform.position.add(new Vector2(0, 100)),
       this.transform.position.add(new Vector2(-64, 200)),
-      player.transform.position.add(new Vector2(0, -100)),
+      player.transform.position.add(new Vector2(0, 100)),
     ]);
   }
   
@@ -56,6 +58,22 @@ export class Enemy extends Entity {
     // If enemy doesn't have a path to follow, it is in formation and should move with the formation.
     if (!this.path) {
       this.transform.position = this.formationPosition;
+    } else {
+      // Check if we moved out of bottom of the screen. If so, wrap back up to the top of the screen and create a new path back to the formation
+      if (this.transform.position.y > GameManager.canvas.height) {
+        this.transform.position.y = -this.collisionBox.width;
+        this.path = new Path(this, [this.transform.position, this.formationPosition]);
+        this.#returningToFormation = true;
+        this.path.once('pathEnd', () => {
+          this.path = null;
+          this.#returningToFormation = false;
+        });
+      }
+      
+      // Keep the path destination in sync with the formation position
+      if (this.#returningToFormation) {
+        this.path.setDestination(this.formationPosition);
+      }
     }
   }
 
