@@ -6,12 +6,11 @@ import { Vector2 } from "./vector.js";
 import { Ship } from "./entities/ship.js";
 
 export class SquareParticle{
-    constructor(position, lifetime, velocity, direction, acceleration, size, rotation, spin, color){
+    constructor(position, lifetime, velocity, direction,size, rotation, spin, color){
         this.position = position;
         this.lifetime = lifetime;
         this.velocity = velocity;
         this.direction = direction;
-        this.acceleration = acceleration;
         this.size = size;
         this.rotation = rotation;
         this.spin = spin;
@@ -76,17 +75,30 @@ export class ParticleSystem{
         this.texturedParticles.push(particle);
     }
 
-    //TODO: Parameterize this more for future applications. For now, hardcode vals to work for specific effect in this project
-    static #generateSquareParticle(position){
-        return new SquareParticle(
-            position,
-            500, 
-            0.0008, 
-            this.#getRandomDirection(), 
-            this.#getRandomSize(), 
+    static #generateLaserParticle(position){
+        return new SquareParticle(position,
+            200,
+            0.00008,
+            this.#getRandomDirection(),
+            16,
             this.#getRandomRotation(),
             this.#getRandomSpin(),
-            this.#getRandomColor());
+            "red");
+    }
+
+    /**
+     * 
+     * @param {Entity} laserProjectile
+     */
+    static laserTrail(laserProjectile){
+        this.#setScaleMultiplier();
+        
+        for(let i = 0; i < 15; i++){
+            let startX = laserProjectile.transform.position.x;
+            let startY = laserProjectile.transform.position.y;
+            let startPos = new Vector2(startX, startY);
+            this.#addSquareParticle(this.#generateLaserParticle(startPos));
+        }    
     }
 
     /**
@@ -241,8 +253,8 @@ export class ParticleSystem{
                 this.squareParticles.splice(i, 1);
             }
             else{
-                this.squareParticles[i].position.x += this.squareParticles[i].velocity * elapsedTime * this.squareParticles[i].direction.x;
-                this.squareParticles[i].position.y += this.squareParticles[i].velocity * elapsedTime * this.squareParticles[i].direction.y;
+                this.squareParticles[i].position.x += this.squareParticles[i].velocity * elapsedTime * this.squareParticles[i].direction.x * this.scaleMultiplier;
+                this.squareParticles[i].position.y += this.squareParticles[i].velocity * elapsedTime * this.squareParticles[i].direction.y * this.scaleMultiplier;
                 this.squareParticles[i].rotation += this.squareParticles[i].spin * (this.squareParticles[i].velocity/elapsedTime) * 2000;
                 this.squareParticles[i].size = this.squareParticles[i].originalSize * (this.squareParticles[i].lifetime / this.squareParticles[i].originalLifetime);
                 this.squareParticles[i].lifetime -= elapsedTime;

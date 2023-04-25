@@ -4,6 +4,7 @@ import { CollisionBox } from "../components/collision.js";
 import { Entity } from "../entity.js";
 import { GameManager } from "../gameManager.js";
 import { Vector2 } from "../vector.js";
+import { ParticleSystem } from "../particleSystem.js";
 
 /** Movement speed given as a percentage of the total height per millisecond */
 const PLAYER_PROJECTILE_SPEED = 0.0015;
@@ -55,6 +56,7 @@ export class Projectile extends Entity {
     if(!this.isFriendly){
       ctx.fillStyle = "red";
       ctx.fillRect(this.transform.position.x, this.transform.position.y, 16, 16);
+      ParticleSystem.laserTrail(this);
     }
     else if(Assets.assetsFinishedLoading){ 
         if(!this.image){
