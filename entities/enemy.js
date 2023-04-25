@@ -39,6 +39,10 @@ export class Enemy extends Entity {
     this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
   }
   
+  get inFormation() {
+    return !this.path;
+  }
+  
   launchAttackRun() {
     const gameManager = GameManager.getInstance();
     const player = gameManager.entities.get(gameManager.shipId);

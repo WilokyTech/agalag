@@ -216,7 +216,11 @@ export class EnemyManager {
     const enemyIdToAttackWith = enemyIds[enemyToAttackWith];
     /** @type {Enemy} */
     const attacker = GameManager.getInstance().entities.get(enemyIdToAttackWith);
-    if (!attacker) return; // Enemy we were about to send got destroyed between the time we picked it and now
+    if (!attacker || !attacker.inFormation) {
+      // Enemy we were about to send got destroyed between the time we picked it and now
+      // or the enemy we chose is already attacking.
+      return; 
+    }
     attacker.launchAttackRun();
     this.attackRunEnemyCt++;
   }
