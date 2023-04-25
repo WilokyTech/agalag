@@ -60,9 +60,16 @@ export class Renderer {
             let margin = this.canvas.width * 0.01;
             let liveWidth = this.canvas.width * 0.05;
             for(let i = 1; i <= GameManager.getInstance().livesLeft; i++){
-                this.ctx.drawImage(Assets.images.emptyShip.getImage(), (liveWidth * i) + (margin * i), startY, liveWidth, liveWidth);
+                let drawX = (liveWidth * i) + (margin * i);
+                let drawY = startY;
+                let degrees = 7 * (i % 2 == 0 ? 1 : -1) * (this.bgTimer < 500 ? 1 : -1);
+                this.ctx.save();
+                this.ctx.translate(drawX + liveWidth / 2, drawY + liveWidth /2);                
+                this.ctx.rotate(degrees*Math.PI/180);
+                this.ctx.translate(-1 * (drawX + liveWidth / 2), -1 * (drawY + liveWidth /2));                
+                this.ctx.drawImage(Assets.images.emptyShip.getImage(), drawX, drawY, liveWidth, liveWidth);
+                this.ctx.restore();
             }
-            
         }
     }
     
