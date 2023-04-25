@@ -58,7 +58,8 @@ export class Assets {
             fish: new ImageAsset(null, "./images/projectiles/fish.png"),
             yarn: new ImageAsset(null, "./images/projectiles/yarn.png"),
             bgImg1: new ImageAsset(null, "./images/bg1.png"),
-            bgImg2: new ImageAsset(null, "./images/bg2.png")
+            bgImg2: new ImageAsset(null, "./images/bg2.png"),
+            target: new ImageAsset(null, "./images/projectiles/target.png")
         }
         this.loadAssets();
     }

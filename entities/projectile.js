@@ -57,7 +57,9 @@ export class Projectile extends Entity {
             this.image = Assets.images.yarn.getImage();
           }
         }
+        // ctx.ellipse(this.transform.position.x, this.transform.position.y, 16, 16, 0, 0, 360);
         ctx.drawImage(this.image, this.transform.position.x, this.transform.position.y, 16, 16);
+        ctx.drawImage(Assets.images.target.getImage(), this.transform.position.x, this.transform.position.y, 16, 16);
     }
     else{
         ctx.fillStyle = "magenta";
