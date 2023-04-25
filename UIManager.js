@@ -34,17 +34,11 @@ export class UIManager{
         this.highScoresListEl = document.getElementById("high-scores-list");
         this.clearHighScoresEl = document.getElementById("clear-high-scores");
 
-        /**@type {HTMLAudioElement} */
-        this.BG_MUSIC = new Audio('./audio/NyanLoop.mp3');
-        this.BG_MUSIC.loop = true;
-
         this.backableMenus = [this.controlsMenuEl, this.creditsDisplayEl, this.highScoresDisplayEl, this.gameOverEl];
 
         this.newGameEl.onclick = () => {
             GameManager.getInstance().setDefaultState();
             this.showGame();
-            //commenting out for now as it gets old during development
-            // this.BG_MUSIC.play();
         }
 
         this.resumeEl.onclick = () => {
@@ -113,7 +107,6 @@ export class UIManager{
     
     setDefaultState(){
         this.showGenericMenu(this.mainMenuEl);
-        this.BG_MUSIC.pause();
     }
 
     /**
@@ -262,7 +255,6 @@ export class UIManager{
 
     showGameOver(){
         this.showGenericMenu(this.gameOverEl);
-        this.BG_MUSIC.pause();
         this.scoreSpanEl.innerHTML = `Your Score: ${GameManager.getInstance().score}`;
     }
 
