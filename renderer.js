@@ -122,6 +122,15 @@ export class Renderer {
                 ParticleSystem.texturedParticles[i].size, 
                 ParticleSystem.texturedParticles[i].size);
         }
+        for(let i = 0; i < ParticleSystem.squareParticles.length; i++){
+            this.ctx.fillStyle = ("red");
+            this.ctx.fillRect(
+                ParticleSystem.squareParticles[i].position.x,
+                ParticleSystem.squareParticles[i].position.y,
+                ParticleSystem.squareParticles[i].size,
+                ParticleSystem.squareParticles[i].size
+            )
+        }
     }
 
 }
