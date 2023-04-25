@@ -20,7 +20,7 @@ const ENEMY_SPRITE_SIZE = 64; // TODO: Get this from whatever constant defines t
 const FORMATION_HORIZONTAL_MOVEMENT = ENEMY_SPRITE_SIZE * 4;
 
 const ATTACK_RUN_INTERVAL = 5000;
-const ATTACK_GAP = 750;
+const ATTACK_GAP = 1000;
 const ATTACK_RUN_ENEMY_CT = 3;
 
 export class EnemyManager {
@@ -216,6 +216,7 @@ export class EnemyManager {
     const enemyIdToAttackWith = enemyIds[enemyToAttackWith];
     /** @type {Enemy} */
     const attacker = GameManager.getInstance().entities.get(enemyIdToAttackWith);
+    if (!attacker) return; // Enemy we were about to send got destroyed between the time we picked it and now
     attacker.launchAttackRun();
     this.attackRunEnemyCt++;
   }

@@ -7,14 +7,14 @@ import { Vector2 } from "../vector.js";
 
 /** Movement speed given as a percentage of the total height per millisecond */
 const PLAYER_PROJECTILE_SPEED = 0.0015;
+const ENEMY_PROJECTILE_SPEED = 0.0005;
 
 export class Projectile extends Entity {
   constructor(posx, posy, velx, vely, isFriendly) {
     super();
     this.transform.position.x = posx - 8;
     this.transform.position.y = posy - 8;
-    // TODO: If projectile speed of enemies is different, extract this to a parameter
-    this.velocity = new Velocity(PLAYER_PROJECTILE_SPEED * GameManager.canvas.height, new Vector2(velx, vely));
+    this.velocity = new Velocity((isFriendly ? PLAYER_PROJECTILE_SPEED : ENEMY_PROJECTILE_SPEED) * GameManager.canvas.height, new Vector2(velx, vely));
     /** @type {CollisionBox} */
     this.collisionBox = new CollisionBox(this, 16, 16, 16, 16, true);
 
@@ -51,6 +51,7 @@ export class Projectile extends Entity {
   addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
     this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
   }
+
   /** @type {Entity['render']} */
   render(ctx, elapsedTime) {
     if(Assets.assetsFinishedLoading){ 
