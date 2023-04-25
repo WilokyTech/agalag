@@ -5,6 +5,8 @@ import { Path } from "../components/path.js";
 import { Projectile } from "./projectile.js";
 import { Velocity } from "../components/velocity.js";
 import { Vector2 } from "../vector.js";
+import { SoundFXManager } from "../SoundFXManager.js";
+import { ParticleSystem } from "../particleSystem.js";
 
 /**
  * Enemy speed is defined as the percentage of the total vertical height of the game area.
@@ -60,6 +62,7 @@ export class Enemy extends Entity {
     const projectileSpawnPoint = new Vector2(this.collisionBox.center.x, this.collisionBox.bottom + 16);
     const projectileDirection = player.collisionBox.center.subtract(projectileSpawnPoint).normalize();
     gameManager.entities.add(new Projectile(projectileSpawnPoint.x, projectileSpawnPoint.y, projectileDirection.x, projectileDirection.y, false));
+    SoundFXManager.playLaserSFX();
   }
   
   determineNextAttackPoint() {
@@ -116,6 +119,8 @@ export class Enemy extends Entity {
   onCollision(collisionType) {
     if (collisionType === "enemyDeath") {
         GameManager.getInstance().entities.remove(this);
+        ParticleSystem.enemyDeath(this);
+        SoundFXManager.playExplosionSFX();
     }
   }
 

@@ -54,7 +54,11 @@ export class Projectile extends Entity {
 
   /** @type {Entity['render']} */
   render(ctx, elapsedTime) {
-    if(Assets.assetsFinishedLoading){ 
+    if(!this.isFriendly){
+      ctx.fillStyle = "red";
+      ctx.fillRect(this.transform.position.x, this.transform.position.y, 16, 16);
+    }
+    else if(Assets.assetsFinishedLoading){ 
         if(!this.image){
           if(this.textureNum == 0){
             this.image = Assets.images.milk.getImage();

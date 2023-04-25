@@ -132,7 +132,14 @@ export class ParticleSystem{
      * @param {Entity} enemyEntity
      */
     static enemyDeath(enemyEntity){
-        this.#defaultExplosion(enemyEntity);
+        this.#setScaleMultiplier();
+        
+        for(let i = 0; i < 60; i++){
+            let startX = enemyEntity.transform.position.x + 32;
+            let startY = enemyEntity.transform.position.y + 32;
+            let startPos = new Vector2(startX, startY);
+            this.#addTexturedParticle(this.#generateTexturedParticle(startPos, this.#getRandomExplosionTexture()));
+        }        
     }  
 
     /**

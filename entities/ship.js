@@ -54,6 +54,7 @@ export class Ship extends Entity {
     /** @type {Entity['onCollision']} */
     onCollision(collisionType) {
         if (collisionType === "playerDeath") {
+            SoundFXManager.playExplosionSFX();
             this.gameManager.entities.remove(this);
         }
     }
