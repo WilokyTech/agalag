@@ -1,5 +1,6 @@
 import { EntityManager } from "./entityManager.js";
 import { EventEmitter } from "./eventEmitter.js";
+import { GameManager } from "./gameManager.js";
 import { UIManager } from "./UIManager.js";
 
 /**
@@ -71,6 +72,7 @@ export class InputManager extends EventEmitter {
                 const uiManager = UIManager.getInstance();
                 if (!uiManager.inAMenu) {
                     uiManager.showGenericMenu(uiManager.pauseMenuEl);
+                    GameManager.getInstance().paused = true;
                 }
                 else {
                     uiManager.setDefaultState();

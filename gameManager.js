@@ -30,9 +30,6 @@ export class GameManager extends EventEmitter {
 
         this.entities = new EntityManager();
         InputManager.getInstance().entitiesToSendInput = this.entities;
-        this.paused = false;
-        /** @type {EnemyManager} */
-        this.enemyManager = new EnemyManager();
     }
     
     /**
@@ -47,16 +44,17 @@ export class GameManager extends EventEmitter {
     }
 
     setDefaultState(){
+        this.paused = false;
         this.entities.clear();
 
+        this.enemyManager = new EnemyManager();
         this.entities.addInitial(this.createShip());
-        this.enemyManager.initialize();
+        this.enemyManager.spawnEnemies();
+        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 8000);
         //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
         this.livesLeft = 3;
         this.score = 0;
         this.countDownTimer = 5000;
-
-        InputManager.getInstance().inputPaused = true;
     }
 
     createShip(){
@@ -64,7 +62,7 @@ export class GameManager extends EventEmitter {
         const shipHeight = 64
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
         ship.addCollisionBox(shipWidth, shipHeight, shipWidth, shipHeight, true);
-        // ParticleSystem.playerDeath(ship);
+        ParticleSystem.playerDeath(ship);
         ship.on('destroyed', this.lostLife.bind(this));
         return ship;
     }
@@ -75,7 +73,6 @@ export class GameManager extends EventEmitter {
                 this.countDownTimer += elapsedTime;
             }
             else{
-                InputManager.getInstance().inputPaused = false;
                 // Execute the game
                 let collisions = this.detectCollisions();
                 if (collisions.length > 0) {
@@ -85,7 +82,7 @@ export class GameManager extends EventEmitter {
                     collision.entity1.onCollision(collision.collisionType);
                     collision.entity2.onCollision(collision.collisionType);
                 }
-                this.enemyManager.update(elapsedTime);
+                this.enemyManager?.update(elapsedTime);
                 this.entities.update(elapsedTime);
             }
         }
@@ -96,12 +93,13 @@ export class GameManager extends EventEmitter {
         //I made collisions an object in the last project, containing things like type of collision, objects collided, etc to be examined in other funcs
         let entityEntries = Array.from(this.entities.entries());
         for (let i=0; i<entityEntries.length; i++) {
-            let colBox1 = entityEntries[i][1].collisionBox;
+            let colBox1 = entityEntries[i][1]?.collisionBox;
+            if (!colBox1) continue;
             for (let j=i+1; j<entityEntries.length; j++) {
                 let colBox2 = entityEntries[j][1].collisionBox;
-                // if (colBox2 == null || colBox1 == null) {
-                //     continue;
-                // }
+                if (colBox2 == null || colBox1 == null) {
+                    continue;
+                }
                 if (colBox1.detectCollision(colBox2)) {
                     collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
                 }

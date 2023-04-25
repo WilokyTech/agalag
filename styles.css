@@ -63,8 +63,8 @@ canvas{
 canvas{
     image-rendering: pixelated; 
     /* Once we have final assets, we may want to just use pixellated if we are loosing detail */
-    image-rendering: crisp-edges;
-    image-rendering: -webkit-optimize-contrast; /* Only firefox and safari 7+ - others specify crisp-edges with this value */
+    /* image-rendering: crisp-edges; */
+    /* image-rendering: -webkit-optimize-contrast; */
 }
 
 .score{

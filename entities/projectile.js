@@ -1,4 +1,6 @@
+import { Assets } from "../assets.js";
 import { Velocity } from "../components/velocity.js";
+import { CollisionBox } from "../components/collision.js";
 import { Entity } from "../entity.js";
 import { GameManager } from "../gameManager.js";
 import { Vector2 } from "../vector.js";
@@ -10,14 +12,19 @@ const PLAYER_PROJECTILE_SPEED = 0.0015;
 export class Projectile extends Entity {
   constructor(posx, posy, velx, vely, isFriendly) {
     super();
-    this.transform.position.x = posx;
-    this.transform.position.y = posy;
+    this.transform.position.x = posx - 8;
+    this.transform.position.y = posy - 8;
     // TODO: If projectile speed of enemies is different, extract this to a parameter
     this.velocity = new Velocity(PLAYER_PROJECTILE_SPEED * GameManager.canvas.height, new Vector2(velx, vely));
+    /** @type {CollisionBox} */
+    this.collisionBox = new CollisionBox(this, 16, 16, 16, 16, true);
 
     this.isFriendly = isFriendly;
     
     this.gameManager = GameManager.getInstance();
+
+    this.textureNum = Math.floor(Math.random() * 3);
+    this.currentRotation = 0;
   }
   
   /** @type {Entity['update']} */
@@ -44,5 +51,27 @@ export class Projectile extends Entity {
 
   addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
     this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
+  }
+  /** @type {Entity['render']} */
+  render(ctx, elapsedTime) {
+    if(Assets.assetsFinishedLoading){ 
+        if(!this.image){
+          if(this.textureNum == 0){
+            this.image = Assets.images.milk.getImage();
+          }
+          else if(this.textureNum == 1){
+            this.image = Assets.images.fish.getImage();
+          }
+          else{
+            this.image = Assets.images.yarn.getImage();
+          }
+        }
+        ctx.drawImage(this.image, this.transform.position.x, this.transform.position.y, 16, 16);
+        ctx.drawImage(Assets.images.target.getImage(), this.transform.position.x, this.transform.position.y, 16, 16);
+    }
+    else{
+        ctx.fillStyle = "magenta";
+        ctx.fillRect(this.transform.position.x, this.transform.position.y, 16, 16);
+    }
   }
 }

@@ -23,7 +23,9 @@ export class Renderer {
         this.canvas = GameManager.canvas;
         /** @type {CanvasRenderingContext2D} */
         this.ctx = this.canvas.getContext("2d");
+        this.ctx.imageSmoothingEnabled = false;
         this.gameManager = GameManager.getInstance();
+        this.bgTimer = 0;
     }
     
     /** @returns {Renderer} */
@@ -36,10 +38,8 @@ export class Renderer {
     }
     
     drawGame(timeElapsed){
-        if(Assets.bgImg && !UIManager.getInstance().inAMenu){
+        if(Assets.assetsFinishedLoading && !UIManager.getInstance().inAMenu){
             this.clear();
-    
-            this.ctx.drawImage(Assets.bgImg, 0, 0, this.canvas.width, this.canvas.height);
     
             this.updateTimeRenderChanges(timeElapsed);
             this.drawLives();
@@ -49,17 +49,35 @@ export class Renderer {
             this.drawTimer();
         }
     }
-
+    
     clear(){
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
-
+    
     drawLives(){
-
+        if(Assets.assetsFinishedLoading){
+            let startY = this.canvas.height * 0.9;
+            let margin = this.canvas.width * 0.01;
+            let liveWidth = this.canvas.width * 0.05;
+            for(let i = 1; i <= GameManager.getInstance().livesLeft; i++){
+                this.ctx.drawImage(Assets.images.emptyShip.getImage(), (liveWidth * i) + (margin * i), startY, liveWidth, liveWidth);
+            }
+            
+        }
     }
-
+    
     updateTimeRenderChanges(timeElapsed){
+        let bgImg;
+        if(this.bgTimer < 500){
+            bgImg = Assets.images.bgImg1.getImage();
+        }
+        else{
+            bgImg = Assets.images.bgImg2.getImage();
+        }
+        if(this.bgTimer >= 1000) this.bgTimer = 0;
 
+        this.bgTimer += timeElapsed;
+        this.ctx.drawImage(bgImg, 0, 0, this.canvas.width, this.canvas.height);
     }
 
 
