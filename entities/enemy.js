@@ -37,7 +37,16 @@ export class Enemy extends Entity {
   }
   
   launchAttackRun() {
-    // TODO: Implement attack run
+    const gameManager = GameManager.getInstance();
+    const player = gameManager.entities.get(gameManager.shipId);
+    if (!player) return; // Nothing to attack
+
+    // TODO: Implement attack run - This is just test code
+    this.path = new Path(this, [
+      this.transform.position.add(new Vector2(0, 100)),
+      this.transform.position.add(new Vector2(-64, 200)),
+      player.transform.position.add(new Vector2(0, -100)),
+    ]);
   }
   
   /** @param {number} elapsedTime */

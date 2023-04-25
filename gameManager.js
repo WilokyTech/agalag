@@ -61,7 +61,8 @@ export class GameManager extends EventEmitter {
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
         ship.addCollisionBox(shipWidth, shipHeight, shipWidth, shipHeight, true);
         ParticleSystem.playerDeath(ship);
-        ship.on('destroyed', this.lostLife.bind(this));
+        ship.once('destroyed', this.lostLife.bind(this));
+        this.shipId = ship.id;
         return ship;
     }
 
