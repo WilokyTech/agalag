@@ -77,7 +77,7 @@ export class Ship extends Entity {
             ctx.drawImage(image, this.transform.position.x, this.transform.position.y, this.width, this.height);
         }
         else{
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "magenta";
             ctx.fillRect(this.transform.position.x, this.transform.position.y, this.width, this.height);
         }
     }

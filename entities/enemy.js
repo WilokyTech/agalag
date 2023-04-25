@@ -7,6 +7,7 @@ import { Velocity } from "../components/velocity.js";
 import { Vector2 } from "../vector.js";
 import { SoundFXManager } from "../SoundFXManager.js";
 import { ParticleSystem } from "../particleSystem.js";
+import { Assets } from "../assets.js";
 
 /**
  * Enemy speed is defined as the percentage of the total vertical height of the game area.
@@ -26,8 +27,9 @@ export class Enemy extends Entity {
   /**
    * @param {Vector2} formationPosition 
    * @param {Path} path 
+   * @param {string?} type
    */
-  constructor(formationPosition, path) {
+  constructor(formationPosition, path, type) {
     super();
     this.transform.position = !path ? formationPosition : path.getNextPoint();
     /** 
@@ -36,9 +38,11 @@ export class Enemy extends Entity {
      */
     this.formationPosition = formationPosition;
     /** @type {string} */
-    this.type = undefined;
+    this.type = type;
     this.path = path;
     this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
+    this.animTimer = 0;
+    this.previousPosition = this.transform.position;
   }
   
   get inFormation() {
@@ -98,6 +102,8 @@ export class Enemy extends Entity {
   
   /** @param {number} elapsedTime */
   update(elapsedTime) {
+    this.previousPosition = this.transform.position;
+
     super.update(elapsedTime);
 
     // If enemy doesn't have a path to follow, it is in formation and should move with the formation.
@@ -119,6 +125,37 @@ export class Enemy extends Entity {
         this.path.setDestination(this.formationPosition);
       }
     }
+  }
+
+  /** @type {Entity['render']} */
+  render(ctx, elapsedTime) {
+    if(Assets.assetsFinishedLoading && this.type){
+      const num = this.animTimer <= 500 ? 1 : 2;
+      const image = Assets.images[`${this.type}Cat${num}`].getImage();
+      if(this.animTimer > 1000) this.animTimer = 0;
+      this.animTimer += elapsedTime;
+
+      let dirLeft = this.transform.position.x - this.previousPosition.x < 0;
+
+      if(dirLeft){
+        ctx.save();
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(image, dirLeft ? (this.transform.position.x * - 1) - 64 : this.transform.position.x, this.transform.position.y, 64, 64);
+      if(dirLeft){
+        ctx.restore();
+      }
+    }
+    else{
+        ctx.fillStyle = "magenta";
+        ctx.fillRect(this.transform.position.x, this.transform.position.y, 64, 64);
+    }
+  }
+
+  drawFli (flip) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    
+    ctx.drawImage(img, flip ? img.width * -1 : 0, 0, img.width, img.height);
   }
 
   /** @type {Entity['onCollision']} */
