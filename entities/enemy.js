@@ -11,6 +11,12 @@ import { CollisionBox } from "../components/collision.js";
  */
 const ENEMY_SPEED = 0.00033;
 
+export const EnemyType = {
+  BEE: 'bee',
+  BUTTERFLY: 'butterfly',
+  WING: 'wing',
+};
+
 export class Enemy extends Entity {
   /**
    * @param {Vector2} formationPosition 
