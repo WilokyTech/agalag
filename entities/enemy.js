@@ -59,7 +59,9 @@ export class Enemy extends Entity {
     
     const projectileSpawnPoint = new Vector2(this.collisionBox.center.x, this.collisionBox.bottom + 16);
     const projectileDirection = player.collisionBox.center.subtract(projectileSpawnPoint).normalize();
-    gameManager.entities.add(new Projectile(projectileSpawnPoint.x, projectileSpawnPoint.y, projectileDirection.x, projectileDirection.y, false));
+    const projectile = new Projectile(projectileSpawnPoint.x, projectileSpawnPoint.y, projectileDirection.x, projectileDirection.y, false);
+    projectile.addCollisionBox(16, 16, 16, 16, false);
+    gameManager.entities.add(projectile);
   }
   
   determineNextAttackPoint() {

@@ -87,9 +87,9 @@ export class EnemyManager {
       this.destFormationPositions.set(enemy.id, positions[i].add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)));
       this.spreadFormationPositions.set(enemy.id, spreadPositions[i]);
       enemy.once('destroyed', deregisterEnemy);
+      // TODO: When this is not called on init, change this to a regular add
       gameManager.entities.addInitial(enemy);
       enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
-      // TODO: When this is not called on init, change this to a regular add
     }
   }
   
