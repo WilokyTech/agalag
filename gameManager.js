@@ -6,6 +6,7 @@ import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
 import { Collision } from "./components/collision.js";
 import { EnemyManager } from "./enemyManager.js";
+import { ScoreManager } from "./scoreManager.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -122,7 +123,7 @@ export class GameManager extends EventEmitter {
     }
 
     gameOver(){
-        //save score to local storage. Probably use a storage manager for this
+        ScoreManager.addScore(this.score);
         this.emit("gameOver");
     }
 }

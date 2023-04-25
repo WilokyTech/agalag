@@ -43,10 +43,9 @@ export class Renderer {
     
             this.updateTimeRenderChanges(timeElapsed);
             this.drawLives();
+            this.drawScore();
             this.gameManager.entities.render(this.ctx, timeElapsed);
             this.drawParticles();
-            this.drawScore();
-            this.drawTimer();
         }
     }
     
@@ -87,19 +86,6 @@ export class Renderer {
         this.ctx.drawImage(bgImg, 0, 0, this.canvas.width, this.canvas.height);
     }
 
-
-    drawTimer(){
-        if(this.gameManager.countDownTimer <= 1000){
-            this.drawText("3");
-        }
-        else if (this.gameManager.countDownTimer <= 2000){
-            this.drawText("2");
-        }
-        else if (this.gameManager.countDownTimer <= 3000){
-            this.drawText("1");
-        }
-    }
-
     drawText(t){
         // this.ctx.fillStyle = "rgb(20, 20, 20)";
         // this.ctx.font = ("100px sans-serif")
@@ -111,13 +97,13 @@ export class Renderer {
     }
 
     drawScore(){
-        // this.ctx.fillStyle = "rgb(0, 0, 0)";
-        // this.ctx.font = ("20px sans-serif");
-        // this.ctx.fillText(`Score: ${this.gameManager.score}`, this.canvas.width * 0.835, this.canvas.height * 0.945);
+        this.ctx.fillStyle = "rgb(0, 0, 0)";
+        this.ctx.font = ("20px sans-serif");
+        this.ctx.fillText(`Score: ${GameManager.getInstance().score}`, this.canvas.width * 0.835, this.canvas.height * 0.945);
 
-        // this.ctx.fillStyle = "rgb(255, 255, 255)";
-        // this.ctx.font = ("20px sans-serif");
-        // this.ctx.fillText(`Score: ${this.gameManager.score}`, this.canvas.width * 0.83, this.canvas.height * 0.94);
+        this.ctx.fillStyle = "#c29659";
+        this.ctx.font = ("20px sans-serif");
+        this.ctx.fillText(`Score: ${GameManager.getInstance().score}`, this.canvas.width * 0.834, this.canvas.height * 0.944);
     }
 
     drawParticles(){

@@ -92,6 +92,10 @@ export class EnemyManager {
       enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
     }
   }
+
+  getEnemyCount() {
+    return this.enemies.size;
+  }
   
   /** 
    * When called, this will set the new destination formation positions to be the spread
