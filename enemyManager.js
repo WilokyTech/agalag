@@ -19,6 +19,10 @@ const FORMATION_MOVEMENT_TIME = 3000; // How long it takes for the formation to 
 const ENEMY_SPRITE_SIZE = 64; // TODO: Get this from whatever constant defines the sprite size
 const FORMATION_HORIZONTAL_MOVEMENT = ENEMY_SPRITE_SIZE * 4;
 
+const ATTACK_RUN_INTERVAL = 5000;
+const ATTACK_GAP = 1000;
+const ATTACK_RUN_ENEMY_CT = 3;
+
 export class EnemyManager {
   constructor() {
     /** @type {Set<number>} */
@@ -33,6 +37,10 @@ export class EnemyManager {
     this.elapsedMovementTime = 0;
     this.formationMovementTime = FORMATION_MOVEMENT_TIME; // How long it takes for the formation to move between two positions
     this.cyclesUntilFormationSwitch = Infinity;
+    
+    this.timeSinceLastAttackRun = 0;
+    this.nextAttackCounter = 0;
+    this.attackRunEnemyCt = 0;
   }
   
   spawnEnemies() {
@@ -177,5 +185,39 @@ export class EnemyManager {
       const destPosition = this.destFormationPositions.get(enemy.id);
       enemy.formationPosition = lerp(basePosition, destPosition, this.elapsedMovementTime / this.formationMovementTime);
     }
+    
+    if (!this.isAttacking) {
+      this.timeSinceLastAttackRun += elapsedTime;
+    }
+
+    if (this.timeSinceLastAttackRun >= ATTACK_RUN_INTERVAL) {
+      this.isAttacking = true;
+      this.timeSinceLastAttackRun = 0;
+      this.#attack();
+    }
+    
+    if (this.isAttacking) {
+      this.nextAttackCounter += elapsedTime;
+      if (this.nextAttackCounter >= ATTACK_GAP) {
+        this.nextAttackCounter -= ATTACK_GAP;
+        this.#attack();
+        if (this.attackRunEnemyCt >= ATTACK_RUN_ENEMY_CT) {
+          this.isAttacking = false;
+          this.attackRunEnemyCt = 0;
+          this.nextAttackCounter = 0;
+        }
+      }
+    }
+  }
+  
+  #attack() {
+    const enemyIds = Array.from(this.enemies);
+    const enemyToAttackWith = Math.floor(Math.random() * enemyIds.length);
+    const enemyIdToAttackWith = enemyIds[enemyToAttackWith];
+    /** @type {Enemy} */
+    const attacker = GameManager.getInstance().entities.get(enemyIdToAttackWith);
+    if (!attacker) return; // Enemy we were about to send got destroyed between the time we picked it and now
+    attacker.launchAttackRun();
+    this.attackRunEnemyCt++;
   }
 }

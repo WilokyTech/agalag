@@ -25,6 +25,8 @@ export class Ship extends Entity {
     initialize() {
         this.fireProjectile = this.fireProjectile.bind(this);
         this.inputManager.on('fireDown', this.fireProjectile);
+
+        super.initialize();
     }
     
     /** @type {Entity['processInput']} */
@@ -82,5 +84,7 @@ export class Ship extends Entity {
     /** @type {Entity['dispose']} */    
     dispose() {
         this.inputManager.off('fireDown', this.fireProjectile);
+        
+        super.dispose();
     }
 }

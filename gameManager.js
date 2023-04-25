@@ -44,16 +44,19 @@ export class GameManager extends EventEmitter {
 
     setDefaultState(){
         this.paused = false;
-        this.entities.clear();
 
-        this.enemyManager = new EnemyManager();
-        this.entities.addInitial(this.createShip());
-        this.enemyManager.spawnEnemies();
-        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 8000);
-        //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
         this.livesLeft = 3;
         this.score = 0;
         this.countDownTimer = 5000;
+        this.resetPlayerAndEnemies();
+    }
+    
+    resetPlayerAndEnemies(){
+        this.entities.clear();
+        this.enemyManager = new EnemyManager();
+        this.entities.addInitial(this.createShip());
+        this.enemyManager.spawnEnemies();
+        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 2500);
     }
 
     createShip(){
@@ -61,7 +64,8 @@ export class GameManager extends EventEmitter {
         const shipHeight = 64
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
         ship.addCollisionBox(shipWidth, shipHeight, shipWidth, shipHeight, true);
-        ship.on('destroyed', this.lostLife.bind(this));
+        ship.once('destroyed', this.lostLife.bind(this));
+        this.shipId = ship.id;
         ship.once('destroyed', () => {
             ParticleSystem.playerDeath(ship);
         });
@@ -111,8 +115,9 @@ export class GameManager extends EventEmitter {
             this.gameOver();
         }
         else{
-            this.entities.add(this.createShip());
+            this.livesLeft--;
             this.countDownTimer = 0;
+            this.resetPlayerAndEnemies();
         }
     }
 
