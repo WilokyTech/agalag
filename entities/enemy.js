@@ -79,14 +79,15 @@ export class Enemy extends Entity {
     const gameManager = GameManager.getInstance();
     const player = gameManager.entities.get(gameManager.shipId);
     if (!player) {
-      // Continue down the current trajectory if we have a dead player.
       const lastTwoPathPoints = this.path.getPreviousTwoValidPoints();
       if (!lastTwoPathPoints) {
+        // We haven't gotten very far, so just return to formation
         this.returnToFormation();
       } else {
+        // Continue down trajectory of last two points
         const [prevPoint, endpoint] = lastTwoPathPoints;
-        const trajectory = endpoint.subtract(prevPoint);
-        this.path.addPoint(trajectory.multiply(2), false);
+        const trajectory = endpoint.subtract(prevPoint).normalize();
+        this.path.addPoint(trajectory.multiply(GameManager.canvas.height), false);
       }
     } else {
       const horizontalOffsetFromPlayer = player.transform.position.x - this.transform.position.x;
