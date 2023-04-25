@@ -25,6 +25,8 @@ export class Ship extends Entity {
     initialize() {
         this.fireProjectile = this.fireProjectile.bind(this);
         this.inputManager.on('fireDown', this.fireProjectile);
+
+        super.initialize();
     }
     
     /** @type {Entity['processInput']} */
@@ -52,6 +54,7 @@ export class Ship extends Entity {
     /** @type {Entity['onCollision']} */
     onCollision(collisionType) {
         if (collisionType === "playerDeath") {
+            SoundFXManager.playExplosionSFX();
             this.gameManager.entities.remove(this);
         }
     }
@@ -62,7 +65,7 @@ export class Ship extends Entity {
     
     fireProjectile() {
         const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true);
-        projectile.addCollisionBox(this.width/2, this.height/2, 10, 10, true);
+        projectile.addCollisionBox(16, 16, 16, 16, true);
         SoundFXManager.playThrowSFX();
         this.gameManager.entities.add(projectile); 
     }
@@ -74,7 +77,7 @@ export class Ship extends Entity {
             ctx.drawImage(image, this.transform.position.x, this.transform.position.y, this.width, this.height);
         }
         else{
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "magenta";
             ctx.fillRect(this.transform.position.x, this.transform.position.y, this.width, this.height);
         }
     }
@@ -82,5 +85,7 @@ export class Ship extends Entity {
     /** @type {Entity['dispose']} */    
     dispose() {
         this.inputManager.off('fireDown', this.fireProjectile);
+        
+        super.dispose();
     }
 }
