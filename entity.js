@@ -92,6 +92,6 @@ export class Entity extends EventEmitter {
    * When overriding, be sure to call super.dispose() at the end.
    */
   dispose() {
-    this.emit('destroyed');
+    this.emit('destroyed', this.id);
   }
 }

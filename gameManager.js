@@ -6,7 +6,6 @@ import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
 import { Collision } from "./components/collision.js";
 import { EnemyManager } from "./enemyManager.js";
-//import { Projectile } from "./entities/projectile.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -75,15 +74,12 @@ export class GameManager extends EventEmitter {
             else{
                 // Execute the game
                 let collisions = this.detectCollisions();
-                // if (collisions.length > 0) {
-                //     console.log(collisions);
-                // }
                 for (let collision of collisions) {
                     collision.entity1.onCollision(collision.collisionType);
                     collision.entity2.onCollision(collision.collisionType);
                 }
-                this.enemyManager?.update(elapsedTime);
                 this.entities.update(elapsedTime);
+                this.enemyManager?.update(elapsedTime);
             }
         }
     }
