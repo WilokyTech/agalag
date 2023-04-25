@@ -1,6 +1,5 @@
 import { EventEmitter } from "./eventEmitter.js";
 import { Path } from "./components/path.js";
-import { CollisionBox } from "./components/collision.js";
 import { Transform } from "./components/transform.js";
 import { Velocity } from "./components/velocity.js";
 

@@ -75,9 +75,9 @@ export class GameManager extends EventEmitter {
             else{
                 // Execute the game
                 let collisions = this.detectCollisions();
-                if (collisions.length > 0) {
-                    console.log(collisions);
-                }
+                // if (collisions.length > 0) {
+                //     console.log(collisions);
+                // }
                 for (let collision of collisions) {
                     collision.entity1.onCollision(collision.collisionType);
                     collision.entity2.onCollision(collision.collisionType);
