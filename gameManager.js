@@ -50,7 +50,6 @@ export class GameManager extends EventEmitter {
 
         this.entities.addInitial(this.createShip());
         this.enemyManager.spawnEnemies();
-        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 2500);
 
         this.livesLeft = 3;
         this.score = 0;

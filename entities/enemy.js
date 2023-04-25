@@ -25,11 +25,11 @@ export class Enemy extends Entity {
   #returningToFormation = false;
 
   /**
-   * @param {Vector2} formationPosition 
-   * @param {Path} path 
-   * @param {string?} type
+   * @param {string} type
+   * @param {Vector2} formationPosition
+   * @param {Path} [path]
    */
-  constructor(formationPosition, path, type) {
+  constructor(type, formationPosition, path = null) {
     super();
     this.transform.position = !path ? formationPosition : path.getCurrentPoint();
     /** 
