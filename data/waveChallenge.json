@@ -1,0 +1,155 @@
+{
+    "path1L" : {
+        "points" : [
+            {"x": 384, "y": 32}, 
+            {"x": 384, "y": 320},
+            {"x": 448, "y": 768},
+            {"x": 512, "y": 896},
+            {"x": 576, "y": 960},
+            {"x": 704, "y": 960},
+            {"x": 768, "y": 928},
+            {"x": 816, "y": 880},
+            {"x": 832, "y": 832},
+            {"x": 768, "y": 768},
+            {"x": 0, "y": 512}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1}
+        ],
+        "triggerPoints" : []
+    },
+
+    "path1R" : {
+        "points" : [
+            {"x": 512, "y": 32}, 
+            {"x": 512, "y": 320},
+            {"x": 448, "y": 768},
+            {"x": 384, "y": 896},
+            {"x": 320, "y": 960},
+            {"x": 192, "y": 960},
+            {"x": 128, "y": 928},
+            {"x": 80, "y": 880},
+            {"x": 64, "y": 832},
+            {"x": 128, "y": 768},
+            {"x": 896, "y": 512}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1}
+        ],
+        "triggerPoints" : []
+    },
+
+    "path2" : {
+        "points" : [
+            {"x": 0, "y": 1024},
+            {"x": 192, "y": 960},
+            {"x": 448, "y": 896},
+            {"x": 576, "y": 768},
+            {"x": 576, "y": 384},
+            {"x": 512, "y": 320},
+            {"x": 448, "y": 384},
+            {"x": 448, "y": 768},
+            {"x": 512, "y": 823},
+            {"x": 576, "y": 786},
+            {"x": 896, "y": 256}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "wing", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "wing", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "wing", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "wing", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1}
+        ],
+        "triggerPoints" : []
+    },
+    "path3" : {
+        "points" : [
+            {"x": 896, "y": 1024},
+            {"x": 704, "y": 960},
+            {"x": 448, "y": 896},
+            {"x": 320, "y": 768},
+            {"x": 320, "y": 384},
+            {"x": 384, "y": 320},
+            {"x": 448, "y": 384},
+            {"x": 448, "y": 768},
+            {"x": 384, "y": 823},
+            {"x": 320, "y": 786},
+            {"x": 0, "y": 256}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1}
+        ],
+        "triggerPoints" : []
+    },
+
+    "path4" : {
+        "points" : [
+            {"x": 512, "y": 32}, 
+            {"x": 512, "y": 320},
+            {"x": 448, "y": 768},
+            {"x": 384, "y": 896},
+            {"x": 320, "y": 960},
+            {"x": 192, "y": 960},
+            {"x": 128, "y": 928},
+            {"x": 80, "y": 880},
+            {"x": 64, "y": 832},
+            {"x": 128, "y": 768},
+            {"x": 896, "y": 512}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1}
+        ],
+        "triggerPoints" : []
+    },
+
+    "path5" : {
+        "points" : [
+            {"x": 384, "y": 32}, 
+            {"x": 384, "y": 320},
+            {"x": 448, "y": 768},
+            {"x": 512, "y": 896},
+            {"x": 576, "y": 960},
+            {"x": 704, "y": 960},
+            {"x": 768, "y": 928},
+            {"x": 816, "y": 880},
+            {"x": 832, "y": 832},
+            {"x": 768, "y": 768},
+            {"x": 0, "y": 512}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1},
+            {"enemyType": "bee", "formationSpot": -1}
+        ],
+        "triggerPoints" : []
+    }
+
+}
