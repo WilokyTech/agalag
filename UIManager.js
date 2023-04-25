@@ -1,5 +1,6 @@
 import { InputManager } from "./InputManager.js";
 import { GameManager } from "./gameManager.js";
+import { ScoreManager } from "./scoreManager.js";
 
 export class UIManager{
     static #isInternalConstructing = false;
@@ -87,7 +88,7 @@ export class UIManager{
         }
 
         this.clearHighScoresEl.onclick = () => {
-            SaveDataManager.clearScores();
+            ScoreManager.clearScores();
             this.showHighScores();
         }
         
@@ -248,7 +249,7 @@ export class UIManager{
         this.showGenericMenu(this.highScoresDisplayEl);
         //custom high scores func here
         this.highScoresListEl.innerHTML = ``;
-        for(let score of [0, 0, 0, 0, 0]){
+        for(let score of ScoreManager.getScores()){
             this.highScoresListEl.innerHTML += `<li class="list-group-item score">${score}</li>`;
         }
     }

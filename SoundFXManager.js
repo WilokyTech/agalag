@@ -7,19 +7,19 @@ export class SoundFXManager {
 
     }
 
-    //creating a new element each time so that multiple can play at once
     static playLaserSFX(){
         this.#playGenericSound('./audio/laserSound.mp3');
     }
-
+    
     static playThrowSFX(){
         this.#playGenericSound(`./audio/throwSound.mp3`);
     }
-
+    
     static playExplosionSFX(){
         this.#playGenericSound('./audio/explosionSound.mp3');
     }
-
+    
+    //creating a new element each time so that multiple can play at once
     static #playGenericSound(name){
         let sfx = new Audio(name);
         sfx.addEventListener("ended", () => {

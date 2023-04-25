@@ -123,6 +123,7 @@ export class ParticleSystem{
             let startY = playerEntity.transform.position.y + playerEntity.height / 2;
             let startPos = new Vector2(startX, startY);
             this.#addTexturedParticle(this.#generateTexturedParticle(startPos, this.#getRandomExplosionTexture()));
+            this.#addTexturedParticle(this.#generateTexturedParticle(startPos, this.#getRandomProjectileTexture()))
         }    
     }
 
@@ -167,6 +168,25 @@ export class ParticleSystem{
         }
         else{
             throw new Error("Can't get particle texture: assets not finished loading!");
+        }
+    }
+
+
+    static #getRandomProjectileTexture(){
+        if(Assets.assetsFinishedLoading){
+            let num = Math.floor(Math.random() * 3);
+            if(num == 0){
+                return Assets.images.milk.getImage(0);
+            }
+            else if(num == 1){
+                return Assets.images.fish.getImage();
+            }
+            else if (num == 2){
+                return Assets.images.yarn.getImage();
+            }
+            else{
+                throw new Error("Can't get particle texture: assets not finished loading!");
+            }
         }
     }
 
