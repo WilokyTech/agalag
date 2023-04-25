@@ -13,7 +13,10 @@ export class EventEmitter {
   emit(eventName, ...args) {
     const callbacks = this.events[eventName];
     if (callbacks) {
-      callbacks.forEach(callback => callback(...args));
+      // Need to iterate over a copy of the callbacks array because
+      // some callbacks will de-register themselves when they are called,
+      // which will modify the original array.
+      callbacks.slice().forEach(callback => callback(...args));
     }
   }
 
