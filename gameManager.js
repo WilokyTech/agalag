@@ -49,8 +49,7 @@ export class GameManager extends EventEmitter {
         this.enemyManager = new EnemyManager();
         this.entities.addInitial(this.createShip());
         this.enemyManager.spawnEnemies();
-        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 8000);
-        //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
+        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 2500);
         this.livesLeft = 3;
         this.score = 0;
         this.countDownTimer = 5000;

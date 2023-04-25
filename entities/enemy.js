@@ -36,6 +36,10 @@ export class Enemy extends Entity {
     this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
   }
   
+  launchAttackRun() {
+    // TODO: Implement attack run
+  }
+  
   /** @param {number} elapsedTime */
   update(elapsedTime) {
     super.update(elapsedTime);
