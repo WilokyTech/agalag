@@ -13,7 +13,7 @@ export class Ship extends Entity {
         this.width = width;
         this.height = height;
         this.transform.position = position;
-        this.collisionBox = new CollisionBox(this, width, height, width, height, true);
+        // this.collisionBox = new CollisionBox(this, width, height, width, height, true);
         
         this.gameManager = GameManager.getInstance();
         this.inputManager = InputManager.getInstance();
@@ -53,11 +53,15 @@ export class Ship extends Entity {
             this.gameManager.entities.remove(this);
         }
     }
+
+    addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
+        this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
+    }
     
     fireProjectile() {
 
         const projectile = new Projectile(this.transform.position.x, this.transform.position.y - this.height, 0, -1, true);
-        projectile.collisionBox = new CollisionBox(projectile, this.width/2, this.height/2, 10, 10, true);
+        projectile.addCollisionBox(this.width/2, this.height/2, 10, 10, true);
         this.gameManager.entities.add(projectile); 
     }
     

@@ -57,6 +57,10 @@ export class Entity extends EventEmitter {
   update(elapsedTime) {
     this.transform.update(elapsedTime);
   }
+
+  onCollision(collisionType) {
+    // Default no-op
+  }
   
   /**
    * Renders the entity.

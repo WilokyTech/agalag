@@ -1,5 +1,6 @@
 import { Projectile } from "../entities/projectile.js";
 import { Ship } from "../entities/ship.js";
+import { Enemy } from "../entities/enemy.js";
 import { Vector2 } from "../vector.js";
 
 export class CollisionBox {
@@ -20,7 +21,7 @@ export class CollisionBox {
      */
 
     detectCollision(other){
-        if (this.isFriendly == other.isFriendly) {
+        if (this.isFriendly === other.isFriendly) {
             return false;
         }
         // calculate the sides of the rectangles

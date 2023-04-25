@@ -63,6 +63,7 @@ export class GameManager extends EventEmitter {
         const shipWidth = 64
         const shipHeight = 64
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
+        ship.addCollisionBox(shipWidth, shipHeight, shipWidth, shipHeight, true);
         // ParticleSystem.playerDeath(ship);
         ship.on('destroyed', this.lostLife.bind(this));
         return ship;
@@ -77,6 +78,9 @@ export class GameManager extends EventEmitter {
                 InputManager.getInstance().inputPaused = false;
                 // Execute the game
                 let collisions = this.detectCollisions();
+                if (collisions.length > 0) {
+                    console.log(collisions);
+                }
                 for (let collision of collisions) {
                     collision.entity1.onCollision(collision.collisionType);
                     collision.entity2.onCollision(collision.collisionType);
@@ -95,9 +99,9 @@ export class GameManager extends EventEmitter {
             let colBox1 = entityEntries[i][1].collisionBox;
             for (let j=i+1; j<entityEntries.length; j++) {
                 let colBox2 = entityEntries[j][1].collisionBox;
-                if (colBox2 == null || colBox1 == null) {
-                    continue;
-                }
+                // if (colBox2 == null || colBox1 == null) {
+                //     continue;
+                // }
                 if (colBox1.detectCollision(colBox2)) {
                     collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
                 }

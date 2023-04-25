@@ -2,6 +2,7 @@ import { Velocity } from "../components/velocity.js";
 import { Entity } from "../entity.js";
 import { GameManager } from "../gameManager.js";
 import { Vector2 } from "../vector.js";
+import { CollisionBox } from "../components/collision.js";
 
 /** Movement speed given as a percentage of the total height per millisecond */
 const PLAYER_PROJECTILE_SPEED = 0.0015;
@@ -36,8 +37,12 @@ export class Projectile extends Entity {
 
   /** @type {Entity['onCollision']} */
   onCollision(collisionType) {
-    if (collisionType !== null) {
-        this.gameManager.entities.remove(this);
+    if (collisionType != null) {
+      this.gameManager.entities.remove(this);
     }
-}
+  }
+
+  addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
+    this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
+  }
 }

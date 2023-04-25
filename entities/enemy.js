@@ -3,6 +3,7 @@ import { GameManager } from "../gameManager.js";
 import { Velocity } from "../components/velocity.js";
 import { Path } from "../components/path.js";
 import { Vector2 } from "../vector.js";
+import { CollisionBox } from "../components/collision.js";
 
 const ENEMY_SPEED = 0.00033;
 
@@ -35,7 +36,11 @@ export class Enemy extends Entity {
   /** @type {Entity['onCollision']} */
   onCollision(collisionType) {
     if (collisionType === "enemyDeath") {
-        this.gameManager.entities.remove(this);
+        GameManager.getInstance().entities.remove(this);
     }
-}
+  }
+
+  addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
+    this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
+  }
 }
