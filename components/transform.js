@@ -21,19 +21,19 @@ export class Transform {
     let distanceMoved = this.entity.velocity.speed * elapsedTime;
 
     if (this.entity.path) {
-      let nextPoint = this.entity.path.getNextPoint();
-      if (nextPoint) {
-        const distanceToNextPoint = nextPoint.subtract(this.position).magnitude();
+      let destinationPoint = this.entity.path.getCurrentPoint();
+      if (destinationPoint) {
+        const distanceToNextPoint = destinationPoint.subtract(this.position).magnitude();
         
         if (distanceMoved > distanceToNextPoint) {
           distanceMoved -= distanceToNextPoint;
-          this.position = nextPoint;
+          this.position = destinationPoint;
           this.entity.path.advance();
-          nextPoint = this.entity.path.getNextPoint();
+          destinationPoint = this.entity.path.getCurrentPoint();
         }
         
-        if (nextPoint) {
-          const direction = nextPoint.subtract(this.position).normalize();
+        if (destinationPoint) {
+          const direction = destinationPoint.subtract(this.position).normalize();
           const displacement = direction.multiply(distanceMoved);
           this.position = this.position.add(displacement);
           

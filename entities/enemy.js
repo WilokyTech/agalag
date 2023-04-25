@@ -31,7 +31,7 @@ export class Enemy extends Entity {
    */
   constructor(formationPosition, path, type) {
     super();
-    this.transform.position = !path ? formationPosition : path.getNextPoint();
+    this.transform.position = !path ? formationPosition : path.getCurrentPoint();
     /** 
      * This determines the enemy's position in the formation and is set by the enemy manager.
      * @type {Vector2}
@@ -79,7 +79,15 @@ export class Enemy extends Entity {
     const gameManager = GameManager.getInstance();
     const player = gameManager.entities.get(gameManager.shipId);
     if (!player) {
-      this.returnToFormation();
+      // Continue down the current trajectory if we have a dead player.
+      const lastTwoPathPoints = this.path.getPreviousTwoValidPoints();
+      if (!lastTwoPathPoints) {
+        this.returnToFormation();
+      } else {
+        const [prevPoint, endpoint] = lastTwoPathPoints;
+        const trajectory = endpoint.subtract(prevPoint);
+        this.path.addPoint(trajectory.multiply(2), false);
+      }
     } else {
       const horizontalOffsetFromPlayer = player.transform.position.x - this.transform.position.x;
       const nextAttackPoint = this.transform.position.add(new Vector2(horizontalOffsetFromPlayer * Math.random(), 300));
