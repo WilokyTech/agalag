@@ -16,8 +16,8 @@ import { EventEmitter } from './eventEmitter.js';
 export class EntityManager extends EventEmitter {
   /** @type {Map<number, Entity>} */
   #entities = new Map();
-  /** @type {Array<number>} */
-  #removeQueue = [];
+  /** @type {Set<number>} */
+  #removeQueue = new Set();
   /** @type {Array<Entity>} */
   #addQueue = [];
   
@@ -44,9 +44,9 @@ export class EntityManager extends EventEmitter {
    */
   remove(entity) {
     if (typeof entity === 'number')
-      this.#removeQueue.push(entity);
+      this.#removeQueue.add(entity);
     else
-      this.#removeQueue.push(entity.id);
+      this.#removeQueue.add(entity.id);
   }
   
   /**
@@ -76,12 +76,12 @@ export class EntityManager extends EventEmitter {
       entity.update(elapsedTime);
     }
     
-    for (let i = 0; i < this.#removeQueue.length; ++i) {
-      this.emit('remove', this.#removeQueue[i]);
-      this.#entities.get(this.#removeQueue[i]).dispose();
-      this.#entities.delete(this.#removeQueue[i]);
+    for (let entityId of this.#removeQueue) {
+      this.emit('remove', entityId);
+      this.#entities.get(entityId).dispose();
+      this.#entities.delete(entityId);
     }
-    this.#removeQueue.length = 0;
+    this.#removeQueue.clear();
   }
   
   /**
@@ -106,6 +106,6 @@ export class EntityManager extends EventEmitter {
     }
     this.#entities.clear();
     this.#addQueue.length = 0;
-    this.#removeQueue.length = 0;
+    this.#removeQueue.clear();
   }
 }

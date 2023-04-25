@@ -41,6 +41,16 @@ export class Projectile extends Entity {
     }
   }
 
+  /** @type {Entity['onCollision']} */
+  onCollision(collisionType) {
+    if (collisionType != null) {
+      this.gameManager.entities.remove(this);
+    }
+  }
+
+  addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
+    this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
+  }
   /** @type {Entity['render']} */
   render(ctx, elapsedTime) {
     if(Assets.assetsFinishedLoading){ 

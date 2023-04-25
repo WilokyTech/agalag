@@ -1,6 +1,5 @@
 import { EventEmitter } from "./eventEmitter.js";
 import { Path } from "./components/path.js";
-import { CollisionBox } from "./components/collision.js";
 import { Transform } from "./components/transform.js";
 import { Velocity } from "./components/velocity.js";
 
@@ -59,6 +58,10 @@ export class Entity extends EventEmitter {
   update(elapsedTime) {
     this.transform.update(elapsedTime);
   }
+
+  onCollision(collisionType) {
+    // Default no-op
+  }
   
   /**
    * Renders the entity.
@@ -89,6 +92,6 @@ export class Entity extends EventEmitter {
    * When overriding, be sure to call super.dispose() at the end.
    */
   dispose() {
-    this.emit('destroyed');
+    this.emit('destroyed', this.id);
   }
 }

@@ -3,6 +3,7 @@ import { GameManager } from "../gameManager.js";
 import { Velocity } from "../components/velocity.js";
 import { Path } from "../components/path.js";
 import { Vector2 } from "../vector.js";
+import { CollisionBox } from "../components/collision.js";
 
 /**
  * Enemy speed is defined as the percentage of the total vertical height of the game area.
@@ -35,5 +36,16 @@ export class Enemy extends Entity {
     if (!this.path) {
       this.transform.position = this.formationPosition;
     }
+  }
+
+  /** @type {Entity['onCollision']} */
+  onCollision(collisionType) {
+    if (collisionType === "enemyDeath") {
+        GameManager.getInstance().entities.remove(this);
+    }
+  }
+
+  addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
+    this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
   }
 }

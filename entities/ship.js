@@ -15,7 +15,7 @@ export class Ship extends Entity {
         this.width = width;
         this.height = height;
         this.transform.position = position;
-        this.collisionBox = new CollisionBox(this, width, height, width, height, true);
+        // this.collisionBox = new CollisionBox(this, width, height, width, height, true);
         
         this.gameManager = GameManager.getInstance();
         this.inputManager = InputManager.getInstance();
@@ -31,7 +31,7 @@ export class Ship extends Entity {
     processInput(elapsedTime) {
         const movementAmount = PLAYER_MOVEMENT_SPEED * GameManager.canvas.width * elapsedTime;
 
-        if(this.inputManager.isControlDown("right")){
+        if(this.inputManager.isControlDown("right")) {
             if (this.transform.position.x < GameManager.canvas.width - this.width){
                 this.transform.position.x += movementAmount;
                 if (this.transform.position.x > GameManager.canvas.width - this.width){
@@ -40,7 +40,7 @@ export class Ship extends Entity {
             }
         }
         if (this.inputManager.isControlDown("left")) {
-            if (this.transform.position.x > 0){
+            if (this.transform.position.x > 0) {
                 this.transform.position.x -= movementAmount;
                 if (this.transform.position.x < 0){
                     this.transform.position.x = 0;
@@ -48,9 +48,21 @@ export class Ship extends Entity {
             }
         }
     }
+
+    /** @type {Entity['onCollision']} */
+    onCollision(collisionType) {
+        if (collisionType === "playerDeath") {
+            this.gameManager.entities.remove(this);
+        }
+    }
+
+    addCollisionBox(graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly) {
+        this.collisionBox = new CollisionBox(this, graphicsWidth, graphicsHeight, collisionWidth, collisionHeight, isFriendly);
+    }
     
     fireProjectile() {
         const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true);
+        projectile.addCollisionBox(this.width/2, this.height/2, 10, 10, true);
         SoundFXManager.playThrowSFX();
         this.gameManager.entities.add(projectile); 
     }
