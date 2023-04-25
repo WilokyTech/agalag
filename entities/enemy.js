@@ -152,12 +152,6 @@ export class Enemy extends Entity {
     }
   }
 
-  drawFli (flip) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    
-    ctx.drawImage(img, flip ? img.width * -1 : 0, 0, img.width, img.height);
-  }
-
   /** @type {Entity['onCollision']} */
   onCollision(collisionType) {
     if (collisionType === "enemyDeath") {
