@@ -14,7 +14,7 @@
         ],
         "enemyOrder" : [
             {"enemyType": "butterfly", "formationSpot": 7}, 
-            {"enemyType": "butterfly", "formationSpot": 8},             "butterfly",
+            {"enemyType": "butterfly", "formationSpot": 8},
             {"enemyType": "butterfly", "formationSpot": 15}, 
             {"enemyType": "butterfly", "formationSpot": 16}
         ],
