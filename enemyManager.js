@@ -11,18 +11,14 @@ const enemyLayout = [
   'xxxxxxxxxx'
 ]; // Describes the enemy formation layout where 'x' represents an enemy and '.' represents an empty space
 
-// "coordinates" for each enemy location in the formation.
-/**
- * .  .  .  0  1  2  3  .  .  .
- * .  4  5  6  7  8  9  10 11 .
- * .  12 13 14 15 16 17 18 19 . 
- * 20 21 22 23 24 25 26 27 28 29
- * 30 31 32 33 34 35 36 37 38 39
+// Formation location numbering scheme.
+/*
+    .  .  .  0  1  2  3  .  .  .
+    .  4  5  6  7  8  9  10 11 .
+    .  12 13 14 15 16 17 18 19 . 
+    20 21 22 23 24 25 26 27 28 29
+    30 31 32 33 34 35 36 37 38 39
  */
-
-const enemyType = [
-  // TODO: Fill this in later
-] // Describes the enemy type for each row of the formation
 
 const FORMATION_MOVEMENT_TIME = 3000; // How long it takes for the formation to move between two positions
 const ENEMY_SPRITE_SIZE = 64; // TODO: Get this from whatever constant defines the sprite size
