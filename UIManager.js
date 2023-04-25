@@ -34,6 +34,9 @@ export class UIManager{
         this.scoreSpanEl = document.getElementById("score-span");
         this.highScoresListEl = document.getElementById("high-scores-list");
         this.clearHighScoresEl = document.getElementById("clear-high-scores");
+        this.shotsFiredEl = document.getElementById("shots-span");
+        this.shotsHitEl = document.getElementById("hits-span");
+        this.hitMissEl = document.getElementById("hit-miss-span");
 
         this.backableMenus = [this.controlsMenuEl, this.creditsDisplayEl, this.highScoresDisplayEl, this.gameOverEl];
 
@@ -256,7 +259,11 @@ export class UIManager{
 
     showGameOver(){
         this.showGenericMenu(this.gameOverEl);
+        let misses = GameManager.getInstance().shotsFired - GameManager.getInstance().enemiesHit;
         this.scoreSpanEl.innerHTML = `Your Score: ${GameManager.getInstance().score}`;
+        this.shotsFiredEl.innerHTML = `Shots fired: ${GameManager.getInstance().shotsFired}`;
+        this.shotsHitEl.innerHTML = `Hits: ${GameManager.getInstance().enemiesHit}`;
+        this.hitMissEl.innerHTML = `Hit/Miss Ratio: ${misses == 0? "Perfect" : GameManager.getInstance().enemiesHit / misses}`;
     }
 
     showGame(){

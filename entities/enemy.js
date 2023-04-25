@@ -179,6 +179,7 @@ export class Enemy extends Entity {
           scoreToAdd += 1000;
         }
 
+        GameManager.getInstance().enemiesHit++;
         GameManager.getInstance().score += scoreToAdd;
     }
   }

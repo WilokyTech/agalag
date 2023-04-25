@@ -67,6 +67,7 @@ export class Ship extends Entity {
         const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true);
         projectile.addCollisionBox(16, 16, 16, 16, true);
         SoundFXManager.playThrowSFX();
+        GameManager.getInstance().shotsFired++;
         this.gameManager.entities.add(projectile); 
     }
     

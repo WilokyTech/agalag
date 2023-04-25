@@ -49,6 +49,8 @@ export class GameManager extends EventEmitter {
         this.livesLeft = 3;
         this.score = 0;
         this.countDownTimer = 5000;
+        this.shotsFired = 0;
+        this.enemiesHit = 0;
         this.resetPlayerAndEnemies();
     }
     
