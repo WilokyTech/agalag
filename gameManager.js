@@ -4,8 +4,8 @@ import { ParticleSystem } from "./particleSystem.js";
 import { Vector2 } from "./vector.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
-import { CollisionBox, Collision } from "./components/collision.js";
-//import { Projectile } from "./entities/projectile.js";
+import { EnemyManager } from "./enemyManager.js";
+import { Collision } from "./components/collision.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -29,8 +29,6 @@ export class GameManager extends EventEmitter {
 
         this.entities = new EntityManager();
         InputManager.getInstance().entitiesToSendInput = this.entities;
-        this.paused = false;
-        //this.setDefaultState();
     }
     
     /**
@@ -45,15 +43,17 @@ export class GameManager extends EventEmitter {
     }
 
     setDefaultState(){
+        this.paused = false;
         this.entities.clear();
 
+        this.enemyManager = new EnemyManager();
         this.entities.addInitial(this.createShip());
+        this.enemyManager.spawnEnemies();
+        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 8000);
         //this.entities.addInitial(new Projectile(0.5 * GameManager.canvas.width, GameManager.canvas.height - 64, 0, -1, true))
         this.livesLeft = 3;
         this.score = 0;
-        this.countDownTimer = 0;
-
-        InputManager.getInstance().inputPaused = true;
+        this.countDownTimer = 5000;
     }
 
     createShip(){
@@ -71,9 +71,9 @@ export class GameManager extends EventEmitter {
                 this.countDownTimer += elapsedTime;
             }
             else{
-                InputManager.getInstance().inputPaused = false;
                 // Execute the game
                 let collisions = this.detectCollisions();
+                this.enemyManager?.update(elapsedTime);
                 this.entities.update(elapsedTime);
             }
         }
@@ -84,9 +84,11 @@ export class GameManager extends EventEmitter {
         //I made collisions an object in the last project, containing things like type of collision, objects collided, etc to be examined in other funcs
         let entityEntries = Array.from(this.entities.entries());
         for (let i=0; i<entityEntries.length; i++) {
-            let colBox1 = entityEntries[i][1].collisionBox;
+            let colBox1 = entityEntries[i][1]?.collisionBox;
+            if (!colBox1) continue;
             for (let j=i+1; j<entityEntries.length; j++) {
-                let colBox2 = entityEntries[j][1].collisionBox;
+                let colBox2 = entityEntries[j][1]?.collisionBox;
+                if (!colBox2) continue;
                 if (colBox1.detectCollision(colBox2)) {
                     collisions.push(new Collision(entityEntries[i][1], entityEntries[j][1]));
                 }

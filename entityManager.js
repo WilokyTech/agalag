@@ -101,6 +101,9 @@ export class EntityManager extends EventEmitter {
   }
   
   clear() {
+    for (const entity of this.#entities.values()) {
+      entity.dispose();
+    }
     this.#entities.clear();
     this.#addQueue.length = 0;
     this.#removeQueue.length = 0;

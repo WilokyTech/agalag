@@ -1,7 +1,8 @@
+import { EventEmitter } from "./eventEmitter.js";
+import { Path } from "./components/path.js";
 import { CollisionBox } from "./components/collision.js";
 import { Transform } from "./components/transform.js";
 import { Velocity } from "./components/velocity.js";
-import { EventEmitter } from "./eventEmitter.js";
 
 export class Entity extends EventEmitter {
   static #nextId = 0;
@@ -16,6 +17,7 @@ export class Entity extends EventEmitter {
     /** @type {CollisionBox} */
     this.collisionBox = null;
     this.health = null;
+    /** @type {Path} */
     this.path = null;
     this.formation = null;
     /** @type {Velocity} */

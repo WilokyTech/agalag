@@ -49,6 +49,7 @@ export class UIManager{
 
         this.resumeEl.onclick = () => {
             this.showGame();
+            GameManager.getInstance().paused = false;
         }
 
         this.quitEl.onclick = () => {

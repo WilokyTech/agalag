@@ -26,4 +26,12 @@ export class EventEmitter {
       }
     }
   }
+  
+  once(eventName, callback) {
+    const wrapper = (...args) => {
+      this.off(eventName, wrapper);
+      callback(...args);
+    };
+    this.on(eventName, wrapper);
+  }
 }
