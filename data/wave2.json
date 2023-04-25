@@ -155,54 +155,84 @@
         ],
         "triggerPoints" : [8]
     },
-    "path4" : {
+    "path4L" : {
         "points" : [
             {"x": 496, "y": 32},
-            {"x": 480, "y": 128},
-            {"x": 448, "y": 208},
-            {"x": 208, "y": 448},
-            {"x": 144, "y": 512},
-            {"x": 96, "y": 576},
-            {"x": 144, "y": 672},
-            {"x": 192, "y": 704},
-            {"x": 256, "y": 704},
-            {"x": 304, "y": 672}
+            {"x": 480, "y": 160},
+            {"x": 432, "y": 240},
+            {"x": 192, "y": 448},
+            {"x": 64, "y": 608},
+            {"x": 80, "y": 720},
+            {"x": 192, "y": 832},
+            {"x": 320, "y": 816},
+            {"x": 416, "y": 704}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "bee", "formationSpot": 26}, 
+            {"enemyType": "bee", "formationSpot": 36}, 
+            {"enemyType": "bee", "formationSpot": 22}, 
+            {"enemyType": "bee", "formationSpot": 32}
+        ],
+        "triggerPoints": [0]
+    },
+    "path4R" : {
+        "points" : [
+            {"x": 560, "y": 32},
+            {"x": 528, "y": 208},
+            {"x": 480, "y": 288},
+            {"x": 208, "y": 528},
+            {"x": 128, "y": 624},
+            {"x": 144, "y": 704},
+            {"x": 224, "y": 752},
+            {"x": 304, "y": 736},
+            {"x": 352, "y": 672}
         ],
         "enemyOrder" : [
             {"enemyType": "bee", "formationSpot": 27}, 
-            {"enemyType": "bee", "formationSpot": 26}, 
             {"enemyType": "bee", "formationSpot": 37}, 
-            {"enemyType": "bee", "formationSpot": 36}, 
             {"enemyType": "bee", "formationSpot": 23}, 
-            {"enemyType": "bee", "formationSpot": 22}, 
-            {"enemyType": "bee", "formationSpot": 33}, 
-            {"enemyType": "bee", "formationSpot": 32}
+            {"enemyType": "bee", "formationSpot": 33}
         ],
-        "triggerPoints": []
+        "triggerPoints": [0]
     },
-    "path5" : {
+    "path5L" : {
         "points" : [
-            {"x": 400, "y": 32},
-            {"x": 416, "y": 128},
-            {"x": 448, "y": 208},
-            {"x": 688, "y": 448},
-            {"x": 752, "y": 512},
-            {"x": 800, "y": 576},
-            {"x": 752, "y": 672},
-            {"x": 704, "y": 704},
-            {"x": 640, "y": 704},
-            {"x": 592, "y": 672}
+            {"x": 336, "y": 32},
+            {"x": 368, "y": 208},
+            {"x": 416, "y": 288},
+            {"x": 688, "y": 528},
+            {"x": 768, "y": 624},
+            {"x": 752, "y": 704},
+            {"x": 672, "y": 752},
+            {"x": 592, "y": 736},
+            {"x": 544, "y": 672}
         ],
         "enemyOrder" : [
             {"enemyType": "bee", "formationSpot": 20}, 
-            {"enemyType": "bee", "formationSpot": 21}, 
             {"enemyType": "bee", "formationSpot": 30}, 
-            {"enemyType": "bee", "formationSpot": 31}, 
             {"enemyType": "bee", "formationSpot": 28}, 
+            {"enemyType": "bee", "formationSpot": 38}
+        ],
+        "triggerPoints" : [2]
+    },
+    "path5R" : {
+        "points" : [
+            {"x": 400, "y": 32},
+            {"x": 416, "y": 160},
+            {"x": 464, "y": 240},
+            {"x": 704, "y": 448},
+            {"x": 832, "y": 608},
+            {"x": 816, "y": 720},
+            {"x": 704, "y": 832},
+            {"x": 576, "y": 816},
+            {"x": 480, "y": 704}
+        ],
+        "enemyOrder" : [
+            {"enemyType": "bee", "formationSpot": 21}, 
+            {"enemyType": "bee", "formationSpot": 31}, 
             {"enemyType": "bee", "formationSpot": 29}, 
-            {"enemyType": "bee", "formationSpot": 38}, 
             {"enemyType": "bee", "formationSpot": 39}
         ],
-        "triggerPoints" : []
+        "triggerPoints" : [2]
     }
 }
