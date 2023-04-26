@@ -1,6 +1,8 @@
+import { Assets } from './assets.js';
 import { Enemy, EnemyType } from './entities/enemy.js';
 import { GameManager } from './gameManager.js';
 import { lerp } from './mathFuncs.js';
+import { Path } from './components/path.js';
 import { Vector2 } from './vector.js';
 
 const enemyLayout = [
@@ -27,6 +29,8 @@ const FORMATION_HORIZONTAL_MOVEMENT = ENEMY_SPRITE_SIZE * 4;
 const ATTACK_RUN_INTERVAL = 5000;
 const ATTACK_GAP = 1000;
 const ATTACK_RUN_ENEMY_CT = 3;
+
+const SPAWN_COOLDOWN = 2000;
 
 class EnemyFormation {
   constructor() {
@@ -161,8 +165,44 @@ class EnemyFormation {
   }
 }
 
+/**
+ * A set of parameters needed to construct an enemy along a given
+ * entry path defined by the path description data files.
+ * 
+ * @typedef {Exclude<ReturnType<ReturnType<typeof enemyGenerator>['next']>['value'], void>} EnemyDescriptor
+ */
+
+function* enemyGenerator(pathDescriptor) {
+  /** @type {Array<Vector2>} */
+  const pathPoints = pathDescriptor.points.map(point => new Vector2(point.x, point.y));
+  /** @type {Array<number>} */
+  const pathTriggers = pathDescriptor.triggers;
+  
+  for (let i = 0; i < pathDescriptor.enemyOrder.length; i++) {
+    const enemyDetails = pathDescriptor.enemyOrder[i];
+    yield {
+      /** @type {string} */
+      type: enemyDetails.enemyType,
+      /** @type {number} */
+      formationLocation: enemyDetails.formationSpot,
+      path: {
+        points: pathPoints,
+        triggerPoints: pathTriggers,
+      }
+    };
+  }
+}
+
 export class EnemyManager {
+  static waveEntryPatternNames = [
+    'wave1',
+    'wave2',
+    'challenge'
+  ];
+
   constructor() {
+    this.wave = -1;
+
     /**
      * This map serves two purposes: Stores the enemy IDs that we need to keep track of (keys)
      * and it maps those enemy IDs to their location in the enemy formation (values).
@@ -170,39 +210,56 @@ export class EnemyManager {
      * @type {Map<number, number>}
      */
     this.enemies = new Map();
+    this.enemyDeregisterHandler = (entityId) => {
+      this.enemies.delete(entityId);
+    };
+  }
+  
+  initializeWave() {
+    this.wave++;
     this.enemyFormation = new EnemyFormation();
-    
+    this.enemyGenerator = enemyGenerator(Assets.waveEntryPatterns[EnemyManager.waveEntryPatternNames[this.wave]].path1L);
+
     this.timeSinceLastAttackRun = 0;
     this.nextAttackCounter = 0;
     this.attackRunEnemyCt = 0;
+
+    this.timeToNextSpawn = SPAWN_COOLDOWN;
+
+    //setTimeout(() => this.enemyFormation.transitionToCenterFormation(), 2500);
   }
   
-  spawnEnemies() {
-    const deregisterEnemy = (entityId) => {
-      this.enemies.delete(entityId);
-    };
-    
+  /**
+   * @param {EnemyDescriptor} enemyDescriptor 
+   */
+  spawnEnemy(enemyDescriptor) {
     const gameManager = GameManager.getInstance();
-    for (let i = 0; i < this.enemyFormation.size; i++) {
-      const enemy = new Enemy(EnemyType.BEE, this.enemyFormation.getPosition(i));
-      this.enemies.set(enemy.id, i);
-      enemy.once('destroyed', deregisterEnemy);
-      // TODO: When this is not called on init, change this to a regular add
-      gameManager.entities.addInitial(enemy);
-      // TODO: Adjust the hitboxes to be more accurate
-      enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
-    }
-    
-    // TODO: Once spawnEnemies is no longer called on init, find a better place for this
-    setTimeout(() => this.enemyFormation.transitionToCenterFormation(), 2500);
+    const enemy = new Enemy(enemyDescriptor.type, this.enemyFormation.getPosition(enemyDescriptor.formationLocation));
+    this.enemies.set(enemy.id, enemyDescriptor.formationLocation);
+    enemy.once('destroyed', this.enemyDeregisterHandler);
+    gameManager.entities.add(enemy);
+    enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
   }
 
   /** @type {number} */
   update(elapsedTime) {
+    if (this.wave === -1) return; // Nothing to do yet
+
     this.enemyFormation.update(elapsedTime);
+    
+    this.timeToNextSpawn -= elapsedTime;
+    if (this.enemyGenerator && this.timeToNextSpawn <= 0) {
+      const { value: enemyDescriptor, done } = this.enemyGenerator.next();
+      if (done) {
+        this.enemyGenerator = null;
+        this.timeToNextSpawn = Infinity;
+      } else {
+        this.spawnEnemy(enemyDescriptor);
+        this.timeToNextSpawn = SPAWN_COOLDOWN + this.timeToNextSpawn;
+      }
+    }
 
     const gameManager = GameManager.getInstance();
-
     for (const enemyEntityId of this.enemies.keys()) {
       /** @type {Enemy} */
       const enemy = gameManager.entities.get(enemyEntityId);
