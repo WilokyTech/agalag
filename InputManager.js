@@ -67,7 +67,9 @@ export class InputManager extends EventEmitter {
         this.entitiesToSendInput = null;
         
         window.addEventListener("keydown", e => {
+            UIManager.getInstance().timeNoActivityInMainMenu = 0;
             AttractModeManager.disableAttractMode();
+
             if (!(/F\d+/.test(e.key))) {
                 e.preventDefault();
             }
@@ -94,6 +96,7 @@ export class InputManager extends EventEmitter {
         });
 
         window.addEventListener("click", e => {
+            UIManager.getInstance().timeNoActivityInMainMenu = 0;
             AttractModeManager.disableAttractMode();
         });
     }

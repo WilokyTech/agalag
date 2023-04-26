@@ -44,7 +44,7 @@ export class UIManager{
         
         this.currentMenu = null;
         this.timeNoActivityInMainMenu = 0;
-        this.setAttractMode = false;
+        this.attractModeHasBeenSet = false;
 
         this.newGameEl.onclick = () => {
             GameManager.getInstance().setDefaultState();
@@ -136,11 +136,10 @@ export class UIManager{
 
     tick(elapsedTime){
         if(this.currentMenu == this.mainMenuEl){
-            if(this.timeNoActivityInMainMenu < AttractModeManager.timeToWait && !this.setAttractMode){
+            if(this.timeNoActivityInMainMenu < AttractModeManager.timeToWait && !AttractModeManager.enabled){
                 this.timeNoActivityInMainMenu += elapsedTime;
             }
-            else if(!this.setAttractMode){
-                this.setAttractMode = true;
+            else if(!AttractModeManager.enabled){
                 this.timeNoActivityInMainMenu = 0;
                 AttractModeManager.enableAttractMode();
             }
