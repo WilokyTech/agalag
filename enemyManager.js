@@ -181,6 +181,10 @@ export class EnemyManager {
     this.attackRunEnemyCt = 0;
   }
   
+  getEnemyCount() {
+    return this.enemies.size;
+  }
+  
   spawnEnemies() {
     const deregisterEnemy = (entityId) => {
       this.enemies.delete(entityId);

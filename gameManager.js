@@ -58,7 +58,6 @@ export class GameManager extends EventEmitter {
 
         this.shotsFired = 0;
         this.enemiesHit = 0;
-        this.resetPlayerAndEnemies();
     }
     
     onQuit() {
