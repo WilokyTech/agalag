@@ -8,11 +8,6 @@ export class Renderer {
     static #isInternalConstructing = false;
     static #instance = null;
 
-    static {
-        this.SONG_BPM = 142;
-        this.SONG_BPS = 60 / this.SONG_BPM;
-    }
-
     constructor(){
         if (!Renderer.#isInternalConstructing) {
             throw new TypeError("Renderer is a singleton. Use Renderer.getInstance() instead.");
@@ -26,6 +21,8 @@ export class Renderer {
         this.ctx.imageSmoothingEnabled = false;
         this.gameManager = GameManager.getInstance();
         this.bgTimer = 0;
+        this.songBPMS = 60000 / 112;
+        this.songBreakpoint = this.songBPMS;
     }
     
     /** @returns {Renderer} */
@@ -61,7 +58,7 @@ export class Renderer {
             for(let i = 1; i <= GameManager.getInstance().livesLeft; i++){
                 let drawX = (liveWidth * i) + (margin * i);
                 let drawY = startY;
-                let degrees = 7 * (i % 2 == 0 ? 1 : -1) * (this.bgTimer < 500 ? 1 : -1);
+                let degrees = 7 * (i % 2 == 0 ? 1 : -1) * (this.bgTimer < this.songBreakpoint ? 1 : -1);
                 this.ctx.save();
                 this.ctx.translate(drawX + liveWidth / 2, drawY + liveWidth /2);                
                 this.ctx.rotate(degrees*Math.PI/180);
@@ -74,26 +71,17 @@ export class Renderer {
     
     updateTimeRenderChanges(timeElapsed){
         let bgImg;
-        if(this.bgTimer < 500){
+        if(this.bgTimer < this.songBreakpoint){
             bgImg = Assets.images.bgImg1.getImage();
         }
         else{
             bgImg = Assets.images.bgImg2.getImage();
         }
-        if(this.bgTimer >= 1000) this.bgTimer = 0;
+        if(this.bgTimer >= (this.songBPMS * 2)) this.bgTimer = 0;
 
+        console.log(`time elapsed: ${timeElapsed} bpms: ${this.songBPMS}`);
         this.bgTimer += timeElapsed;
         this.ctx.drawImage(bgImg, 0, 0, this.canvas.width, this.canvas.height);
-    }
-
-    drawText(t){
-        // this.ctx.fillStyle = "rgb(20, 20, 20)";
-        // this.ctx.font = ("100px sans-serif")
-        // this.ctx.fillText(t, (this.canvas.width / 2) - 18, (this.canvas.height / 2));
-
-        // this.ctx.fillStyle = "rgb(255, 255, 255)";
-        // this.ctx.font = ("90px sans-serif")
-        // this.ctx.fillText(t, (this.canvas.width / 2) - 22.5, (this.canvas.height / 2) - 10);
     }
 
     drawScore(){
