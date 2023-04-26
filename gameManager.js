@@ -52,7 +52,7 @@ export class GameManager extends EventEmitter {
         this.enemyManager = new EnemyManager();
 
         this.entities.addInitial(this.createShip());
-        this.enemyManager.spawnEnemies();
+        this.enemyManager.initializeNextWave();
 
         this.livesLeft = 2;
         this.score = 0;
@@ -61,13 +61,8 @@ export class GameManager extends EventEmitter {
         this.shotsFired = 0;
         this.enemiesHit = 0;
 
-        // for the AI
-        this.moveAILeft = true;
-        this.AIFireRate = 300;
-        this.AIFireTimer = 0;
-
     }
-    
+
     onQuit() {
         this.entities.clear();
         clearTimeout(this.respawnTimeout);
@@ -95,7 +90,7 @@ export class GameManager extends EventEmitter {
             }
             else{
                 if (AttractModeManager.enabled) {
-                    this.AIShip(elapsedTime);
+                    AttractModeManager.AIShip(this.entities.get(this.shipId), elapsedTime);
                 }
                 // Execute the game
                 let collisions = this.detectCollisions();
@@ -149,30 +144,5 @@ export class GameManager extends EventEmitter {
         this.gameOverTimeout = setTimeout(() => this.emit("gameOver"), 1000);
         ScoreManager.addScore(this.score);
         this.emit("gameOver");
-    }
-
-
-    AIShip(elapsedTime) {
-        const ship = this.entities.get(this.shipId);
-        if (!ship) {
-            return;
-        }
-        if ((ship.transform.position.x < 200  && this.moveAILeft) || (ship.transform.position.x > 696 && !this.moveAILeft) ) {
-            if (Math.random() > 0.7){
-                this.moveAILeft = !this.moveAILeft;
-            }
-        }
-        if (Math.random() > 0.5) {
-            if (this.moveAILeft) {
-                ship.moveLeft(elapsedTime);
-            } else {
-                ship.moveRight(elapsedTime);
-            }
-        }
-        this.AIFireTimer += elapsedTime;
-        if (this.AIFireTimer >= this.AIFireRate) {
-            ship.fireProjectile();
-            this.AIFireTimer -= this.AIFireRate;
-        }
     }
 }

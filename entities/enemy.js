@@ -8,7 +8,6 @@ import { Vector2 } from "../vector.js";
 import { SoundFXManager } from "../SoundFXManager.js";
 import { ParticleSystem } from "../particleSystem.js";
 import { Assets } from "../assets.js";
-import { EnemyManager } from "../enemyManager.js";
 import { Renderer } from "../renderer.js";
 
 /**
@@ -26,15 +25,16 @@ export const EnemyType = {
 export class Enemy extends Entity {
   #isEntering = false;
   #returningToFormation = false;
+  hasEnteredFormation = false;
 
   /**
    * @param {string} type
-   * @param {Vector2} formationPosition
-   * @param {Path} [entryPath]
+   * @param {Vector2} [formationPosition] If no formation position is specified, the enemy will disappear after it reaches the end of its path.
+   * @param {{ points: Vector2[], triggerPoints: number[] }} [entryPath]
    */
   constructor(type, formationPosition, entryPath) {
     super();
-    this.transform.position = entryPath ? entryPath.getCurrentPoint() : formationPosition;
+    this.transform.position = entryPath ? entryPath.points[0] : formationPosition;
     /** 
      * This determines the enemy's position in the formation and is set by the enemy manager.
      * @type {Vector2}
@@ -48,11 +48,15 @@ export class Enemy extends Entity {
     
     if (entryPath) {
       this.#isEntering = true;
-      this.path = entryPath;
+      this.path = new Path(this, entryPath.points, entryPath.triggerPoints);
       this.path.on('trigger', this.fire.bind(this));
       this.path.once('end', () => {
-        this.#isEntering = false;
-        this.returnToFormation();
+        if (this.formationPosition) {
+          this.#isEntering = false;
+          this.returnToFormation();
+        } else {
+          GameManager.getInstance().entities.remove(this);
+        }
       });
     }
   }
@@ -118,7 +122,8 @@ export class Enemy extends Entity {
     this.path.once('end', () => {
       this.path = null;
       this.#returningToFormation = false;
-      this.emit('returnToFormation');
+      this.hasEnteredFormation = true;
+      this.emit('enteredFormation');
     });
   }
   
