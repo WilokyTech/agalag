@@ -238,6 +238,7 @@ export class EnemyManager {
         if (done) {
           this.enemyGenerators = null;
           this.titmeToNextSpawn = Infinity;
+          this.timeSinceLastAttackRun = ATTACK_RUN_INTERVAL - 1000;
           this.enemyFormation.transitionToCenterFormation();
         } else {
           this.timeToNextSpawn = SPAWN_GAP;
@@ -253,15 +254,13 @@ export class EnemyManager {
     this.enemySquadGenerator = enemySquadGenerator(Assets.waveEntryPatterns[EnemyManager.waveEntryPatternNames[this.wave]]);
     this.enemyGenerators = this.enemySquadGenerator.next().value;
 
-    this.timeSinceLastAttackRun = 0;
+    this.timeSinceLastAttackRun = -Infinity;
     this.nextAttackCounter = 0;
     this.attackRunEnemyCt = 0;
 
     this.timeToNextSpawn = SPAWN_GAP;
     this.lastSpawnedSquadCount = 0;
     this.lastSpawnedSquadInFormationCt = 0;
-
-    //setTimeout(() => this.enemyFormation.transitionToCenterFormation(), 2500);
   }
   
   /**
