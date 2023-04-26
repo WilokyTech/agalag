@@ -3,7 +3,7 @@ import { UIManager } from "./UIManager.js";
 export class AttractModeManager{
 
     static{
-        this.timeToWait = 2000;
+        this.timeToWait = 10000;
         this.enabled = false;
     }
 
