@@ -136,7 +136,7 @@ export class UIManager{
     }
 
     tick(elapsedTime){
-        if(this.currentMenu == this.mainMenuEl){
+        if(this.inAMenu && this.currentMenu == this.mainMenuEl){
             if(this.timeNoActivityInMainMenu < AttractModeManager.timeToWait && !AttractModeManager.enabled){
                 this.timeNoActivityInMainMenu += elapsedTime;
             }

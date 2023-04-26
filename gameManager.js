@@ -7,6 +7,7 @@ import { InputManager } from "./InputManager.js";
 import { Collision } from "./components/collision.js";
 import { EnemyManager } from "./enemyManager.js";
 import { ScoreManager } from "./scoreManager.js";
+import { AttractModeManager } from "./attractModeManager.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -58,6 +59,12 @@ export class GameManager extends EventEmitter {
 
         this.shotsFired = 0;
         this.enemiesHit = 0;
+
+        // for the AI
+        this.moveAILeft = true;
+        this.AIFireRate = 300;
+        this.AIFireTimer = 0;
+
     }
     
     onQuit() {
@@ -85,6 +92,9 @@ export class GameManager extends EventEmitter {
                 this.countDownTimer += elapsedTime;
             }
             else{
+                if (AttractModeManager.enabled) {
+                    this.AIShip(elapsedTime);
+                }
                 // Execute the game
                 let collisions = this.detectCollisions();
                 for (let collision of collisions) {
@@ -118,6 +128,10 @@ export class GameManager extends EventEmitter {
     }
 
     lostLife(){
+        if (AttractModeManager.enabled) {
+            this.respawnTimeout = setTimeout(() => this.entities.add(this.createShip()), 1000);
+            return;
+        }
         if(this.livesLeft <= 0){
             this.gameOver();
         }
@@ -133,5 +147,30 @@ export class GameManager extends EventEmitter {
         this.gameOverTimeout = setTimeout(() => this.emit("gameOver"), 1000);
         ScoreManager.addScore(this.score);
         this.emit("gameOver");
+    }
+
+
+    AIShip(elapsedTime) {
+        const ship = this.entities.get(this.shipId);
+        if (!ship) {
+            return;
+        }
+        if ((ship.transform.position.x < 200  && this.moveAILeft) || (ship.transform.position.x > 696 && !this.moveAILeft) ) {
+            if (Math.random() > 0.7){
+                this.moveAILeft = !this.moveAILeft;
+            }
+        }
+        if (Math.random() > 0.5) {
+            if (this.moveAILeft) {
+                ship.moveLeft(elapsedTime);
+            } else {
+                ship.moveRight(elapsedTime);
+            }
+        }
+        this.AIFireTimer += elapsedTime;
+        if (this.AIFireTimer >= this.AIFireRate) {
+            ship.fireProjectile();
+            this.AIFireTimer -= this.AIFireRate;
+        }
     }
 }
