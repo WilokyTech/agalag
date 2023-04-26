@@ -283,12 +283,18 @@ export class EnemyManager {
    */
   spawnEnemy(enemyDescriptor) {
     const gameManager = GameManager.getInstance();
-    const enemy = new Enemy(enemyDescriptor.type, this.enemyFormation.getPosition(enemyDescriptor.formationLocation), enemyDescriptor.path);
+
+    const enemy = new Enemy(
+      enemyDescriptor.type,
+      this.wave !== 2 ? this.enemyFormation.getPosition(enemyDescriptor.formationLocation) : null,
+      enemyDescriptor.path
+    );
     enemy.once('destroyed', this.enemyDeregisterHandler);
     this.enemies.set(enemy.id, enemyDescriptor.formationLocation);
     enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
     enemy.on('enteredFormation', this.enemyEnteredFormationHandler);
     gameManager.entities.add(enemy);
+
     this.lastSpawnedSquadCount++;
   }
 

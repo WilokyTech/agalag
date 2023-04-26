@@ -8,7 +8,6 @@ import { Vector2 } from "../vector.js";
 import { SoundFXManager } from "../SoundFXManager.js";
 import { ParticleSystem } from "../particleSystem.js";
 import { Assets } from "../assets.js";
-import { EnemyManager } from "../enemyManager.js";
 
 /**
  * Enemy speed is defined as the percentage of the total vertical height of the game area.
@@ -29,7 +28,7 @@ export class Enemy extends Entity {
 
   /**
    * @param {string} type
-   * @param {Vector2} formationPosition
+   * @param {Vector2} [formationPosition] If no formation position is specified, the enemy will disappear after it reaches the end of its path.
    * @param {{ points: Vector2[], triggerPoints: number[] }} [entryPath]
    */
   constructor(type, formationPosition, entryPath) {
@@ -51,8 +50,12 @@ export class Enemy extends Entity {
       this.path = new Path(this, entryPath.points, entryPath.triggerPoints);
       this.path.on('trigger', this.fire.bind(this));
       this.path.once('end', () => {
-        this.#isEntering = false;
-        this.returnToFormation();
+        if (this.formationPosition) {
+          this.#isEntering = false;
+          this.returnToFormation();
+        } else {
+          GameManager.getInstance().entities.remove(this);
+        }
       });
     }
   }
