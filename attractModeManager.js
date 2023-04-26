@@ -10,7 +10,7 @@ export class AttractModeManager{
 
         // for the AI
         this.moveAILeft = true;
-        this.AIFireRate = 300;
+        this.AIFireRate = 500;
         this.AIFireTimer = 0;
     }
 
