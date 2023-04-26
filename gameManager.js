@@ -6,6 +6,7 @@ import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
 import { Collision } from "./components/collision.js";
 import { EnemyManager } from "./enemyManager.js";
+import { ScoreManager } from "./scoreManager.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -54,6 +55,10 @@ export class GameManager extends EventEmitter {
         this.livesLeft = 3;
         this.score = 0;
         this.countDownTimer = 5000;
+
+        this.shotsFired = 0;
+        this.enemiesHit = 0;
+        this.resetPlayerAndEnemies();
     }
     
     onQuit() {
@@ -114,7 +119,7 @@ export class GameManager extends EventEmitter {
     }
 
     lostLife(){
-        if(this.livesLeft < 0){
+        if(this.livesLeft <= 0){
             this.gameOver();
         }
         else{
@@ -127,5 +132,7 @@ export class GameManager extends EventEmitter {
         this.paused = true;
         //save score to local storage. Probably use a storage manager for this
         this.gameOverTimeout = setTimeout(() => this.emit("gameOver"), 1000);
+        ScoreManager.addScore(this.score);
+        this.emit("gameOver");
     }
 }

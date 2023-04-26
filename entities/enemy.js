@@ -8,6 +8,7 @@ import { Vector2 } from "../vector.js";
 import { SoundFXManager } from "../SoundFXManager.js";
 import { ParticleSystem } from "../particleSystem.js";
 import { Assets } from "../assets.js";
+import { EnemyManager } from "../enemyManager.js";
 
 /**
  * Enemy speed is defined as the percentage of the total vertical height of the game area.
@@ -181,6 +182,28 @@ export class Enemy extends Entity {
         GameManager.getInstance().entities.remove(this);
         ParticleSystem.enemyDeath(this);
         SoundFXManager.playExplosionSFX();
+
+        let scoreToAdd = 0;
+
+        if(this.type == EnemyType.BEE){
+          scoreToAdd += this.path ? 100 : 50;
+        }
+        else if (this.type == EnemyType.BUTTERFLY){
+          scoreToAdd += this.path ? 160 : 80;
+        }
+        else if(this.type == EnemyType.WING){
+          scoreToAdd += this.path ? 400 : 150;
+        }
+        else{
+          scoreToAdd += 1;
+        }
+
+        if(GameManager.getInstance().enemyManager.getEnemyCount() == 1){
+          scoreToAdd += 1000;
+        }
+
+        GameManager.getInstance().enemiesHit++;
+        GameManager.getInstance().score += scoreToAdd;
     }
   }
 

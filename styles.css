@@ -117,3 +117,8 @@ canvas{
     background-color: rgb(59, 59, 59);
     font-size: 25px;
 }
+
+#game-over{
+    background-color: rgb(59, 59, 59);
+    padding: 30px;
+}
