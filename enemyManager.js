@@ -1,8 +1,7 @@
 import { Assets } from './assets.js';
-import { Enemy, EnemyType } from './entities/enemy.js';
+import { Enemy } from './entities/enemy.js';
 import { GameManager } from './gameManager.js';
 import { lerp } from './mathFuncs.js';
-import { Path } from './components/path.js';
 import { Vector2 } from './vector.js';
 
 const enemyLayout = [
