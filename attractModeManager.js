@@ -1,4 +1,5 @@
 import { UIManager } from "./UIManager.js";
+import { GameManager } from "./gameManager.js";
 
 export class AttractModeManager{
 
@@ -13,6 +14,9 @@ export class AttractModeManager{
             console.log('Attract mode enabled');
             this.enabled = true;
 
+            GameManager.getInstance().setDefaultState();
+            UIManager.getInstance().showGame();
+
             //more code here
         }
     }
@@ -23,7 +27,9 @@ export class AttractModeManager{
             console.log(`Attract mode disabled`);
             this.enabled = false;
 
-            //more code here
+            // reset the main menu for the player.
+            GameManager.getInstance().onQuit();
+            UIManager.getInstance().setDefaultState();
         }
     }
 }
