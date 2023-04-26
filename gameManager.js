@@ -46,30 +46,34 @@ export class GameManager extends EventEmitter {
     setDefaultState(){
         this.paused = false;
 
-        this.livesLeft = 3;
-        this.score = 0;
-        this.countDownTimer = 5000;
-        this.shotsFired = 0;
-        this.enemiesHit = 0;
-        this.resetPlayerAndEnemies();
-    }
-    
-    resetPlayerAndEnemies(){
         this.entities.clear();
         this.enemyManager = new EnemyManager();
+
         this.entities.addInitial(this.createShip());
         this.enemyManager.spawnEnemies();
-        setTimeout(() => this.enemyManager.transitionToCenterFormation(), 2500);
-    }
 
+        this.livesLeft = 2;
+        this.score = 0;
+        this.countDownTimer = 5000;
+
+        this.shotsFired = 0;
+        this.enemiesHit = 0;
+    }
+    
+    onQuit() {
+        this.entities.clear();
+        clearTimeout(this.respawnTimeout);
+        clearTimeout(this.gameOverTimeout);
+    }
+    
     createShip(){
         const shipWidth = 64
         const shipHeight = 64
         const ship = new Ship(shipWidth, shipHeight, new Vector2((GameManager.canvas.width/2) - (shipWidth/2), GameManager.canvas.height - 64));
         ship.addCollisionBox(shipWidth, shipHeight, shipWidth, shipHeight, true);
-        ship.once('destroyed', this.lostLife.bind(this));
         this.shipId = ship.id;
         ship.once('destroyed', () => {
+            this.lostLife();
             ParticleSystem.playerDeath(ship);
         });
         return ship;
@@ -119,12 +123,14 @@ export class GameManager extends EventEmitter {
         }
         else{
             this.livesLeft--;
-            this.countDownTimer = 0;
-            this.resetPlayerAndEnemies();
+            this.respawnTimeout = setTimeout(() => this.entities.add(this.createShip()), 1000);
         }
     }
 
     gameOver(){
+        this.paused = true;
+        //save score to local storage. Probably use a storage manager for this
+        this.gameOverTimeout = setTimeout(() => this.emit("gameOver"), 1000);
         ScoreManager.addScore(this.score);
         this.emit("gameOver");
     }

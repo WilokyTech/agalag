@@ -67,6 +67,7 @@ export class Assets {
             butterflyCat1: new ImageAsset(null, "./images/cats/butterflyCat/1.png"),
             butterflyCat2: new ImageAsset(null, "./images/cats/butterflyCat/2.png")
         }
+        this.waveEntryPatterns = {}
         this.loadAssets();
     }
 
@@ -74,6 +75,10 @@ export class Assets {
         for(const [key, value] of Object.entries(this.images)){
             await value.loadImage();
         }
+        
+        this.waveEntryPatterns.wave1 = await fetch('/data/wave1.json').then(res => res.json());
+        this.waveEntryPatterns.wave2 = await fetch('/data/wave2.json').then(res => res.json());
+        this.waveEntryPatterns.challenge = await fetch('/data/waveChallenge.json').then(res => res.json());
         
         this.assetsFinishedLoading = true;
     }

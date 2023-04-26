@@ -1,4 +1,4 @@
-import { Enemy } from './entities/enemy.js';
+import { Enemy, EnemyType } from './entities/enemy.js';
 import { GameManager } from './gameManager.js';
 import { lerp } from './mathFuncs.js';
 import { Vector2 } from './vector.js';
@@ -11,18 +11,14 @@ const enemyLayout = [
   'xxxxxxxxxx'
 ]; // Describes the enemy formation layout where 'x' represents an enemy and '.' represents an empty space
 
-// "coordinates" for each enemy location in the formation.
-/**
- * .  .  .  0  1  2  3  .  .  .
- * .  4  5  6  7  8  9  10 11 .
- * .  12 13 14 15 16 17 18 19 . 
- * 20 21 22 23 24 25 26 27 28 29
- * 30 31 32 33 34 35 36 37 38 39
+// Formation location numbering scheme.
+/*
+    .  .  .  0  1  2  3  .  .  .
+    .  4  5  6  7  8  9  10 11 .
+    .  12 13 14 15 16 17 18 19 . 
+    20 21 22 23 24 25 26 27 28 29
+    30 31 32 33 34 35 36 37 38 39
  */
-
-const enemyType = [
-  // TODO: Fill this in later
-] // Describes the enemy type for each row of the formation
 
 const FORMATION_MOVEMENT_TIME = 3000; // How long it takes for the formation to move between two positions
 const ENEMY_SPRITE_SIZE = 64; // TODO: Get this from whatever constant defines the sprite size
@@ -32,30 +28,36 @@ const ATTACK_RUN_INTERVAL = 5000;
 const ATTACK_GAP = 1000;
 const ATTACK_RUN_ENEMY_CT = 3;
 
-export class EnemyManager {
+class EnemyFormation {
   constructor() {
-    /** @type {Set<number>} */
-    this.enemies = new Set();
-    /** @type {Map<number, Vector2>} */
-    this.baseFormationPositions = new Map();
-    /** @type {Map<number, Vector2>} */
-    this.destFormationPositions = new Map();
-    /**_@type {Map<number, Vector2>} */
-    this.spreadFormationPositions = new Map();
+    /** @type {Array<Vector2>} */
+    this.currentPositions = [];
+    /** @type {Array<Vector2>} */
+    this.baseFormationPositions = [];
+    /** @type {Array<Vector2>} */
+    this.destFormationPositions = [];
+    /** @type {Array<Vector2>} */
+    this.spreadFormationPositions = [];
     
     this.elapsedMovementTime = 0;
-    this.formationMovementTime = FORMATION_MOVEMENT_TIME; // How long it takes for the formation to move between two positions
+    this.formationMovementTime = FORMATION_MOVEMENT_TIME;
     this.cyclesUntilFormationSwitch = Infinity;
     
-    this.timeSinceLastAttackRun = 0;
-    this.nextAttackCounter = 0;
-    this.attackRunEnemyCt = 0;
+    this.#computeLocations();
   }
   
-  spawnEnemies() {
-    const positions = [];
-    const spreadPositions = [];
-    
+  get size() {
+    return this.currentPositions.length;
+  }
+  
+  /**
+   * @param {number} locationNumber 
+   */
+  getPosition(locationNumber) {
+    return this.currentPositions[locationNumber];    
+  }
+  
+  #computeLocations() {
     const gameWidthInSprites = Math.floor(GameManager.canvas.width / ENEMY_SPRITE_SIZE);
     const gapCount = enemyLayout[0].length - 1;
     const openSpace = (gameWidthInSprites - enemyLayout[0].length) * ENEMY_SPRITE_SIZE;
@@ -71,34 +73,17 @@ export class EnemyManager {
           const spriteY = y * ENEMY_SPRITE_SIZE;
           const spreadX = x * (ENEMY_SPRITE_SIZE + gapSize)
           const spreadY = y * (ENEMY_SPRITE_SIZE + gapSize);
-
-          positions.push(new Vector2(spriteX, spriteY + startYPosition));
-          spreadPositions.push(new Vector2(
+          
+          const basePosition = new Vector2(spriteX, spriteY + startYPosition)
+          this.baseFormationPositions.push(basePosition);
+          this.currentPositions.push(basePosition);
+          this.destFormationPositions.push(basePosition.add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)))
+          this.spreadFormationPositions.push(new Vector2(
             spreadPositionsStartX + spreadX,
             startYPosition + spreadY
           ));
         }
       }
-    }
-    
-    const deregisterEnemy = (entityId) => {
-      this.enemies.delete(entityId);
-      this.baseFormationPositions.delete(entityId);
-      this.destFormationPositions.delete(entityId);
-      this.spreadFormationPositions.delete(entityId);
-    };
-    
-    const gameManager = GameManager.getInstance();
-    for (let i = 0; i < positions.length; i++) {
-      const enemy = new Enemy(positions[i]);
-      this.enemies.add(enemy.id);
-      this.baseFormationPositions.set(enemy.id, positions[i]);
-      this.destFormationPositions.set(enemy.id, positions[i].add(new Vector2(FORMATION_HORIZONTAL_MOVEMENT, 0)));
-      this.spreadFormationPositions.set(enemy.id, spreadPositions[i]);
-      enemy.once('destroyed', deregisterEnemy);
-      // TODO: When this is not called on init, change this to a regular add
-      gameManager.entities.addInitial(enemy);
-      enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
     }
   }
 
@@ -112,15 +97,8 @@ export class EnemyManager {
    * position.
    */
   #switchToSpreadFormation() {
-    const gameManager = GameManager.getInstance();
-    for (let entityId of this.enemies) {
-      /** @type {Enemy} */
-      const enemy = gameManager.entities.get(entityId);
-      if (!enemy) {
-        continue;
-      }
-      const newBasePosition = enemy.formationPosition;
-      this.baseFormationPositions.set(entityId, newBasePosition);
+    for (let locationNumber = 0; locationNumber < this.currentPositions.length; locationNumber++) {
+      this.baseFormationPositions[locationNumber] = this.currentPositions[locationNumber];
     }
     
     this.destFormationPositions = this.spreadFormationPositions;
@@ -134,22 +112,14 @@ export class EnemyManager {
   transitionToCenterFormation() {
     const movementCyclePercentage = this.elapsedMovementTime / this.formationMovementTime;
     this.formationMovementTime /= 2;
-    const gameManager = GameManager.getInstance();
     
-    /** @type {Map<number, Vector2>} */
-    const centerPositions = new Map();
-    for (let entityId of this.enemies) {
-      /** @type {Enemy} */
-      const enemy = gameManager.entities.get(entityId);
-      if (!enemy) {
-        continue;
-      }
-      const centerPosition = lerp(this.baseFormationPositions.get(entityId), this.destFormationPositions.get(entityId), 0.5);
+    /** @type {Array<Vector2>} */
+    const centerPositions = new Array(this.currentPositions.length);
+    for (let locationNumber = 0; locationNumber < this.currentPositions.length; locationNumber++) {
+      centerPositions[locationNumber] = lerp(this.baseFormationPositions[locationNumber], this.destFormationPositions[locationNumber], 0.5);
       if (movementCyclePercentage === 0.5) {
-        // Snap to center position since we are there (give or take a little floating point error)
-        enemy.formationPosition = centerPosition;
-      } else {
-        centerPositions.set(entityId, centerPosition);
+        // Snap location to center position since we are there (give or take a little floating point error)
+        this.currentPositions[locationNumber] = centerPositions[locationNumber];
       }
     }
 
@@ -170,8 +140,6 @@ export class EnemyManager {
 
   /** @type {number} */
   update(elapsedTime) {
-    const gameManager = GameManager.getInstance();
-    
     // Reverse the direction of the formation every FORMATION_MOVEMENT_TIME
     this.elapsedMovementTime += elapsedTime;
     if (this.elapsedMovementTime >= this.formationMovementTime) {
@@ -187,16 +155,69 @@ export class EnemyManager {
       }
     }
 
-    for (let entityId of this.enemies) {
+    for (let locationNumber = 0; locationNumber < this.currentPositions.length; locationNumber++) {
+      this.currentPositions[locationNumber] = lerp(
+        this.baseFormationPositions[locationNumber],
+        this.destFormationPositions[locationNumber],
+        this.elapsedMovementTime / this.formationMovementTime
+      );
+    }
+  }
+}
+
+export class EnemyManager {
+  constructor() {
+    /**
+     * This map serves two purposes: Stores the enemy IDs that we need to keep track of (keys)
+     * and it maps those enemy IDs to their location in the enemy formation (values).
+     * 
+     * @type {Map<number, number>}
+     */
+    this.enemies = new Map();
+    this.enemyFormation = new EnemyFormation();
+    
+    this.timeSinceLastAttackRun = 0;
+    this.nextAttackCounter = 0;
+    this.attackRunEnemyCt = 0;
+  }
+  
+  getEnemyCount() {
+    return this.enemies.size;
+  }
+  
+  spawnEnemies() {
+    const deregisterEnemy = (entityId) => {
+      this.enemies.delete(entityId);
+    };
+    
+    const gameManager = GameManager.getInstance();
+    for (let i = 0; i < this.enemyFormation.size; i++) {
+      const enemy = new Enemy(EnemyType.BEE, this.enemyFormation.getPosition(i));
+      this.enemies.set(enemy.id, i);
+      enemy.once('destroyed', deregisterEnemy);
+      // TODO: When this is not called on init, change this to a regular add
+      gameManager.entities.addInitial(enemy);
+      // TODO: Adjust the hitboxes to be more accurate
+      enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
+    }
+    
+    // TODO: Once spawnEnemies is no longer called on init, find a better place for this
+    setTimeout(() => this.enemyFormation.transitionToCenterFormation(), 2500);
+  }
+
+  /** @type {number} */
+  update(elapsedTime) {
+    this.enemyFormation.update(elapsedTime);
+
+    const gameManager = GameManager.getInstance();
+
+    for (const enemyEntityId of this.enemies.keys()) {
       /** @type {Enemy} */
-      const enemy = gameManager.entities.get(entityId);
+      const enemy = gameManager.entities.get(enemyEntityId);
       if (!enemy) {
         continue;
       }
-      
-      const basePosition = this.baseFormationPositions.get(enemy.id);
-      const destPosition = this.destFormationPositions.get(enemy.id);
-      enemy.formationPosition = lerp(basePosition, destPosition, this.elapsedMovementTime / this.formationMovementTime);
+      enemy.formationPosition = this.enemyFormation.getPosition(this.enemies.get(enemyEntityId));
     }
     
     if (!this.isAttacking) {
@@ -224,7 +245,7 @@ export class EnemyManager {
   }
   
   #attack() {
-    const enemyIds = Array.from(this.enemies);
+    const enemyIds = Array.from(this.enemies.keys());
     const enemyToAttackWith = Math.floor(Math.random() * enemyIds.length);
     const enemyIdToAttackWith = enemyIds[enemyToAttackWith];
     /** @type {Enemy} */

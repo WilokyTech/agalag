@@ -6,6 +6,10 @@ export class Vector2 {
     this.y = y;
   }
   
+  clone() {
+    return new Vector2(this.x, this.y);
+  }
+  
   equals(other) {
     return this.x === other.x && this.y === other.y;
   }

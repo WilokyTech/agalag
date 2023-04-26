@@ -23,16 +23,17 @@ export const EnemyType = {
 };
 
 export class Enemy extends Entity {
+  #isEntering = false;
   #returningToFormation = false;
 
   /**
-   * @param {Vector2} formationPosition 
-   * @param {Path} path 
-   * @param {string?} type
+   * @param {string} type
+   * @param {Vector2} formationPosition
+   * @param {Path} [entryPath]
    */
-  constructor(formationPosition, path, type) {
+  constructor(type, formationPosition, entryPath) {
     super();
-    this.transform.position = !path ? formationPosition : path.getNextPoint();
+    this.transform.position = entryPath ? entryPath.getCurrentPoint() : formationPosition;
     /** 
      * This determines the enemy's position in the formation and is set by the enemy manager.
      * @type {Vector2}
@@ -40,10 +41,19 @@ export class Enemy extends Entity {
     this.formationPosition = formationPosition;
     /** @type {string} */
     this.type = type;
-    this.path = path;
     this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
     this.animTimer = 0;
     this.previousPosition = this.transform.position;
+    
+    if (entryPath) {
+      this.#isEntering = true;
+      this.path = entryPath;
+      this.path.on('trigger', this.fire.bind(this));
+      this.path.once('end', () => {
+        this.#isEntering = false;
+        this.returnToFormation();
+      });
+    }
   }
   
   get inFormation() {
@@ -80,7 +90,16 @@ export class Enemy extends Entity {
     const gameManager = GameManager.getInstance();
     const player = gameManager.entities.get(gameManager.shipId);
     if (!player) {
-      this.returnToFormation();
+      const lastTwoPathPoints = this.path.getPreviousTwoValidPoints();
+      if (!lastTwoPathPoints) {
+        // We haven't gotten very far, so just return to formation
+        this.returnToFormation();
+      } else {
+        // Continue down trajectory of last two points
+        const [prevPoint, endpoint] = lastTwoPathPoints;
+        const trajectory = endpoint.subtract(prevPoint).normalize();
+        this.path.addPoint(trajectory.multiply(GameManager.canvas.height), false);
+      }
     } else {
       const horizontalOffsetFromPlayer = player.transform.position.x - this.transform.position.x;
       const nextAttackPoint = this.transform.position.add(new Vector2(horizontalOffsetFromPlayer * Math.random(), 300));
@@ -98,6 +117,7 @@ export class Enemy extends Entity {
     this.path.once('end', () => {
       this.path = null;
       this.#returningToFormation = false;
+      this.emit('returnToFormation');
     });
   }
   
@@ -113,9 +133,12 @@ export class Enemy extends Entity {
     } else {
       // Check if we moved out of the screen. If so, wrap back up to the top of the screen and create a new path back to the formation
       if (
-        this.transform.position.y > GameManager.canvas.height ||
-        this.transform.position.x < -this.collisionBox.width ||
-        this.transform.position.x > GameManager.canvas.width + this.collisionBox.width
+        !this.#isEntering &&
+        (
+          this.transform.position.y > GameManager.canvas.height ||
+          this.transform.position.x < -this.collisionBox.width ||
+          this.transform.position.x > GameManager.canvas.width + this.collisionBox.width
+        )
       ) {
         this.transform.position.y = -this.collisionBox.width;
         this.returnToFormation();

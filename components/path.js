@@ -16,7 +16,7 @@ export class Path extends EventEmitter {
     super();
 
     /** @type {Array<Vector2>} */
-    this.points = points;
+    this.points = points.map(v => v.clone());
     /** @type {Transform} */
     this.entityLocation = entity.transform;
     /** @type {Set<number>} */
@@ -34,7 +34,7 @@ export class Path extends EventEmitter {
     this.#currentPoint++;
   }
   
-  getNextPoint() {
+  getCurrentPoint() {
     if (this.#currentPoint >= this.points.length) {
       if (!this.#endEventFired) {
         this.#endEventFired = true;
@@ -43,6 +43,23 @@ export class Path extends EventEmitter {
       return null;
     }
     return this.points[this.#currentPoint];
+  }
+  
+  /**
+   * Get the previous two valid points in the path.
+   * 
+   * @returns {Vector2[]} The last two valid points in the path, or null if there are less than two points.
+   */
+  getPreviousTwoValidPoints() {
+    if (this.points.length <= 1) {
+      return null;
+    }
+    
+    if (this.#currentPoint === this.points.length) {
+      return [this.points[this.points.length - 2], this.points[this.points.length - 1]];
+    } else {
+      return [this.points[this.#currentPoint - 1], this.points[this.#currentPoint]];
+    }
   }
   
   /** @param {Vector2} point */

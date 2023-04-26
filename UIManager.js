@@ -58,6 +58,7 @@ export class UIManager{
 
         this.quitEl.onclick = () => {
             this.setDefaultState();
+            GameManager.getInstance().onQuit();
         }
 
         this.remapControlsEl.onclick = () => {
