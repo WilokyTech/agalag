@@ -1,17 +1,19 @@
 import { InputManager } from "./InputManager.js";
 import { GameManager } from "./gameManager.js";
 import { ScoreManager } from "./scoreManager.js";
+import { AttractModeManager } from "./attractModeManager.js";
 
 export class UIManager{
     static #isInternalConstructing = false;
     static #instance = null;
 
+    
     constructor(){
         if (!UIManager.#isInternalConstructing) {
             throw new TypeError("UIManager is a singleton. Use UIManager.getInstance() instead.");
         }
         UIManager.#isInternalConstructing = false;
-
+        
         this.canvasEl = document.getElementById("canvas");
         this.mainMenuEl = document.getElementById("main-menu");
         this.newGameEl = document.getElementById("new-game");
@@ -37,8 +39,12 @@ export class UIManager{
         this.shotsFiredEl = document.getElementById("shots-span");
         this.shotsHitEl = document.getElementById("hits-span");
         this.hitMissEl = document.getElementById("hit-miss-span");
-
+        
         this.backableMenus = [this.controlsMenuEl, this.creditsDisplayEl, this.highScoresDisplayEl, this.gameOverEl];
+        
+        this.currentMenu = null;
+        this.timeNoActivityInMainMenu = 0;
+        this.setAttractMode = false;
 
         this.newGameEl.onclick = () => {
             GameManager.getInstance().setDefaultState();
@@ -118,12 +124,27 @@ export class UIManager{
      * @param {HTMLElement} menuEl 
      */
     showGenericMenu(menuEl){
+        this.timeNoActivityInMainMenu = 0;
+        this.currentMenu = menuEl;
         this.hideEverything();
         menuEl.style = "display: flex";
         if(this.backableMenus.includes(menuEl)){
             this.backBttn.style = "display: block";
         }
         this.inAMenu = true;
+    }
+
+    tick(elapsedTime){
+        if(this.currentMenu == this.mainMenuEl){
+            if(this.timeNoActivityInMainMenu < AttractModeManager.timeToWait && !this.setAttractMode){
+                this.timeNoActivityInMainMenu += elapsedTime;
+            }
+            else if(!this.setAttractMode){
+                this.setAttractMode = true;
+                this.timeNoActivityInMainMenu = 0;
+                AttractModeManager.enableAttractMode();
+            }
+        }
     }
 
     showControlsMenu(){

@@ -3,6 +3,7 @@ import { GameManager } from "./gameManager.js";
 import { InputManager } from "./InputManager.js";
 import { ParticleSystem } from "./particleSystem.js";
 import { Renderer } from "./renderer.js";
+import { UIManager } from "./UIManager.js";
 
 function main() {
     let prevTime = performance.now();
@@ -30,6 +31,7 @@ function main() {
         inputManager.processInputs(elapsedTime);
         gameManager.tick(elapsedTime);
         ParticleSystem.tick(elapsedTime);
+        UIManager.getInstance().tick(elapsedTime);
         timeRan += elapsedTime;
     }
     

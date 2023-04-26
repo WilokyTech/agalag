@@ -172,7 +172,7 @@ export class Enemy extends Entity {
           scoreToAdd += this.path ? 400 : 150;
         }
         else{
-          scoreToAdd += 10;
+          scoreToAdd += 1;
         }
 
         if(GameManager.getInstance().enemyManager.getEnemyCount() == 1){
