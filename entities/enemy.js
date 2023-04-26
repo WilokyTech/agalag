@@ -28,11 +28,11 @@ export class Enemy extends Entity {
   /**
    * @param {string} type
    * @param {Vector2} formationPosition
-   * @param {Path} [entryPath]
+   * @param {{ points: Vector2[], triggerPoints: number[] }} [entryPath]
    */
   constructor(type, formationPosition, entryPath) {
     super();
-    this.transform.position = entryPath ? entryPath.getCurrentPoint() : formationPosition;
+    this.transform.position = entryPath ? entryPath.points[0] : formationPosition;
     /** 
      * This determines the enemy's position in the formation and is set by the enemy manager.
      * @type {Vector2}
@@ -46,7 +46,7 @@ export class Enemy extends Entity {
     
     if (entryPath) {
       this.#isEntering = true;
-      this.path = entryPath;
+      this.path = new Path(this, entryPath.points, entryPath.triggerPoints);
       this.path.on('trigger', this.fire.bind(this));
       this.path.once('end', () => {
         this.#isEntering = false;

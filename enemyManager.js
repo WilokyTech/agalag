@@ -30,7 +30,7 @@ const ATTACK_RUN_INTERVAL = 5000;
 const ATTACK_GAP = 1000;
 const ATTACK_RUN_ENEMY_CT = 3;
 
-const SPAWN_COOLDOWN = 2000;
+const SPAWN_COOLDOWN = 200;
 
 class EnemyFormation {
   constructor() {
@@ -234,7 +234,7 @@ export class EnemyManager {
    */
   spawnEnemy(enemyDescriptor) {
     const gameManager = GameManager.getInstance();
-    const enemy = new Enemy(enemyDescriptor.type, this.enemyFormation.getPosition(enemyDescriptor.formationLocation));
+    const enemy = new Enemy(enemyDescriptor.type, this.enemyFormation.getPosition(enemyDescriptor.formationLocation), enemyDescriptor.path);
     this.enemies.set(enemy.id, enemyDescriptor.formationLocation);
     enemy.once('destroyed', this.enemyDeregisterHandler);
     gameManager.entities.add(enemy);
