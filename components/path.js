@@ -16,7 +16,7 @@ export class Path extends EventEmitter {
     super();
 
     /** @type {Array<Vector2>} */
-    this.points = points;
+    this.points = points.map(v => v.clone());
     /** @type {Transform} */
     this.entityLocation = entity.transform;
     /** @type {Set<number>} */

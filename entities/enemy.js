@@ -22,16 +22,17 @@ export const EnemyType = {
 };
 
 export class Enemy extends Entity {
+  #isEntering = false;
   #returningToFormation = false;
 
   /**
    * @param {string} type
    * @param {Vector2} formationPosition
-   * @param {Path} [path]
+   * @param {Path} [entryPath]
    */
-  constructor(type, formationPosition, path = null) {
+  constructor(type, formationPosition, entryPath) {
     super();
-    this.transform.position = !path ? formationPosition : path.getCurrentPoint();
+    this.transform.position = entryPath ? entryPath.getCurrentPoint() : formationPosition;
     /** 
      * This determines the enemy's position in the formation and is set by the enemy manager.
      * @type {Vector2}
@@ -39,10 +40,19 @@ export class Enemy extends Entity {
     this.formationPosition = formationPosition;
     /** @type {string} */
     this.type = type;
-    this.path = path;
     this.velocity = new Velocity(ENEMY_SPEED * GameManager.canvas.height);
     this.animTimer = 0;
     this.previousPosition = this.transform.position;
+    
+    if (entryPath) {
+      this.#isEntering = true;
+      this.path = entryPath;
+      this.path.on('trigger', this.fire.bind(this));
+      this.path.once('end', () => {
+        this.#isEntering = false;
+        this.returnToFormation();
+      });
+    }
   }
   
   get inFormation() {
@@ -106,6 +116,7 @@ export class Enemy extends Entity {
     this.path.once('end', () => {
       this.path = null;
       this.#returningToFormation = false;
+      this.emit('returnToFormation');
     });
   }
   
@@ -121,9 +132,12 @@ export class Enemy extends Entity {
     } else {
       // Check if we moved out of the screen. If so, wrap back up to the top of the screen and create a new path back to the formation
       if (
-        this.transform.position.y > GameManager.canvas.height ||
-        this.transform.position.x < -this.collisionBox.width ||
-        this.transform.position.x > GameManager.canvas.width + this.collisionBox.width
+        !this.#isEntering &&
+        (
+          this.transform.position.y > GameManager.canvas.height ||
+          this.transform.position.x < -this.collisionBox.width ||
+          this.transform.position.x > GameManager.canvas.width + this.collisionBox.width
+        )
       ) {
         this.transform.position.y = -this.collisionBox.width;
         this.returnToFormation();
