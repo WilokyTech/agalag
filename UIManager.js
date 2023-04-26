@@ -287,6 +287,7 @@ export class UIManager{
         this.shotsFiredEl.innerHTML = `Shots fired: ${GameManager.getInstance().shotsFired}`;
         this.shotsHitEl.innerHTML = `Hits: ${GameManager.getInstance().enemiesHit}`;
         this.hitMissEl.innerHTML = `Hit/Miss Ratio: ${misses == 0? "Perfect" : (GameManager.getInstance().enemiesHit / misses).toFixed(2)}`;
+        SoundFXManager.pauseBGMusic();
     }
 
     showGame(){
