@@ -56,6 +56,12 @@ export class GameManager extends EventEmitter {
         this.countDownTimer = 5000;
     }
     
+    onQuit() {
+        this.entities.clear();
+        clearTimeout(this.respawnTimeout);
+        clearTimeout(this.gameOverTimeout);
+    }
+    
     createShip(){
         const shipWidth = 64
         const shipHeight = 64
@@ -113,13 +119,13 @@ export class GameManager extends EventEmitter {
         }
         else{
             this.livesLeft--;
-            setTimeout(() => this.entities.add(this.createShip()), 1000);
+            this.respawnTimeout = setTimeout(() => this.entities.add(this.createShip()), 1000);
         }
     }
 
     gameOver(){
         this.paused = true;
         //save score to local storage. Probably use a storage manager for this
-        setTimeout(() => this.emit("gameOver"), 1000);
+        this.gameOverTimeout = setTimeout(() => this.emit("gameOver"), 1000);
     }
 }
