@@ -8,6 +8,7 @@
     justify-content: center;
     align-items: center;
     /* background-image: url('images/bg.jpg'); */
+    background-image: url('images/site_bg.png');
     height: 550px;
     color: white;
     background-color: black;
@@ -38,7 +39,8 @@ html{
     background-image: url('./images/bgGif.gif');
     background-repeat: no-repeat;
     background-position: center;
-    background-size:contain;
+    background-size:cover;
+    width: 700px;
 }
 
 canvas{
