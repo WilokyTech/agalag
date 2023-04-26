@@ -114,7 +114,7 @@ export class GameManager extends EventEmitter {
     }
 
     lostLife(){
-        if(this.livesLeft < 0){
+        if(this.livesLeft <= 0){
             this.gameOver();
         }
         else{

@@ -263,7 +263,7 @@ export class UIManager{
         this.scoreSpanEl.innerHTML = `Your Score: ${GameManager.getInstance().score}`;
         this.shotsFiredEl.innerHTML = `Shots fired: ${GameManager.getInstance().shotsFired}`;
         this.shotsHitEl.innerHTML = `Hits: ${GameManager.getInstance().enemiesHit}`;
-        this.hitMissEl.innerHTML = `Hit/Miss Ratio: ${misses == 0? "Perfect" : GameManager.getInstance().enemiesHit / misses}`;
+        this.hitMissEl.innerHTML = `Hit/Miss Ratio: ${misses == 0? "Perfect" : (GameManager.getInstance().enemiesHit / misses).toFixed(2)}`;
     }
 
     showGame(){
