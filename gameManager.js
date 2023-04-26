@@ -6,6 +6,9 @@ import { EventEmitter } from "./eventEmitter.js";
 import { InputManager } from "./InputManager.js";
 import { Collision } from "./components/collision.js";
 import { EnemyManager } from "./enemyManager.js";
+import { ScoreManager } from "./scoreManager.js";
+import { AttractModeManager } from "./attractModeManager.js";
+import { SoundFXManager } from "./SoundFXManager.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -49,12 +52,26 @@ export class GameManager extends EventEmitter {
         this.enemyManager = new EnemyManager();
 
         this.entities.addInitial(this.createShip());
-        
-        this.livesLeft = 3;
+        this.enemyManager.initializeWave();
+
+        this.livesLeft = 2;
         this.score = 0;
         this.countDownTimer = 5000;
 
-        this.enemyManager.initializeWave();
+        this.shotsFired = 0;
+        this.enemiesHit = 0;
+
+        // for the AI
+        this.moveAILeft = true;
+        this.AIFireRate = 300;
+        this.AIFireTimer = 0;
+    }
+
+    onQuit() {
+        this.entities.clear();
+        clearTimeout(this.respawnTimeout);
+        clearTimeout(this.gameOverTimeout);
+        SoundFXManager.pauseBGMusic();
     }
     
     createShip(){
@@ -76,6 +93,9 @@ export class GameManager extends EventEmitter {
                 this.countDownTimer += elapsedTime;
             }
             else{
+                if (AttractModeManager.enabled) {
+                    this.AIShip(elapsedTime);
+                }
                 // Execute the game
                 let collisions = this.detectCollisions();
                 for (let collision of collisions) {
@@ -109,18 +129,49 @@ export class GameManager extends EventEmitter {
     }
 
     lostLife(){
-        if(this.livesLeft < 0){
+        if (AttractModeManager.enabled) {
+            this.respawnTimeout = setTimeout(() => this.entities.add(this.createShip()), 1000);
+            return;
+        }
+        if(this.livesLeft <= 0){
             this.gameOver();
         }
         else{
             this.livesLeft--;
-            setTimeout(() => this.entities.add(this.createShip()), 1000);
+            this.respawnTimeout = setTimeout(() => this.entities.add(this.createShip()), 1000);
         }
     }
 
     gameOver(){
         this.paused = true;
         //save score to local storage. Probably use a storage manager for this
-        setTimeout(() => this.emit("gameOver"), 1000);
+        this.gameOverTimeout = setTimeout(() => this.emit("gameOver"), 1000);
+        ScoreManager.addScore(this.score);
+        this.emit("gameOver");
+    }
+
+
+    AIShip(elapsedTime) {
+        const ship = this.entities.get(this.shipId);
+        if (!ship) {
+            return;
+        }
+        if ((ship.transform.position.x < 200  && this.moveAILeft) || (ship.transform.position.x > 696 && !this.moveAILeft) ) {
+            if (Math.random() > 0.7){
+                this.moveAILeft = !this.moveAILeft;
+            }
+        }
+        if (Math.random() > 0.5) {
+            if (this.moveAILeft) {
+                ship.moveLeft(elapsedTime);
+            } else {
+                ship.moveRight(elapsedTime);
+            }
+        }
+        this.AIFireTimer += elapsedTime;
+        if (this.AIFireTimer >= this.AIFireRate) {
+            ship.fireProjectile();
+            this.AIFireTimer -= this.AIFireRate;
+        }
     }
 }

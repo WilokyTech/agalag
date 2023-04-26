@@ -1,17 +1,20 @@
 import { InputManager } from "./InputManager.js";
 import { GameManager } from "./gameManager.js";
 import { ScoreManager } from "./scoreManager.js";
+import { AttractModeManager } from "./attractModeManager.js";
+import { SoundFXManager } from "./SoundFXManager.js";
 
 export class UIManager{
     static #isInternalConstructing = false;
     static #instance = null;
 
+    
     constructor(){
         if (!UIManager.#isInternalConstructing) {
             throw new TypeError("UIManager is a singleton. Use UIManager.getInstance() instead.");
         }
         UIManager.#isInternalConstructing = false;
-
+        
         this.canvasEl = document.getElementById("canvas");
         this.mainMenuEl = document.getElementById("main-menu");
         this.newGameEl = document.getElementById("new-game");
@@ -34,10 +37,18 @@ export class UIManager{
         this.scoreSpanEl = document.getElementById("score-span");
         this.highScoresListEl = document.getElementById("high-scores-list");
         this.clearHighScoresEl = document.getElementById("clear-high-scores");
-
+        this.shotsFiredEl = document.getElementById("shots-span");
+        this.shotsHitEl = document.getElementById("hits-span");
+        this.hitMissEl = document.getElementById("hit-miss-span");
+        
         this.backableMenus = [this.controlsMenuEl, this.creditsDisplayEl, this.highScoresDisplayEl, this.gameOverEl];
+        
+        this.currentMenu = null;
+        this.timeNoActivityInMainMenu = 0;
+        this.attractModeHasBeenSet = false;
 
         this.newGameEl.onclick = () => {
+            SoundFXManager.playBGMusic();
             GameManager.getInstance().setDefaultState();
             this.showGame();
         }
@@ -49,6 +60,7 @@ export class UIManager{
 
         this.quitEl.onclick = () => {
             this.setDefaultState();
+            GameManager.getInstance().onQuit();
         }
 
         this.remapControlsEl.onclick = () => {
@@ -115,12 +127,26 @@ export class UIManager{
      * @param {HTMLElement} menuEl 
      */
     showGenericMenu(menuEl){
+        this.timeNoActivityInMainMenu = 0;
+        this.currentMenu = menuEl;
         this.hideEverything();
         menuEl.style = "display: flex";
         if(this.backableMenus.includes(menuEl)){
             this.backBttn.style = "display: block";
         }
         this.inAMenu = true;
+    }
+
+    tick(elapsedTime){
+        if(this.inAMenu && this.currentMenu == this.mainMenuEl){
+            if(this.timeNoActivityInMainMenu < AttractModeManager.timeToWait && !AttractModeManager.enabled){
+                this.timeNoActivityInMainMenu += elapsedTime;
+            }
+            else if(!AttractModeManager.enabled){
+                this.timeNoActivityInMainMenu = 0;
+                AttractModeManager.enableAttractMode();
+            }
+        }
     }
 
     showControlsMenu(){
@@ -256,7 +282,11 @@ export class UIManager{
 
     showGameOver(){
         this.showGenericMenu(this.gameOverEl);
+        let misses = GameManager.getInstance().shotsFired - GameManager.getInstance().enemiesHit;
         this.scoreSpanEl.innerHTML = `Your Score: ${GameManager.getInstance().score}`;
+        this.shotsFiredEl.innerHTML = `Shots fired: ${GameManager.getInstance().shotsFired}`;
+        this.shotsHitEl.innerHTML = `Hits: ${GameManager.getInstance().enemiesHit}`;
+        this.hitMissEl.innerHTML = `Hit/Miss Ratio: ${misses == 0? "Perfect" : (GameManager.getInstance().enemiesHit / misses).toFixed(2)}`;
     }
 
     showGame(){

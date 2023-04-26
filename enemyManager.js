@@ -92,6 +92,10 @@ class EnemyFormation {
       }
     }
   }
+
+  getEnemyCount() {
+    return this.enemies.size;
+  }
   
   /** 
    * When called, this will set the new destination formation positions to be the spread
@@ -246,6 +250,10 @@ export class EnemyManager {
         }
       }
     };
+  }
+  
+   getEnemyCount() {
+    return this.enemies.size;
   }
   
   initializeWave() {

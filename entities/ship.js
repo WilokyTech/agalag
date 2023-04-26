@@ -31,22 +31,30 @@ export class Ship extends Entity {
     
     /** @type {Entity['processInput']} */
     processInput(elapsedTime) {
-        const movementAmount = PLAYER_MOVEMENT_SPEED * GameManager.canvas.width * elapsedTime;
-
-        if(this.inputManager.isControlDown("right")) {
-            if (this.transform.position.x < GameManager.canvas.width - this.width){
-                this.transform.position.x += movementAmount;
-                if (this.transform.position.x > GameManager.canvas.width - this.width){
-                    this.transform.position.x = GameManager.canvas.width - this.width;
-                }
-            }
+        if (this.inputManager.isControlDown("right")) {
+            this.moveRight(elapsedTime);
         }
         if (this.inputManager.isControlDown("left")) {
-            if (this.transform.position.x > 0) {
-                this.transform.position.x -= movementAmount;
-                if (this.transform.position.x < 0){
-                    this.transform.position.x = 0;
-                }
+            this.moveLeft(elapsedTime);
+        }
+    }
+
+    moveRight(elapsedTime) {
+        const movementAmount = PLAYER_MOVEMENT_SPEED * GameManager.canvas.width * elapsedTime;
+        if (this.transform.position.x < GameManager.canvas.width - this.width){
+            this.transform.position.x += movementAmount;
+            if (this.transform.position.x > GameManager.canvas.width - this.width){
+                this.transform.position.x = GameManager.canvas.width - this.width;
+            }
+        }
+    }
+
+    moveLeft(elapsedTime) {
+        const movementAmount = PLAYER_MOVEMENT_SPEED * GameManager.canvas.width * elapsedTime;
+        if (this.transform.position.x > 0) {
+            this.transform.position.x -= movementAmount;
+            if (this.transform.position.x < 0){
+                this.transform.position.x = 0;
             }
         }
     }
@@ -67,6 +75,7 @@ export class Ship extends Entity {
         const projectile = new Projectile(this.transform.position.x + this.width/2, this.transform.position.y, 0, -1, true);
         projectile.addCollisionBox(16, 16, 16, 16, true);
         SoundFXManager.playThrowSFX();
+        GameManager.getInstance().shotsFired++;
         this.gameManager.entities.add(projectile); 
     }
     

@@ -2,6 +2,8 @@ import { EntityManager } from "./entityManager.js";
 import { EventEmitter } from "./eventEmitter.js";
 import { GameManager } from "./gameManager.js";
 import { UIManager } from "./UIManager.js";
+import { SoundFXManager } from "./SoundFXManager.js";
+import { AttractModeManager } from "./attractModeManager.js";
 
 /**
  * Listens for keyboard input and emits events based on the input. Also stores the current keyboard state.
@@ -65,6 +67,9 @@ export class InputManager extends EventEmitter {
         this.entitiesToSendInput = null;
         
         window.addEventListener("keydown", e => {
+            UIManager.getInstance().timeNoActivityInMainMenu = 0;
+            AttractModeManager.disableAttractMode();
+
             if (!(/F\d+/.test(e.key))) {
                 e.preventDefault();
             }
@@ -75,6 +80,7 @@ export class InputManager extends EventEmitter {
                     GameManager.getInstance().paused = true;
                 }
                 else {
+                    GameManager.getInstance().onQuit();
                     uiManager.setDefaultState();
                 }
             }
@@ -88,6 +94,11 @@ export class InputManager extends EventEmitter {
                 e.preventDefault();
             }
             this.removeKeyInput(e);
+        });
+
+        window.addEventListener("click", e => {
+            UIManager.getInstance().timeNoActivityInMainMenu = 0;
+            AttractModeManager.disableAttractMode();
         });
     }
 
