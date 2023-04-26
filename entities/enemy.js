@@ -9,6 +9,7 @@ import { SoundFXManager } from "../SoundFXManager.js";
 import { ParticleSystem } from "../particleSystem.js";
 import { Assets } from "../assets.js";
 import { EnemyManager } from "../enemyManager.js";
+import { Renderer } from "../renderer.js";
 
 /**
  * Enemy speed is defined as the percentage of the total vertical height of the game area.
@@ -154,9 +155,9 @@ export class Enemy extends Entity {
   /** @type {Entity['render']} */
   render(ctx, elapsedTime) {
     if(Assets.assetsFinishedLoading && this.type){
-      const num = this.animTimer <= 500 ? 1 : 2;
+      const num = this.animTimer <= Renderer.getInstance().songBPMS ? 1 : 2;
       const image = Assets.images[`${this.type}Cat${num}`].getImage();
-      if(this.animTimer > 1000) this.animTimer = 0;
+      if(this.animTimer > Renderer.getInstance().songBPMS * 2) this.animTimer = 0;
       this.animTimer += elapsedTime;
 
       let dirLeft = this.transform.position.x - this.previousPosition.x < 0;
