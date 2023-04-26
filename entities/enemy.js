@@ -25,6 +25,7 @@ export const EnemyType = {
 export class Enemy extends Entity {
   #isEntering = false;
   #returningToFormation = false;
+  hasEnteredFormation = false;
 
   /**
    * @param {string} type
@@ -117,6 +118,7 @@ export class Enemy extends Entity {
     this.path.once('end', () => {
       this.path = null;
       this.#returningToFormation = false;
+      this.hasEnteredFormation = true;
       this.emit('enteredFormation');
     });
   }

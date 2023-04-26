@@ -52,7 +52,7 @@ export class GameManager extends EventEmitter {
         this.enemyManager = new EnemyManager();
 
         this.entities.addInitial(this.createShip());
-        this.enemyManager.initializeWave();
+        this.enemyManager.initializeNextWave();
 
         this.livesLeft = 2;
         this.score = 0;

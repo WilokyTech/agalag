@@ -228,7 +228,10 @@ export class EnemyManager {
      * @type {Map<number, number>}
      */
     this.enemies = new Map();
-    this.enemyDeregisterHandler = (entityId) => {
+    this.enemyDeregisterHandler = (entityId, entity) => {
+      if (!entity.hasEnteredFormation) {
+        this.enemyEnteredFormationHandler();
+      }
       this.enemies.delete(entityId);
     };
     
@@ -256,7 +259,7 @@ export class EnemyManager {
     return this.enemies.size;
   }
   
-  initializeWave() {
+  initializeNextWave() {
     this.wave++;
     this.enemyFormation = new EnemyFormation();
     this.enemySquadGenerator = enemySquadGenerator(Assets.waveEntryPatterns[EnemyManager.waveEntryPatternNames[this.wave]]);
@@ -288,6 +291,10 @@ export class EnemyManager {
   /** @type {number} */
   update(elapsedTime) {
     if (this.wave === -1) return; // Nothing to do yet
+    
+    if (this.enemies.size === 0 && this.enemyGenerators === null) {
+      this.initializeNextWave();
+    }
 
     this.enemyFormation.update(elapsedTime);
     
