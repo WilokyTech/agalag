@@ -31,6 +31,8 @@ const ATTACK_RUN_ENEMY_CT = 3;
 
 // Controls how spaced apart enemies are when they spawn
 const SPAWN_INTERVAL = 200;
+// Controls how long to wait between spawning squads of enemies
+const SPAWN_GAP = 1000;
 
 class EnemyFormation {
   constructor() {
@@ -196,13 +198,11 @@ function* enemyGenerator(pathDescriptor) {
 function* enemySquadGenerator(waveDescriptor) {
   const pathCount = Object.keys(waveDescriptor).length;
 
-  while (true) {
-    for (let i = 1; i <= pathCount; i++) {
-      if (`path${i}` in waveDescriptor) {
-        yield [enemyGenerator(waveDescriptor[`path${i}`])];
-      } else {
-        yield [enemyGenerator(waveDescriptor[`path${i}L`]), enemyGenerator(waveDescriptor[`path${i}R`])];
-      }
+  for (let i = 1; i <= pathCount; i++) {
+    if (`path${i}` in waveDescriptor) {
+      yield [enemyGenerator(waveDescriptor[`path${i}`])];
+    } else if (`path${i}L` in waveDescriptor && `path${i}R` in waveDescriptor) {
+      yield [enemyGenerator(waveDescriptor[`path${i}L`]), enemyGenerator(waveDescriptor[`path${i}R`])];
     }
   }
 }
@@ -227,6 +227,24 @@ export class EnemyManager {
     this.enemyDeregisterHandler = (entityId) => {
       this.enemies.delete(entityId);
     };
+    
+    this.enemyEnteredFormationHandler = () => {
+      this.lastSpawnedSquadInFormationCt++;
+      if (this.lastSpawnedSquadCount === this.lastSpawnedSquadInFormationCt) {
+        this.lastSpawnedSquadInFormationCt = 0;
+        this.lastSpawnedSquadCount = 0;
+        
+        const { value: nextEnemySquadGenerator, done } = this.enemySquadGenerator.next();
+        if (done) {
+          this.enemyGenerators = null;
+          this.titmeToNextSpawn = Infinity;
+          this.enemyFormation.transitionToCenterFormation();
+        } else {
+          this.timeToNextSpawn = SPAWN_GAP;
+          this.enemyGenerators = nextEnemySquadGenerator;
+        }
+      }
+    };
   }
   
   initializeWave() {
@@ -239,7 +257,9 @@ export class EnemyManager {
     this.nextAttackCounter = 0;
     this.attackRunEnemyCt = 0;
 
-    this.timeToNextSpawn = SPAWN_INTERVAL;
+    this.timeToNextSpawn = SPAWN_GAP;
+    this.lastSpawnedSquadCount = 0;
+    this.lastSpawnedSquadInFormationCt = 0;
 
     //setTimeout(() => this.enemyFormation.transitionToCenterFormation(), 2500);
   }
@@ -250,10 +270,12 @@ export class EnemyManager {
   spawnEnemy(enemyDescriptor) {
     const gameManager = GameManager.getInstance();
     const enemy = new Enemy(enemyDescriptor.type, this.enemyFormation.getPosition(enemyDescriptor.formationLocation), enemyDescriptor.path);
-    this.enemies.set(enemy.id, enemyDescriptor.formationLocation);
     enemy.once('destroyed', this.enemyDeregisterHandler);
-    gameManager.entities.add(enemy);
+    this.enemies.set(enemy.id, enemyDescriptor.formationLocation);
     enemy.addCollisionBox(ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, ENEMY_SPRITE_SIZE, false);
+    enemy.on('enteredFormation', this.enemyEnteredFormationHandler);
+    gameManager.entities.add(enemy);
+    this.lastSpawnedSquadCount++;
   }
 
   /** @type {number} */

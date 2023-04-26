@@ -116,7 +116,7 @@ export class Enemy extends Entity {
     this.path.once('end', () => {
       this.path = null;
       this.#returningToFormation = false;
-      this.emit('returnToFormation');
+      this.emit('enteredFormation');
     });
   }
   
