@@ -182,7 +182,7 @@ function* enemyGenerator(pathDescriptor) {
   /** @type {Array<Vector2>} */
   const pathPoints = pathDescriptor.points.map(point => new Vector2(point.x, point.y));
   /** @type {Array<number>} */
-  const pathTriggers = pathDescriptor.triggers;
+  const pathTriggers = pathDescriptor.triggerPoints;
   
   for (let i = 0; i < pathDescriptor.enemyOrder.length; i++) {
     const enemyDetails = pathDescriptor.enemyOrder[i];
@@ -261,6 +261,10 @@ export class EnemyManager {
   
   initializeNextWave() {
     this.wave++;
+    if (this.wave >= EnemyManager.waveEntryPatternNames.length) {
+      this.wave = 0;
+    }
+
     this.enemyFormation = new EnemyFormation();
     this.enemySquadGenerator = enemySquadGenerator(Assets.waveEntryPatterns[EnemyManager.waveEntryPatternNames[this.wave]]);
     this.enemyGenerators = this.enemySquadGenerator.next().value;
