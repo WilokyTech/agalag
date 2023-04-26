@@ -8,6 +8,7 @@ import { Collision } from "./components/collision.js";
 import { EnemyManager } from "./enemyManager.js";
 import { ScoreManager } from "./scoreManager.js";
 import { AttractModeManager } from "./attractModeManager.js";
+import { SoundFXManager } from "./SoundFXManager.js";
 
 /**
  * Manages the game state. All entities are passed a reference to this object
@@ -71,6 +72,7 @@ export class GameManager extends EventEmitter {
         this.entities.clear();
         clearTimeout(this.respawnTimeout);
         clearTimeout(this.gameOverTimeout);
+        SoundFXManager.pauseBGMusic();
     }
     
     createShip(){

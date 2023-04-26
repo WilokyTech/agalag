@@ -80,6 +80,7 @@ export class InputManager extends EventEmitter {
                     GameManager.getInstance().paused = true;
                 }
                 else {
+                    GameManager.getInstance().onQuit();
                     uiManager.setDefaultState();
                 }
             }

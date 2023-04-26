@@ -2,6 +2,7 @@ import { InputManager } from "./InputManager.js";
 import { GameManager } from "./gameManager.js";
 import { ScoreManager } from "./scoreManager.js";
 import { AttractModeManager } from "./attractModeManager.js";
+import { SoundFXManager } from "./SoundFXManager.js";
 
 export class UIManager{
     static #isInternalConstructing = false;
@@ -47,6 +48,7 @@ export class UIManager{
         this.attractModeHasBeenSet = false;
 
         this.newGameEl.onclick = () => {
+            SoundFXManager.playBGMusic();
             GameManager.getInstance().setDefaultState();
             this.showGame();
         }
