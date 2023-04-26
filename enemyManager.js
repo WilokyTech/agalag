@@ -30,7 +30,8 @@ const ATTACK_RUN_INTERVAL = 5000;
 const ATTACK_GAP = 1000;
 const ATTACK_RUN_ENEMY_CT = 3;
 
-const SPAWN_COOLDOWN = 200;
+// Controls how spaced apart enemies are when they spawn
+const SPAWN_INTERVAL = 200;
 
 class EnemyFormation {
   constructor() {
@@ -193,6 +194,20 @@ function* enemyGenerator(pathDescriptor) {
   }
 }
 
+function* enemySquadGenerator(waveDescriptor) {
+  const pathCount = Object.keys(waveDescriptor).length;
+
+  while (true) {
+    for (let i = 1; i <= pathCount; i++) {
+      if (`path${i}` in waveDescriptor) {
+        yield [enemyGenerator(waveDescriptor[`path${i}`])];
+      } else {
+        yield [enemyGenerator(waveDescriptor[`path${i}L`]), enemyGenerator(waveDescriptor[`path${i}R`])];
+      }
+    }
+  }
+}
+
 export class EnemyManager {
   static waveEntryPatternNames = [
     'wave1',
@@ -218,13 +233,14 @@ export class EnemyManager {
   initializeWave() {
     this.wave++;
     this.enemyFormation = new EnemyFormation();
-    this.enemyGenerator = enemyGenerator(Assets.waveEntryPatterns[EnemyManager.waveEntryPatternNames[this.wave]].path1L);
+    this.enemySquadGenerator = enemySquadGenerator(Assets.waveEntryPatterns[EnemyManager.waveEntryPatternNames[this.wave]]);
+    this.enemyGenerators = this.enemySquadGenerator.next().value;
 
     this.timeSinceLastAttackRun = 0;
     this.nextAttackCounter = 0;
     this.attackRunEnemyCt = 0;
 
-    this.timeToNextSpawn = SPAWN_COOLDOWN;
+    this.timeToNextSpawn = SPAWN_INTERVAL;
 
     //setTimeout(() => this.enemyFormation.transitionToCenterFormation(), 2500);
   }
@@ -248,14 +264,26 @@ export class EnemyManager {
     this.enemyFormation.update(elapsedTime);
     
     this.timeToNextSpawn -= elapsedTime;
-    if (this.enemyGenerator && this.timeToNextSpawn <= 0) {
-      const { value: enemyDescriptor, done } = this.enemyGenerator.next();
-      if (done) {
-        this.enemyGenerator = null;
+    if (this.enemyGenerators && this.timeToNextSpawn <= 0) {
+      let allGeneratorsDone = true;
+      for (let i = 0; i < this.enemyGenerators.length; i++) {
+        const enemyGenerator = this.enemyGenerators[i];
+        if (!enemyGenerator) continue; // This generator has finished
+
+        const { value: enemyDescriptor, done } = enemyGenerator.next();
+        if (done) {
+          this.enemyGenerators[i] = null;
+        } else {
+          allGeneratorsDone = false;
+          this.spawnEnemy(enemyDescriptor);
+        }
+      }
+      
+      if (allGeneratorsDone) {
         this.timeToNextSpawn = Infinity;
+        this.enemyGenerators = null;
       } else {
-        this.spawnEnemy(enemyDescriptor);
-        this.timeToNextSpawn = SPAWN_COOLDOWN + this.timeToNextSpawn;
+        this.timeToNextSpawn = SPAWN_INTERVAL + this.timeToNextSpawn;
       }
     }
 
