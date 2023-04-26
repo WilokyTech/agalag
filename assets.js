@@ -59,7 +59,13 @@ export class Assets {
             yarn: new ImageAsset(null, "./images/projectiles/yarn.png"),
             bgImg1: new ImageAsset(null, "./images/bg1.png"),
             bgImg2: new ImageAsset(null, "./images/bg2.png"),
-            target: new ImageAsset(null, "./images/projectiles/target.png")
+            target: new ImageAsset(null, "./images/projectiles/target.png"),
+            wingCat1: new ImageAsset(null, "./images/cats/wingCat/1.png"),
+            wingCat2: new ImageAsset(null, "./images/cats/wingCat/2.png"),
+            beeCat1: new ImageAsset(null, "./images/cats/beeCat/1.png"),
+            beeCat2: new ImageAsset(null, "./images/cats/beeCat/2.png"),
+            butterflyCat1: new ImageAsset(null, "./images/cats/butterflyCat/1.png"),
+            butterflyCat2: new ImageAsset(null, "./images/cats/butterflyCat/2.png")
         }
         this.loadAssets();
     }
