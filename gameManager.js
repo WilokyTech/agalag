@@ -52,7 +52,7 @@ export class GameManager extends EventEmitter {
         this.entities.addInitial(this.createShip());
         this.enemyManager.spawnEnemies();
 
-        this.livesLeft = 3;
+        this.livesLeft = 2;
         this.score = 0;
         this.countDownTimer = 5000;
 
