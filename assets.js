@@ -76,9 +76,9 @@ export class Assets {
             await value.loadImage();
         }
         
-        this.waveEntryPatterns.wave1 = await fetch('/data/wave1.json').then(res => res.json());
-        this.waveEntryPatterns.wave2 = await fetch('/data/wave2.json').then(res => res.json());
-        this.waveEntryPatterns.challenge = await fetch('/data/waveChallenge.json').then(res => res.json());
+        this.waveEntryPatterns.wave1 = await fetch('./data/wave1.json').then(res => res.json());
+        this.waveEntryPatterns.wave2 = await fetch('./data/wave2.json').then(res => res.json());
+        this.waveEntryPatterns.challenge = await fetch('./data/waveChallenge.json').then(res => res.json());
         
         this.assetsFinishedLoading = true;
     }
